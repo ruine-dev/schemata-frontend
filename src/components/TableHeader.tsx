@@ -85,7 +85,7 @@ export function TableHeader({ table }: TableHeaderProps) {
             }}
             required
             autoFocus
-            className="form-input w-full py-1 px-0 text-sm"
+            className="nodrag form-input w-full py-1 px-0 text-sm"
           />
           <button type="submit" className="sr-only">
             Save
