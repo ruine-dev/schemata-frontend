@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { FloppyDisk, Pencil, Trash, X } from 'phosphor-react';
+import { useEffect, useRef } from 'react';
+import { Pencil, Trash } from 'phosphor-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TableWithIdProps, TableWithIdSchema } from '@/schemas/table';
@@ -10,81 +10,86 @@ import { useDeleteTable } from '@/flow-hooks/useDeleteTable';
 
 interface TableHeaderProps {
   table: TableWithIdProps;
-  isRenaming?: boolean;
 }
 
-export function TableHeader({ table, isRenaming: defaultIsRenaming }: TableHeaderProps) {
+export function TableHeader({ table }: TableHeaderProps) {
   const updateTable = useUpdateTable();
   const deleteTable = useDeleteTable();
+
+  const nodeRef = useRef<HTMLDivElement | null>(null);
+
+  const defaultValues = table;
 
   const {
     register,
     handleSubmit,
     reset,
     setFocus,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<TableWithIdProps>({
     resolver: zodResolver(TableWithIdSchema),
-    defaultValues: table,
+    defaultValues,
   });
 
-  const [isRenaming, setIsRenaming] = useState(defaultIsRenaming);
+  const [isRenaming, setIsRenaming] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
-    updateTable(data);
+    let name = data.name;
+
+    if (defaultValues.name === '' && name === '') {
+      name = 'untitled';
+    } else if (defaultValues.name !== '' && name === '') {
+      name = defaultValues.name;
+    }
+
+    updateTable({ ...data, name });
     setIsRenaming(false);
+
+    nodeRef.current?.parentElement?.parentElement?.focus();
   });
+
+  useEffect(() => {
+    if (table.name === '') {
+      setIsRenaming(true);
+      setTimeout(() => setFocus('name'), 0);
+    }
+  }, []);
 
   useEffect(() => {
     reset(table);
   }, [reset, table]);
 
-  const handleCancelRename = () => {
-    reset();
-    setIsRenaming(false);
-  };
-
   const handleRename = () => {
     setIsRenaming(true);
-    queueMicrotask(() => setFocus('name'));
   };
 
   return (
-    <div className="group rounded-t-xl bg-sky-500 px-3 pb-1.5 pt-2 font-medium">
+    <div ref={nodeRef} className="group rounded-t-xl bg-sky-500 px-3 pb-1.5 pt-2 font-medium">
       {isRenaming ? (
         <form onSubmit={onSubmit} className="flex items-center justify-between">
           <input
-            {...register('name')}
+            {...register('name', {
+              setValueAs(value: string) {
+                return value.trim();
+              },
+              onBlur() {
+                onSubmit();
+              },
+            })}
             type="text"
             disabled={isSubmitting}
             onKeyDown={(e) => {
               if (e.key === 'Escape') {
-                handleCancelRename();
+                onSubmit();
               }
             }}
             required
-            className="form-input w-36 p-0 text-sm"
+            autoFocus
+            className="form-input w-full py-1 px-0 text-sm"
           />
-          <div className="flex items-center">
-            <IconButton
-              type="button"
-              icon={X}
-              label="Cancel"
-              severity="dark"
-              onClick={handleCancelRename}
-              disabled={isSubmitting}
-              className="enabled:hover:bg-sky-600"
-            />
-            <IconButton
-              type="submit"
-              icon={FloppyDisk}
-              label="Save"
-              severity="dark"
-              loading={isSubmitting}
-              disabled={!isDirty}
-              className="enabled:hover:bg-sky-600"
-            />
-          </div>
+          <button type="submit" className="sr-only">
+            Save
+          </button>
         </form>
       ) : (
         <div className="flex items-center justify-between">
@@ -95,7 +100,7 @@ export function TableHeader({ table, isRenaming: defaultIsRenaming }: TableHeade
               label="Rename"
               severity="dark"
               onClick={handleRename}
-              className="enabled:hover:bg-sky-600"
+              className="ml-2 enabled:hover:bg-sky-600"
             />
             <IconButton
               icon={Trash}

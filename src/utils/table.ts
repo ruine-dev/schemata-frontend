@@ -7,7 +7,7 @@ export function emptyTableNodeFactory(overrides?: Partial<Node<TableProps>>): No
     id: uuidv4(),
     type: 'table',
     data: {
-      name: 'Untitled',
+      name: '',
       columns: [],
     },
     position: {

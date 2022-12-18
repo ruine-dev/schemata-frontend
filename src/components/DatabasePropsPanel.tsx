@@ -38,7 +38,6 @@ export function DatabasePropsPanel({ database }: DatabasePropsPanelProps) {
 
   const handleRename = () => {
     setIsRenaming(true);
-    queueMicrotask(() => setFocus('name'));
   };
 
   useEffect(() => {
@@ -49,7 +48,13 @@ export function DatabasePropsPanel({ database }: DatabasePropsPanelProps) {
     <EditorPanelContainer>
       {isRenaming ? (
         <form onSubmit={onSubmit} className="flex items-center">
-          <input {...register('name')} type="text" disabled={isSubmitting} className="form-input" />
+          <input
+            {...register('name')}
+            type="text"
+            disabled={isSubmitting}
+            autoFocus
+            className="form-input"
+          />
           <IconButton
             type="button"
             label="Cancel"

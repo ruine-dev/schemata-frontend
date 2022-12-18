@@ -36,7 +36,7 @@ export function ToolbarPanel() {
             onClick={handleCreateTable}
             onDragStart={(event) => onDragStart(event, 'table')}
             draggable
-            className="flex cursor-grab items-center gap-x-2 rounded-lg px-3 py-2 text-gray-500 hover:bg-slate-100"
+            className="flex cursor-pointer items-center gap-x-2 rounded-lg px-3 py-2 text-gray-500 hover:bg-slate-100"
           >
             <Table aria-hidden className="h-5 w-5" />
             Add Table

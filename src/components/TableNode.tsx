@@ -5,13 +5,15 @@ import { TableColumn } from './TableColumn';
 import { clsx } from '@/utils/clsx';
 import { TableHeader } from './TableHeader';
 import { AddTableColumnDialog } from './AddTableColumnDialog';
+import { useDeleteSelectedTable } from '@/flow-hooks/useDeleteSelectedTable';
 
 type TableNodeProps = Pick<BaseTableNodeProps, 'id'> & {
   selected?: boolean;
-  data: BaseTableNodeProps['data'] & { isRenaming?: boolean };
+  data: BaseTableNodeProps['data'];
 };
 
 export function TableNode({ id, data: table, selected }: TableNodeProps) {
+  const deleteSelectedTable = useDeleteSelectedTable();
   const connectionNodeId = useStore((state) => state.connectionNodeId);
   const connectionHandleId = useStore((state) => state.connectionHandleId);
 
@@ -25,8 +27,13 @@ export function TableNode({ id, data: table, selected }: TableNodeProps) {
           'outline outline-offset-2 outline-sky-500': selected,
         },
       )}
+      onKeyDown={(e) => {
+        if (e.key === 'Delete') {
+          deleteSelectedTable();
+        }
+      }}
     >
-      <TableHeader table={{ id, ...table }} isRenaming={selected && table.isRenaming} />
+      <TableHeader table={{ id, ...table }} />
       <ul className="mt-1">
         {table.columns.map((column) => (
           <li key={column.id} className="group relative">
