@@ -1,0 +1,49 @@
+import { z } from 'zod';
+
+export const TableColumnTypeEnum = z.enum([
+  'varchar',
+  'int',
+  'date',
+  'datetime',
+  'enum',
+  'timestamp',
+  'boolean',
+  'json',
+  'set',
+  'text',
+]);
+
+export type TableColumnType = z.infer<typeof TableColumnTypeEnum>;
+
+export const TableColumnSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  type: TableColumnTypeEnum,
+  isPrimaryKey: z.boolean(),
+});
+
+export type TableColumnProps = z.infer<typeof TableColumnSchema>;
+
+export const TableSchema = z.object({
+  name: z.string(),
+  columns: TableColumnSchema.array(),
+});
+
+export type TableProps = z.infer<typeof TableSchema>;
+
+export const TableWithIdSchema = TableSchema.extend({
+  id: z.string().uuid(),
+});
+
+export type TableWithIdProps = z.infer<typeof TableWithIdSchema>;
+
+export const TableNodeSchema = z.object({
+  id: z.string().uuid(),
+  data: TableSchema,
+  position: z.object({
+    x: z.number().int(),
+    y: z.number().int(),
+  }),
+});
+
+export type TableNodeProps = z.infer<typeof TableNodeSchema>;
