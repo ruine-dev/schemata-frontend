@@ -14,8 +14,8 @@ export function useAddTableColumn() {
   return (columnPayload: AddTableColumnSchemaType) => {
     const { tableId, ...newColumn } = columnPayload;
 
-    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) =>
-      currentNodes.map((node) => {
+    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) => {
+      return currentNodes.map((node) => {
         if (node.id === tableId) {
           return {
             ...node,
@@ -33,7 +33,7 @@ export function useAddTableColumn() {
         }
 
         return node;
-      }),
-    );
+      });
+    });
   };
 }

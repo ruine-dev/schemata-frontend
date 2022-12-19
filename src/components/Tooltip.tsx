@@ -8,7 +8,7 @@ interface TooltipProps {
 
 export function Tooltip({ text, children }: TooltipProps) {
   return (
-    <RadixTooltip.Provider>
+    <RadixTooltip.Provider delayDuration={0}>
       <RadixTooltip.Root>
         <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
         <RadixTooltip.Portal>

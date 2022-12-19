@@ -2,17 +2,17 @@ import { Node, useReactFlow } from 'reactflow';
 import { z } from 'zod';
 import { TableColumnSchema, TableProps } from '@/schemas/table';
 
-export const UpdateTableColumnSchema = TableColumnSchema.extend({
+export const DeleteTableColumnSchema = TableColumnSchema.pick({ id: true }).extend({
   tableId: z.string(),
 });
 
-export type UpdateTableColumnSchemaType = z.infer<typeof UpdateTableColumnSchema>;
+export type DeleteTableColumnSchemaType = z.infer<typeof DeleteTableColumnSchema>;
 
-export function useUpdateTableColumn() {
+export function useDeleteTableColumn() {
   const reactFlowInstance = useReactFlow();
 
-  return (columnPayload: UpdateTableColumnSchemaType) => {
-    const { tableId, ...newColumn } = columnPayload;
+  return (columnPayload: DeleteTableColumnSchemaType) => {
+    const { tableId, id } = columnPayload;
 
     reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) => {
       return currentNodes.map((node) => {
@@ -21,12 +21,7 @@ export function useUpdateTableColumn() {
             ...node,
             data: {
               ...node.data,
-              columns: node.data.columns.map((column) => {
-                if (column.id === newColumn.id) {
-                  return newColumn;
-                }
-                return column;
-              }),
+              columns: node.data.columns.filter((column) => column.id !== id),
             },
           };
         }

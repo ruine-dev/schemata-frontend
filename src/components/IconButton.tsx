@@ -15,13 +15,35 @@ const iconButtonIconClass = cva(null, {
 const iconButtonClass = cva(['p-2 rounded-xl outline-none focus:ring-2'], {
   variants: {
     filled: {
-      true: ['bg-white enabled:hover:bg-slate-100 enabled:active:bg-slate-200'],
+      true: ['bg-white', 'enabled:hover:bg-slate-100', 'focus:bg-slate-100', 'active:bg-slate-100'],
     },
     severity: {
-      normal: ['text-slate-500 ring-sky-500', 'hover:text-slate-600', 'disabled:text-slate-400'],
-      dark: ['text-white ring-sky-500', 'hover:text-opacity-90', 'disabled:text-opacity-75'],
-      primary: ['text-sky-500 ring-sky-500', 'hover:text-sky-600'],
-      danger: ['text-red-500 ring-red-500', 'hover:text-red-600'],
+      normal: [
+        'text-slate-500 ring-sky-500',
+        'hover:text-slate-600',
+        'active:text-slate-600',
+        'focus:text-slate-600',
+        'disabled:text-slate-400',
+      ],
+      dark: [
+        'text-white ring-sky-500',
+        'hover:text-opacity-90',
+        'active:text-opacity-90',
+        'focus:text-opacity-90',
+        'disabled:text-opacity-75',
+      ],
+      primary: [
+        'text-sky-500 ring-sky-500',
+        'hover:text-sky-600',
+        'active:text-sky-600',
+        'focus:text-sky-600',
+      ],
+      danger: [
+        'text-red-500 ring-red-500',
+        'hover:text-red-600',
+        'active:text-red-600',
+        'focus:text-red-600',
+      ],
     },
     loading: {
       true: ['cursor-progress'],

@@ -1,4 +1,4 @@
-import { DragEventHandler, useCallback, useState, useRef } from 'react';
+import { DragEventHandler, useCallback, useState, useRef, useEffect } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -26,8 +26,8 @@ interface CanvasProps {
 }
 
 export function Canvas({ database }: CanvasProps) {
-  const nodes: Node<TableProps>[] = database.tables;
-  const edges: Edge[] = [];
+  const defaultNodes: Node<TableProps>[] = database.tables;
+  const defaultEdges: Edge[] = [];
 
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 
@@ -85,8 +85,8 @@ export function Canvas({ database }: CanvasProps) {
     <ReactFlowProvider>
       <div className="h-screen w-full" ref={reactFlowWrapper}>
         <ReactFlow
-          defaultNodes={nodes}
-          defaultEdges={edges}
+          defaultNodes={defaultNodes}
+          defaultEdges={defaultEdges}
           nodeTypes={nodeTypes}
           onDragOver={onDragOver}
           onDrop={onDrop}

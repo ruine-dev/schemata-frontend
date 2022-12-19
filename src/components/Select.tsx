@@ -1,7 +1,24 @@
 import { clsx } from '@/utils/clsx';
-import { forwardRef, InputHTMLAttributes, Ref, SelectHTMLAttributes } from 'react';
+import { cva, VariantProps } from 'class-variance-authority';
+import { forwardRef, Ref, SelectHTMLAttributes } from 'react';
 
-interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'name'> {
+const selectClass = cva(
+  [
+    'form-select w-full rounded-xl border-slate-400 shadow-sm',
+    'focus:border-sky-500 focus:ring-sky-500',
+    'disabled:cursor-not-allowed disabled:bg-slate-100',
+  ],
+  {
+    variants: {
+      size: {
+        small: 'px-1.5 py-1',
+        default: '',
+      },
+    },
+  },
+);
+
+interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'name' | 'size'> {
   name: string;
   label: string;
   options: {
@@ -10,10 +27,21 @@ interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'nam
   }[];
   placeholder?: string;
   srOnlyLabel?: boolean;
+  size?: VariantProps<typeof selectClass>['size'];
 }
 
 function SelectComponent(
-  { name, label, options, placeholder, srOnlyLabel, id, className, ...props }: SelectProps,
+  {
+    name,
+    label,
+    options,
+    placeholder,
+    srOnlyLabel,
+    size = 'default',
+    id,
+    className,
+    ...props
+  }: SelectProps,
   ref: Ref<HTMLSelectElement>,
 ) {
   const elementId = id ?? name;
@@ -26,11 +54,7 @@ function SelectComponent(
       <select
         name={name}
         id={elementId}
-        className={clsx(
-          'form-select w-full rounded-xl border-slate-400 shadow-sm',
-          'focus:border-sky-500 focus:ring-sky-500',
-          'disabled:cursor-not-allowed disabled:bg-slate-100',
-        )}
+        className={selectClass({ size })}
         defaultValue=""
         {...props}
         ref={ref}
