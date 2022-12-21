@@ -8,8 +8,8 @@ interface TooltipProps {
 
 export function Tooltip({ text, children }: TooltipProps) {
   return (
-    <RadixTooltip.Provider delayDuration={0}>
-      <RadixTooltip.Root>
+    <RadixTooltip.Provider>
+      <RadixTooltip.Root delayDuration={0} disableHoverableContent>
         <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
         <RadixTooltip.Portal>
           <RadixTooltip.Content className="rounded-md bg-black/70 py-1 px-2 text-sm text-white backdrop-blur-lg">

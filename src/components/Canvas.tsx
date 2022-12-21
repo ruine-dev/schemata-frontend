@@ -91,12 +91,6 @@ export function Canvas({ database }: CanvasProps) {
           onDragOver={onDragOver}
           onDrop={onDrop}
           onInit={setReactFlowInstance}
-          onKeyDown={(e) => {
-            if (e.key === 'Delete') {
-              deleteSelectedNodes();
-            }
-          }}
-          elementsSelectable
         >
           <Panel position="top-left">
             <DatabasePropsPanel database={database} />

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Pencil, Trash } from 'phosphor-react';
+import { Check, Pencil, Trash } from 'phosphor-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TableWithIdProps, TableWithIdSchema } from '@/schemas/table';
@@ -52,7 +52,6 @@ export function TableHeader({ table, selected }: TableHeaderProps) {
   useEffect(() => {
     if (table.name === '') {
       setIsRenaming(true);
-      setTimeout(() => setFocus('name'), 0);
     }
   }, []);
 
@@ -69,7 +68,7 @@ export function TableHeader({ table, selected }: TableHeaderProps) {
       ref={nodeRef}
       tabIndex={0}
       onKeyDown={(e) => {
-        if (!isRenaming) {
+        if (!isRenaming && e.target === e.currentTarget) {
           if (e.key === 'e') {
             e.preventDefault();
             e.stopPropagation();
@@ -85,34 +84,39 @@ export function TableHeader({ table, selected }: TableHeaderProps) {
     >
       {isRenaming ? (
         <FocusTrap>
-          <form onSubmit={onSubmit} className="flex items-center justify-between">
+          <form
+            onSubmit={onSubmit}
+            className="flex items-center justify-between"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                onSubmit();
+              }
+            }}
+          >
             <Textbox
               {...register('name', {
                 setValueAs(value: string) {
                   return value.trim();
-                },
-                onBlur() {
-                  onSubmit();
                 },
               })}
               label="Name"
               size="small"
               srOnlyLabel
               disabled={isSubmitting}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onSubmit();
-                }
-              }}
               required
               autoFocus
               className="nodrag"
             />
-            <button type="submit" className="sr-only">
-              Save
-            </button>
+            <IconButton
+              icon={Check}
+              iconProps={{ weight: 'bold' }}
+              severity="dark"
+              label="Save"
+              type="submit"
+              className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
+            />
           </form>
         </FocusTrap>
       ) : (
