@@ -13,10 +13,9 @@ import { Textbox } from './Textbox';
 
 interface TableHeaderProps {
   table: TableWithIdProps;
-  selected?: boolean;
 }
 
-export function TableHeader({ table, selected }: TableHeaderProps) {
+export function TableHeader({ table }: TableHeaderProps) {
   const updateTable = useUpdateTable();
   const deleteTable = useDeleteTable();
 
@@ -80,7 +79,10 @@ export function TableHeader({ table, selected }: TableHeaderProps) {
           }
         }
       }}
-      className="group rounded-t-xl bg-sky-500 px-3 pb-1.5 pt-2 font-medium outline-none ring-sky-500 ring-offset-2 focus:ring-2"
+      className={clsx(
+        'group rounded-t-xl bg-sky-500 px-3 pb-1.5 pt-2 font-medium outline-none ring-sky-500 ring-offset-2',
+        'focus:ring-2',
+      )}
     >
       {isRenaming ? (
         <FocusTrap>
@@ -128,10 +130,6 @@ export function TableHeader({ table, selected }: TableHeaderProps) {
               'group-hover:opacity-100',
               'group-focus:opacity-100',
               'focus-within:opacity-100',
-              {
-                'opacity-0': !selected,
-                'opacity-100': selected,
-              },
             )}
           >
             <IconButton

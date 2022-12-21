@@ -7,11 +7,10 @@ import { TableHeader } from './TableHeader';
 import { useAddTableColumn } from '@/flow-hooks/useAddTableColumn';
 
 type TableNodeProps = Pick<BaseTableNodeProps, 'id'> & {
-  selected?: boolean;
   data: BaseTableNodeProps['data'];
 };
 
-export function TableNode({ id, data: table, selected }: TableNodeProps) {
+export function TableNode({ id, data: table }: TableNodeProps) {
   const addTableColumn = useAddTableColumn();
   const connectionNodeId = useStore((state) => state.connectionNodeId);
   const connectionHandleId = useStore((state) => state.connectionHandleId);
@@ -24,7 +23,7 @@ export function TableNode({ id, data: table, selected }: TableNodeProps) {
         'min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono text-sm shadow-sm',
       )}
     >
-      <TableHeader table={{ id, ...table }} selected={selected} />
+      <TableHeader table={{ id, ...table }} />
       <ul className="mt-1">
         {table.columns.map((column) => (
           <li key={column.id} className="group relative">
