@@ -4,7 +4,7 @@ import { Table } from 'phosphor-react';
 import { EditorPanelContainer } from './EditorPanelContainer';
 import { Tooltip } from './Tooltip';
 import { emptyTableNodeFactory } from '@/utils/table';
-import { useReactFlow, useViewport } from 'reactflow';
+import { useReactFlow } from 'reactflow';
 import { clsx } from '@/utils/clsx';
 
 export function ToolbarPanel() {

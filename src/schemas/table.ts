@@ -17,7 +17,11 @@ export type TableColumnType = z.infer<typeof TableColumnTypeEnum>;
 
 export const TableColumnSchema = z.object({
   id: z.string().uuid(),
-  name: z.string(),
+  name: z
+    .string()
+    .trim()
+    .max(128, { message: 'Maximum length is 128 characters' })
+    .regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/, { message: 'Please enter valid column name' }),
   type: TableColumnTypeEnum,
   isPrimaryKey: z.boolean(),
 });

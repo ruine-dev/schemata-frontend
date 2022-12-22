@@ -101,7 +101,7 @@ export function Canvas({ database }: CanvasProps) {
           <Panel position="bottom-center">
             <ToolbarPanel />
           </Panel>
-          <Background />
+          <Background className="bg-white" />
           <Controls />
           <MiniMap />
         </ReactFlow>

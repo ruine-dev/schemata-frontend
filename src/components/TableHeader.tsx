@@ -125,7 +125,7 @@ export function TableHeader({ table }: TableHeaderProps) {
           <div className="flex items-center gap-x-2 text-white">{table.name}</div>
           <div
             className={clsx(
-              'flex items-center gap-x-1',
+              'flex items-center gap-x-1 opacity-0',
               'group-hover:opacity-100',
               'group-focus:opacity-100',
               'focus-within:opacity-100',

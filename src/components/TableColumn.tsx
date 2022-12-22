@@ -49,8 +49,6 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
   });
 
   const onSubmit = handleSubmit((data, event) => {
-    event?.preventDefault();
-
     let name = data.name;
 
     if (column.name === '' && name === '') {
@@ -158,7 +156,6 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
               size="small"
               disabled={isSubmitting}
               autoFocus
-              required
               className="w-32"
             />
             <Select

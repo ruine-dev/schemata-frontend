@@ -86,7 +86,7 @@ export function TableNode({ id, data: table }: TableNodeProps) {
           })
         }
         className={clsx(
-          'nodrag flex w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
+          'noimage nodrag flex w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
           'hover:bg-sky-50 hover:text-sky-600',
           'focus:relative focus:z-10 focus:ring-2',
           'enabled:active:bg-sky-50 enabled:active:text-sky-600',
