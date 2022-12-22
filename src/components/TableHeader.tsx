@@ -107,7 +107,6 @@ export function TableHeader({ table }: TableHeaderProps) {
               size="small"
               srOnlyLabel
               disabled={isSubmitting}
-              required
               autoFocus
               className="nodrag"
             />
