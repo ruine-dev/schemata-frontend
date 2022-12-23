@@ -2,7 +2,7 @@ import { Check, Key, Pencil, Trash } from 'phosphor-react';
 import { KeyboardEventHandler, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import FocusTrap from 'focus-trap-react';
+import FocusLock from 'react-focus-lock';
 import { TableColumnProps, TableColumnTypeEnum } from '@/schemas/table';
 import { IconButton } from './IconButton';
 import { clsx } from '@/utils/clsx';
@@ -48,16 +48,8 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
     defaultValues: { ...column, tableId },
   });
 
-  const onSubmit = handleSubmit((data, event) => {
-    let name = data.name;
-
-    if (column.name === '' && name === '') {
-      name = 'untitled';
-    } else if (column.name !== '' && name === '') {
-      name = column.name;
-    }
-
-    updateTableColumn({ ...data, name });
+  const onSubmit = handleSubmit((data) => {
+    updateTableColumn(data);
     setIsEditing(false);
 
     queueMicrotask(() => {
@@ -80,6 +72,7 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
     if (e.key === 'Escape') {
       e.preventDefault();
       e.stopPropagation();
+
       onSubmit(e);
     }
   };
@@ -102,6 +95,8 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
               tableId,
             });
           } else if (e.shiftKey && e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
             addTableColumn({
               name: '',
               type: 'varchar',
@@ -119,7 +114,7 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
       )}
     >
       {isEditing ? (
-        <FocusTrap>
+        <FocusLock>
           <form
             onSubmit={onSubmit}
             className="flex items-center gap-x-2"
@@ -176,7 +171,7 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
               type="submit"
             />
           </form>
-        </FocusTrap>
+        </FocusLock>
       ) : (
         <>
           <span className="h-4 w-4">

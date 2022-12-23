@@ -18,6 +18,8 @@ import { TableNode } from './TableNode';
 import { DatabasePropsPanel } from './DatabasePropsPanel';
 import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
+import { createTableWithInstance } from '@/flow-hooks/useCreateTable';
+import { emptyTableNodeFactory } from '@/utils/table';
 
 const nodeTypes: NodeTypes = { table: TableNode };
 
@@ -70,16 +72,39 @@ export function Canvas({ database }: CanvasProps) {
     [reactFlowInstance],
   );
 
-  const deleteSelectedNodes = useCallback(() => {
-    if (!reactFlowInstance) {
-      return;
-    }
+  const createTable = createTableWithInstance(reactFlowInstance);
 
-    const nodes = reactFlowInstance.getNodes();
-    const selectedNodes = nodes.filter((node) => node.selected);
+  useEffect(() => {
+    const handleCreateTableShortcut = (e: KeyboardEvent) => {
+      if (document.activeElement !== document.body) {
+        return;
+      }
 
-    reactFlowInstance.deleteElements({ nodes: selectedNodes });
-  }, [reactFlowInstance]);
+      if (e.key === 't') {
+        const rect = document.body.getBoundingClientRect();
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const position = reactFlowInstance?.project({
+          x: rect.width / 2,
+          y: rect.height / 2,
+        });
+
+        createTable(
+          emptyTableNodeFactory({
+            position,
+          }),
+        );
+      }
+    };
+
+    document.body.addEventListener('keydown', handleCreateTableShortcut);
+
+    return () => {
+      document.body.removeEventListener('keydown', handleCreateTableShortcut);
+    };
+  }, [createTable]);
 
   return (
     <ReactFlowProvider>

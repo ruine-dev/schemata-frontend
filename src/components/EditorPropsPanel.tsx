@@ -2,6 +2,7 @@ import { useSaveDatabase } from '@/mutations/useSaveDatabase';
 import { DatabaseProps } from '@/schemas/database';
 import { toPng } from 'html-to-image';
 import { Export, ShareNetwork } from 'phosphor-react';
+import { useReactFlow } from 'reactflow';
 import { EditorPanelContainer } from './EditorPanelContainer';
 import { IconButton } from './IconButton';
 
@@ -20,7 +21,11 @@ function downloadImage(dataUrl: string) {
 }
 
 export function EditorPropsPanel({ database }: EditorPropsPanelProps) {
+  const reactFlowInstance = useReactFlow();
+
   const exportToImage = () => {
+    reactFlowInstance.fitView();
+
     const canvas = document.querySelector('.react-flow');
 
     if (!canvas || !(canvas instanceof HTMLElement)) {

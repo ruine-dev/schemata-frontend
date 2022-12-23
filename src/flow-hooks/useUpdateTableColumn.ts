@@ -12,7 +12,7 @@ export function useUpdateTableColumn() {
   const reactFlowInstance = useReactFlow();
 
   return (columnPayload: UpdateTableColumnSchemaType) => {
-    const { tableId, ...newColumn } = columnPayload;
+    const { tableId, name, ...newColumn } = columnPayload;
 
     reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) => {
       return currentNodes.map((node) => {
@@ -23,7 +23,10 @@ export function useUpdateTableColumn() {
               ...node.data,
               columns: node.data.columns.map((column) => {
                 if (column.id === newColumn.id) {
-                  return newColumn;
+                  return {
+                    name: name || 'untitled',
+                    ...newColumn,
+                  };
                 }
                 return column;
               }),

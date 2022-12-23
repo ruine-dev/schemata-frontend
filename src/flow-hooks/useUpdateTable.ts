@@ -5,14 +5,17 @@ export function useUpdateTable() {
   const reactFlowInstance = useReactFlow();
 
   return (newTable: TableWithIdProps) => {
-    const { id, ...tablePayload } = newTable;
+    const { id, name, ...tablePayload } = newTable;
 
     reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) =>
       currentNodes.map((node) => {
         if (node.id === id) {
           return {
             ...node,
-            data: tablePayload,
+            data: {
+              name: name || 'untitled',
+              ...tablePayload,
+            },
           };
         }
 

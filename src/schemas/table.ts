@@ -21,7 +21,7 @@ export const TableColumnSchema = z.object({
     .string()
     .trim()
     .max(128, { message: 'Maximum length is 128 characters' })
-    .regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/, { message: 'Please enter valid column name' }),
+    .regex(/^$|^[a-zA-Z_][a-zA-Z0-9_]*$/, { message: 'Please enter valid column name' }),
   type: TableColumnTypeEnum,
   isPrimaryKey: z.boolean(),
 });
@@ -29,7 +29,7 @@ export const TableColumnSchema = z.object({
 export type TableColumnProps = z.infer<typeof TableColumnSchema>;
 
 export const TableSchema = z.object({
-  name: z.string(),
+  name: z.string().trim().max(64, { message: 'Maximum length is 64 characters' }),
   columns: TableColumnSchema.array(),
 });
 

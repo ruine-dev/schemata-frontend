@@ -4,12 +4,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TableWithIdProps, TableWithIdSchema } from '@/schemas/table';
 import { useState } from 'react';
-import FocusTrap from 'focus-trap-react';
+import FocusLock from 'react-focus-lock';
 import { IconButton } from './IconButton';
 import { useUpdateTable } from '@/flow-hooks/useUpdateTable';
 import { useDeleteTable } from '@/flow-hooks/useDeleteTable';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
+import { useAddTableColumn } from '@/flow-hooks/useAddTableColumn';
 
 interface TableHeaderProps {
   table: TableWithIdProps;
@@ -18,14 +19,14 @@ interface TableHeaderProps {
 export function TableHeader({ table }: TableHeaderProps) {
   const updateTable = useUpdateTable();
   const deleteTable = useDeleteTable();
+  const addTableColumn = useAddTableColumn();
 
-  const nodeRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const {
     register,
     handleSubmit,
     reset,
-    setFocus,
     formState: { isSubmitting },
   } = useForm<TableWithIdProps>({
     resolver: zodResolver(TableWithIdSchema),
@@ -35,16 +36,10 @@ export function TableHeader({ table }: TableHeaderProps) {
   const [isRenaming, setIsRenaming] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
-    let name = data.name;
-
-    if (table.name === '' && name === '') {
-      name = 'untitled';
-    } else if (table.name !== '' && name === '') {
-      name = table.name;
-    }
-
-    updateTable({ ...data, name });
+    updateTable(data);
     setIsRenaming(false);
+
+    queueMicrotask(() => containerRef.current?.focus());
   });
 
   // Automatically focus after creation
@@ -64,7 +59,7 @@ export function TableHeader({ table }: TableHeaderProps) {
 
   return (
     <div
-      ref={nodeRef}
+      ref={containerRef}
       tabIndex={0}
       onKeyDown={(e) => {
         if (!isRenaming && e.target === e.currentTarget) {
@@ -76,6 +71,13 @@ export function TableHeader({ table }: TableHeaderProps) {
             e.preventDefault();
             e.stopPropagation();
             deleteTable(table.id);
+          } else if (e.shiftKey && e.key === 'Enter') {
+            addTableColumn({
+              name: '',
+              type: 'varchar',
+              isPrimaryKey: false,
+              tableId: table.id,
+            });
           }
         }
       }}
@@ -85,7 +87,7 @@ export function TableHeader({ table }: TableHeaderProps) {
       )}
     >
       {isRenaming ? (
-        <FocusTrap>
+        <FocusLock>
           <form
             onSubmit={onSubmit}
             className="flex items-center justify-between"
@@ -119,7 +121,7 @@ export function TableHeader({ table }: TableHeaderProps) {
               className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
             />
           </form>
-        </FocusTrap>
+        </FocusLock>
       ) : (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-x-2 text-white">{table.name}</div>

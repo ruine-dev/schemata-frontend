@@ -17,11 +17,11 @@ export function ToolbarPanel() {
   };
 
   const handleCreateTable = (event: MouseEvent<HTMLButtonElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
+    const rect = document.body.getBoundingClientRect();
 
     const position = project({
-      x: rect.x - 80,
-      y: rect.y - 500,
+      x: rect.width / 2,
+      y: rect.height / 2,
     });
 
     createTable(
