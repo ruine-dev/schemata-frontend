@@ -117,8 +117,9 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
         <FocusLock>
           <form
             onSubmit={onSubmit}
-            className="flex items-center gap-x-2"
             onKeyDown={handleKeyEscape}
+            autoComplete="off"
+            className="flex items-center gap-x-2"
           >
             <Controller
               control={control}

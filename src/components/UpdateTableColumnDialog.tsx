@@ -47,7 +47,7 @@ export function UpdateTableColumnDialog({
 
   return (
     <BaseDialog title={`Edit Field ${column.name}`} trigger={trigger} onClose={() => reset()}>
-      <form onSubmit={onSubmit} className="mt-3 flex flex-col gap-y-3">
+      <form onSubmit={onSubmit} autoComplete="off" className="mt-3 flex flex-col gap-y-3">
         <Textbox
           {...register('name')}
           label="Name"

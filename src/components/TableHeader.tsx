@@ -90,7 +90,6 @@ export function TableHeader({ table }: TableHeaderProps) {
         <FocusLock>
           <form
             onSubmit={onSubmit}
-            className="flex items-center justify-between"
             onKeyDown={(e) => {
               if (e.key === 'Escape') {
                 e.preventDefault();
@@ -98,6 +97,8 @@ export function TableHeader({ table }: TableHeaderProps) {
                 onSubmit();
               }
             }}
+            autoComplete="off"
+            className="flex items-center justify-between"
           >
             <Textbox
               {...register('name', {

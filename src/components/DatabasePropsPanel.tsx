@@ -46,7 +46,7 @@ export function DatabasePropsPanel({ database }: DatabasePropsPanelProps) {
   return (
     <EditorPanelContainer>
       {isRenaming ? (
-        <form onSubmit={onSubmit} className="flex items-center">
+        <form onSubmit={onSubmit} autoComplete="off" className="flex items-center">
           <input
             {...register('name')}
             type="text"
