@@ -1,6 +1,5 @@
 import { Node, useReactFlow } from 'reactflow';
 import { z } from 'zod';
-import { v4 as uuidv4 } from 'uuid';
 import { TableColumnSchema, TableProps } from '@/schemas/table';
 
 export const AddTableColumnSchema = TableColumnSchema.omit({ id: true }).extend({
@@ -24,7 +23,7 @@ export function useAddTableColumn() {
               columns: [
                 ...node.data.columns,
                 {
-                  id: uuidv4(),
+                  id: crypto.randomUUID(),
                   ...newColumn,
                 },
               ],

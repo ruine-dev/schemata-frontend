@@ -1,11 +1,8 @@
 import { Canvas } from '@/components/Canvas';
-import { useDatabaseQuery } from '@/queries/useDatabaseQuery';
-import { useParams } from '@tanstack/react-router';
+import { useLocalDatabaseQuery } from '@/queries/useDatabaseQuery';
 
 export function Editor() {
-  const { databaseId } = useParams();
-
-  const { data: database, isLoading, isSuccess } = useDatabaseQuery(databaseId);
+  const { data: database, isLoading, isSuccess } = useLocalDatabaseQuery();
 
   if (isLoading) {
     return 'Loading';
@@ -14,4 +11,6 @@ export function Editor() {
   if (isSuccess) {
     return <Canvas database={database} />;
   }
+
+  throw Error('Failed to load database');
 }

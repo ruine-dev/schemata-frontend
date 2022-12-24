@@ -11,8 +11,7 @@ import ReactFlow, {
   ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { v4 as uuidv4 } from 'uuid';
-import { TableProps } from '@/schemas/table';
+import { TableNodeSchema, TableProps } from '@/schemas/table';
 import { DatabaseProps } from '@/schemas/database';
 import { TableNode } from './TableNode';
 import { DatabasePropsPanel } from './DatabasePropsPanel';
@@ -20,6 +19,7 @@ import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
 import { createTableWithInstance } from '@/flow-hooks/useCreateTable';
 import { emptyTableNodeFactory } from '@/utils/table';
+import { useSaveDatabaseLocal } from '@/mutations/useSaveDatabaseLocal';
 
 const nodeTypes: NodeTypes = { table: TableNode };
 
@@ -28,7 +28,10 @@ interface CanvasProps {
 }
 
 export function Canvas({ database }: CanvasProps) {
-  const defaultNodes: Node<TableProps>[] = database.tables;
+  const defaultNodes: Node<TableProps>[] = database.tables.map((table) => ({
+    ...table,
+    type: 'table',
+  }));
   const defaultEdges: Edge[] = [];
 
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
@@ -61,7 +64,7 @@ export function Canvas({ database }: CanvasProps) {
       });
 
       const newNode: Node<TableProps> = {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         type,
         position,
         data: { name: 'Untitled', columns: [] },
@@ -106,6 +109,8 @@ export function Canvas({ database }: CanvasProps) {
     };
   }, [createTable]);
 
+  const { mutate: saveDatabaseLocal } = useSaveDatabaseLocal();
+
   return (
     <ReactFlowProvider>
       <div className="h-screen w-full" ref={reactFlowWrapper}>
@@ -116,6 +121,14 @@ export function Canvas({ database }: CanvasProps) {
           onDragOver={onDragOver}
           onDrop={onDrop}
           onInit={setReactFlowInstance}
+          onNodesChange={() => {
+            const tableNodes = TableNodeSchema.array().safeParse(reactFlowInstance?.getNodes());
+
+            saveDatabaseLocal((currentDatabase) => ({
+              ...currentDatabase,
+              tables: tableNodes.success ? tableNodes.data : [],
+            }));
+          }}
         >
           <Panel position="top-left">
             <DatabasePropsPanel database={database} />

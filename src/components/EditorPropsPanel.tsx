@@ -1,8 +1,11 @@
-import { useSaveDatabase } from '@/mutations/useSaveDatabase';
-import { DatabaseProps } from '@/schemas/database';
 import { toPng } from 'html-to-image';
 import { Export, ShareNetwork } from 'phosphor-react';
+import { toast } from 'react-hot-toast';
 import { useReactFlow } from 'reactflow';
+import { useCopyToClipboard } from 'usehooks-ts';
+import { useRouter } from '@tanstack/react-router';
+import { DatabaseProps } from '@/schemas/database';
+import { databaseToBase64Url } from '@/utils/database';
 import { EditorPanelContainer } from './EditorPanelContainer';
 import { IconButton } from './IconButton';
 
@@ -62,19 +65,22 @@ interface ShareLinkButtonProps {
 }
 
 function ShareLinkButton({ database }: ShareLinkButtonProps) {
-  const { mutateAsync: saveDatabase, isLoading } = useSaveDatabase();
+  const [, copy] = useCopyToClipboard();
+  const router = useRouter();
 
-  const handleSaveDatabase = async () => {
-    await saveDatabase(database);
+  const encodedDatabase = databaseToBase64Url(database);
+
+  const copyLinkToClipboard = () => {
+    const url = `${window.location.origin}/?schema=${encodedDatabase}`;
+
+    copy(url);
+
+    router.navigate({ params: '', to: '/', search: { schema: encodedDatabase }, replace: true });
+
+    toast.success('URL copied to clipboard');
   };
 
   return (
-    <IconButton
-      label="Share link"
-      icon={ShareNetwork}
-      onClick={handleSaveDatabase}
-      loading={isLoading}
-      size="large"
-    />
+    <IconButton label="Share link" icon={ShareNetwork} onClick={copyLinkToClipboard} size="large" />
   );
 }

@@ -17,8 +17,7 @@ export function DatabasePropsPanel({ database }: DatabasePropsPanelProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, isSubmitting },
-    setFocus,
+    formState: { isDirty, isSubmitting },
     reset,
   } = useForm<DatabaseProps>({
     resolver: zodResolver(DatabaseSchema),

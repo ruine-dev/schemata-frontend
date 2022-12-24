@@ -45,8 +45,8 @@ export const TableNodeSchema = z.object({
   id: z.string().uuid(),
   data: TableSchema,
   position: z.object({
-    x: z.number().int(),
-    y: z.number().int(),
+    x: z.number(),
+    y: z.number(),
   }),
 });
 

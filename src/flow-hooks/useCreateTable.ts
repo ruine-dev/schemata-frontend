@@ -4,8 +4,10 @@ import { Node, ReactFlowInstance, useReactFlow } from 'reactflow';
 export function useCreateTable() {
   const reactFlowInstance = useReactFlow();
 
-  return (newTable: Node<TableProps>) => {
-    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) => [...currentNodes, newTable]);
+  return (newTableNode: Node<TableProps>) => {
+    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) =>
+      currentNodes.concat(newTableNode),
+    );
   };
 }
 

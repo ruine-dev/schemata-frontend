@@ -1,10 +1,9 @@
 import { TableProps } from '@/schemas/table';
 import { Node } from 'reactflow';
-import { v4 as uuidv4 } from 'uuid';
 
 export function emptyTableNodeFactory(overrides?: Partial<Node<TableProps>>): Node<TableProps> {
   return {
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     type: 'table',
     data: {
       name: '',
