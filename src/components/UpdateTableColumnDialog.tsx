@@ -1,21 +1,22 @@
+import { useUpdateTableColumn } from '@/flow-hooks/useUpdateTableColumn';
 import {
-  UpdateTableColumnSchema,
-  UpdateTableColumnSchemaType,
-  useUpdateTableColumn,
-} from '@/flow-hooks/useUpdateTableColumn';
-import { TableColumnTypeEnum, TableWithIdProps } from '@/schemas/table';
+  ColumnType,
+  ColumnTypeEnum,
+  TableType,
+  UpdateColumnSchema,
+  UpdateColumnType,
+} from '@/schemas/base';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { BaseDialog } from './BaseDialog';
 import { Button } from './Button';
-import { Checkbox } from './Checkbox';
 import { Select } from './Select';
 import { Textbox } from './Textbox';
 
 interface UpdateTableColumnDialogProps {
-  tableId: TableWithIdProps['id'];
-  column: TableWithIdProps['columns'][number];
+  tableId: TableType['id'];
+  column: ColumnType;
   trigger: ReactNode;
 }
 
@@ -31,8 +32,8 @@ export function UpdateTableColumnDialog({
     handleSubmit,
     reset,
     formState: { isSubmitting, isDirty },
-  } = useForm<UpdateTableColumnSchemaType>({
-    resolver: zodResolver(UpdateTableColumnSchema),
+  } = useForm<UpdateColumnType>({
+    resolver: zodResolver(UpdateColumnSchema),
     defaultValues: { ...column, tableId },
   });
 
@@ -59,18 +60,13 @@ export function UpdateTableColumnDialog({
         <Select
           {...register('type')}
           label="Type"
-          options={TableColumnTypeEnum.options.map((type) => ({
+          options={ColumnTypeEnum.options.map((type) => ({
             label: type,
             value: type,
           }))}
           placeholder="Choose type"
           disabled={isSubmitting}
           required
-        />
-        <Checkbox
-          {...register('isPrimaryKey')}
-          defaultChecked={column.isPrimaryKey}
-          label="Primary key"
         />
         <Button type="submit" loading={isSubmitting} disabled={!isDirty} className="ml-auto">
           Update

@@ -3,9 +3,9 @@ import { useCreateTable } from '@/flow-hooks/useCreateTable';
 import { Table } from 'phosphor-react';
 import { EditorPanelContainer } from './EditorPanelContainer';
 import { Tooltip } from './Tooltip';
-import { emptyTableNodeFactory } from '@/utils/table';
 import { useReactFlow } from 'reactflow';
 import { clsx } from '@/utils/clsx';
+import { emptyTableNode } from '@/utils/reactflow';
 
 export function ToolbarPanel() {
   const { project } = useReactFlow();
@@ -25,7 +25,7 @@ export function ToolbarPanel() {
     });
 
     createTable(
-      emptyTableNodeFactory({
+      emptyTableNode({
         position,
       }),
     );

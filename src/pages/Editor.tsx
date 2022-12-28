@@ -1,15 +1,15 @@
 import { Canvas } from '@/components/Canvas';
-import { useLocalDatabaseQuery } from '@/queries/useDatabaseQuery';
+import { useLocalSchemaQuery } from '@/queries/useSchemaQuery';
 
 export function Editor() {
-  const { data: database, isLoading, isSuccess } = useLocalDatabaseQuery();
+  const { data: schema, isLoading, isSuccess } = useLocalSchemaQuery();
 
   if (isLoading) {
     return 'Loading';
   }
 
   if (isSuccess) {
-    return <Canvas database={database} />;
+    return <Canvas schema={schema} />;
   }
 
   throw Error('Failed to load database');

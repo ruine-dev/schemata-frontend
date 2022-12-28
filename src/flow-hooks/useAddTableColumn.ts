@@ -1,19 +1,13 @@
-import { Node, useReactFlow } from 'reactflow';
-import { z } from 'zod';
-import { TableColumnSchema, TableProps } from '@/schemas/table';
-
-export const AddTableColumnSchema = TableColumnSchema.omit({ id: true }).extend({
-  tableId: z.string(),
-});
-export type AddTableColumnSchemaType = z.infer<typeof AddTableColumnSchema>;
+import { CreateColumnType, TableNodeType, TableType } from '@/schemas/base';
+import { useReactFlow } from 'reactflow';
 
 export function useAddTableColumn() {
   const reactFlowInstance = useReactFlow();
 
-  return (columnPayload: AddTableColumnSchemaType) => {
+  return (columnPayload: CreateColumnType) => {
     const { tableId, ...newColumn } = columnPayload;
 
-    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) => {
+    reactFlowInstance.setNodes((currentNodes: TableNodeType[]) => {
       return currentNodes.map((node) => {
         if (node.id === tableId) {
           return {

@@ -3,6 +3,7 @@ import ReactFlow, {
   Background,
   Controls,
   Edge,
+  EdgeTypes,
   MiniMap,
   Node,
   NodeTypes,
@@ -11,32 +12,40 @@ import ReactFlow, {
   ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { TableNodeSchema, TableProps } from '@/schemas/table';
-import { DatabaseProps } from '@/schemas/database';
 import { TableNode } from './TableNode';
-import { DatabasePropsPanel } from './DatabasePropsPanel';
+import { GeneralPropsPanel } from './GeneralPropsPanel';
 import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
 import { createTableWithInstance } from '@/flow-hooks/useCreateTable';
-import { emptyTableNodeFactory } from '@/utils/table';
-import { useSaveDatabaseLocal } from '@/mutations/useSaveDatabaseLocal';
+import { useSaveLocalSchema } from '@/mutations/useSaveLocalSchema';
+import { SimpleFloatingEdge } from './ReactFlow/SimpleFloatingEdge';
+import {
+  PositionType,
+  SchemaType,
+  TableNodeType,
+  TableType,
+  transformSchemaToReactFlowData,
+} from '@/schemas/base';
+import { emptyTableNode, tableNodeToPosition, tableNodeToTable } from '@/utils/reactflow';
 
-const nodeTypes: NodeTypes = { table: TableNode };
+const nodeTypes: NodeTypes = { table: TableNode } as unknown as NodeTypes;
+
+const edgeTypes: EdgeTypes = {
+  floating: SimpleFloatingEdge,
+};
 
 interface CanvasProps {
-  database: DatabaseProps;
+  schema: SchemaType;
 }
 
-export function Canvas({ database }: CanvasProps) {
-  const defaultNodes: Node<TableProps>[] = database.tables.map((table) => ({
-    ...table,
-    type: 'table',
-  }));
-  const defaultEdges: Edge[] = [];
+export function Canvas({ schema }: CanvasProps) {
+  const { nodes: defaultNodes, edges: defaultEdges } = transformSchemaToReactFlowData.parse(schema);
 
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 
-  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<
+    Omit<TableType, 'id'>
+  > | null>(null);
 
   const onDragOver: DragEventHandler<HTMLDivElement> = useCallback((event) => {
     event.preventDefault();
@@ -63,12 +72,9 @@ export function Canvas({ database }: CanvasProps) {
         y: event.clientY - reactFlowBounds.top,
       });
 
-      const newNode: Node<TableProps> = {
-        id: crypto.randomUUID(),
-        type,
+      const newNode: TableNodeType = emptyTableNode({
         position,
-        data: { name: 'Untitled', columns: [] },
-      };
+      });
 
       reactFlowInstance.addNodes(newNode);
     },
@@ -95,7 +101,7 @@ export function Canvas({ database }: CanvasProps) {
         });
 
         createTable(
-          emptyTableNodeFactory({
+          emptyTableNode({
             position,
           }),
         );
@@ -109,7 +115,7 @@ export function Canvas({ database }: CanvasProps) {
     };
   }, [createTable]);
 
-  const { mutate: saveDatabaseLocal } = useSaveDatabaseLocal();
+  const { mutate: saveLocalSchema } = useSaveLocalSchema();
 
   return (
     <ReactFlowProvider>
@@ -118,23 +124,43 @@ export function Canvas({ database }: CanvasProps) {
           defaultNodes={defaultNodes}
           defaultEdges={defaultEdges}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           onDragOver={onDragOver}
           onDrop={onDrop}
           onInit={setReactFlowInstance}
+          defaultEdgeOptions={{ type: 'floating' }}
           onNodesChange={() => {
-            const tableNodes = TableNodeSchema.array().safeParse(reactFlowInstance?.getNodes());
+            const tables: TableType[] =
+              reactFlowInstance?.getNodes().map((node) => tableNodeToTable(node)) ?? [];
 
-            saveDatabaseLocal((currentDatabase) => ({
+            const positions: PositionType[] =
+              reactFlowInstance?.getNodes().map((node) => tableNodeToPosition(node)) ?? [];
+
+            saveLocalSchema((currentDatabase) => ({
               ...currentDatabase,
-              tables: tableNodes.success ? tableNodes.data : [],
+              tables,
+              positions,
             }));
+          }}
+          onConnect={(connection) => {
+            // const tableRelations = TableRelationSchema.array().safeParse(
+            //   reactFlowInstance?.getEdges().map((edge) => edgeToTableRelation(edge)),
+            // );
+            console.log(connection);
+            // console.log(reactFlowInstance?.getEdges());
+
+            // saveDatabaseLocal((currentDatabase) => ({
+            //   ...currentDatabase,
+            //   relations: tableRelations.success ? tableRelations.data : currentDatabase.relations,
+            // }));
+            return;
           }}
         >
           <Panel position="top-left">
-            <DatabasePropsPanel database={database} />
+            <GeneralPropsPanel schema={schema} />
           </Panel>
           <Panel position="top-right">
-            <EditorPropsPanel database={database} />
+            <EditorPropsPanel schema={schema} />
           </Panel>
           <Panel position="bottom-center">
             <ToolbarPanel />

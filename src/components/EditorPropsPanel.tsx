@@ -4,13 +4,13 @@ import { toast } from 'react-hot-toast';
 import { useReactFlow } from 'reactflow';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { useRouter } from '@tanstack/react-router';
-import { DatabaseProps } from '@/schemas/database';
-import { databaseToBase64Url } from '@/utils/database';
 import { EditorPanelContainer } from './EditorPanelContainer';
 import { IconButton } from './IconButton';
+import { SchemaType } from '@/schemas/base';
+import { schemaToBase64Url } from '@/utils/schema';
 
 interface EditorPropsPanelProps {
-  database: DatabaseProps;
+  schema: SchemaType;
 }
 
 function downloadImage(dataUrl: string) {
@@ -23,7 +23,7 @@ function downloadImage(dataUrl: string) {
   a.remove();
 }
 
-export function EditorPropsPanel({ database }: EditorPropsPanelProps) {
+export function EditorPropsPanel({ schema }: EditorPropsPanelProps) {
   const reactFlowInstance = useReactFlow();
 
   const exportToImage = () => {
@@ -55,20 +55,20 @@ export function EditorPropsPanel({ database }: EditorPropsPanelProps) {
   return (
     <EditorPanelContainer>
       <IconButton label="Export as image" icon={Export} size="large" onClick={exportToImage} />
-      <ShareLinkButton database={database} />
+      <ShareLinkButton schema={schema} />
     </EditorPanelContainer>
   );
 }
 
 interface ShareLinkButtonProps {
-  database: DatabaseProps;
+  schema: SchemaType;
 }
 
-function ShareLinkButton({ database }: ShareLinkButtonProps) {
+function ShareLinkButton({ schema }: ShareLinkButtonProps) {
   const [, copy] = useCopyToClipboard();
   const router = useRouter();
 
-  const encodedDatabase = databaseToBase64Url(database);
+  const encodedDatabase = schemaToBase64Url(schema);
 
   const copyLinkToClipboard = () => {
     const url = `${window.location.origin}/?schema=${encodedDatabase}`;

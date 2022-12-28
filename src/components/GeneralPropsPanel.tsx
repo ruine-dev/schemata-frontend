@@ -2,26 +2,26 @@ import { FloppyDisk, Pencil, X } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DatabaseProps, DatabaseSchema } from '@/schemas/database';
 import { IconButton } from './IconButton';
-import { useSaveDatabaseLocal } from '@/mutations/useSaveDatabaseLocal';
+import { useSaveLocalSchema } from '@/mutations/useSaveLocalSchema';
 import { EditorPanelContainer } from './EditorPanelContainer';
+import { SchemaSchema, SchemaType } from '@/schemas/base';
 
-interface DatabasePropsPanelProps {
-  database?: DatabaseProps;
+interface GeneralPropsPanelProps {
+  schema?: SchemaType;
 }
 
-export function DatabasePropsPanel({ database }: DatabasePropsPanelProps) {
+export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
   const [isRenaming, setIsRenaming] = useState(false);
-  const { mutateAsync: saveDatabaseLocal } = useSaveDatabaseLocal();
+  const { mutateAsync: saveDatabaseLocal } = useSaveLocalSchema();
   const {
     register,
     handleSubmit,
     formState: { isDirty, isSubmitting },
     reset,
-  } = useForm<DatabaseProps>({
-    resolver: zodResolver(DatabaseSchema),
-    defaultValues: database,
+  } = useForm<SchemaType>({
+    resolver: zodResolver(SchemaSchema),
+    defaultValues: schema,
   });
 
   const onSubmit = handleSubmit(async (data) => {
@@ -40,8 +40,8 @@ export function DatabasePropsPanel({ database }: DatabasePropsPanelProps) {
   };
 
   useEffect(() => {
-    reset(database);
-  }, [reset, database]);
+    reset(schema);
+  }, [reset, schema]);
 
   return (
     <EditorPanelContainer>
@@ -76,7 +76,7 @@ export function DatabasePropsPanel({ database }: DatabasePropsPanelProps) {
         </form>
       ) : (
         <>
-          <span className="py-2 px-3 text-slate-800">{database?.name}</span>
+          <span className="py-2 px-3 text-slate-800">{schema?.name}</span>
           <IconButton
             label="Change title"
             icon={Pencil}

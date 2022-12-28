@@ -3,31 +3,42 @@ import { KeyboardEventHandler, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FocusLock from 'react-focus-lock';
-import { TableColumnProps, TableColumnTypeEnum } from '@/schemas/table';
 import { IconButton } from './IconButton';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
-import {
-  UpdateTableColumnSchema,
-  UpdateTableColumnSchemaType,
-  useUpdateTableColumn,
-} from '@/flow-hooks/useUpdateTableColumn';
+import { useUpdateTableColumn } from '@/flow-hooks/useUpdateTableColumn';
 import { Select } from './Select';
 import { useValidateUniqueTableColumn } from '@/flow-hooks/useValidateUniqueTableColumn';
 import { useDeleteTableColumn } from '@/flow-hooks/useDeleteTableColumn';
 import { CustomCheckbox } from './CustomCheckbox';
 import { useAddTableColumn } from '@/flow-hooks/useAddTableColumn';
+import { emptyVarcharColumn } from '@/utils/reactflow';
+import {
+  ColumnType,
+  ColumnTypeEnum,
+  IndexType,
+  RelationType,
+  UpdateColumnSchema,
+  UpdateColumnType,
+} from '@/schemas/base';
 
 type TableColumnFinalProps = {
-  column: TableColumnProps;
+  column: ColumnType;
+  tableIndexes: IndexType[];
+  tableRelations: RelationType[];
   tableId: string;
   hideAction?: boolean;
   className?: string;
 };
 
-export function TableColumn({ column, tableId, hideAction, className }: TableColumnFinalProps) {
-  const isForeignKey = false;
-
+export function TableColumn({
+  column,
+  tableIndexes,
+  tableRelations,
+  tableId,
+  hideAction,
+  className,
+}: TableColumnFinalProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -37,15 +48,22 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
   const addTableColumn = useAddTableColumn();
   const validateUniqueTableColumn = useValidateUniqueTableColumn();
 
+  const isPrimaryKey = !!tableIndexes.find(
+    (index) => index.columns.includes(column.id) && index.type === 'PRIMARY_KEY',
+  );
+
+  const isForeignKey = !!tableRelations.find((relation) => relation.target.columnId === column.id);
+
   const {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     control,
-  } = useForm<UpdateTableColumnSchemaType>({
-    resolver: zodResolver(UpdateTableColumnSchema),
-    defaultValues: { ...column, tableId },
+    watch,
+  } = useForm<UpdateColumnType>({
+    resolver: zodResolver(UpdateColumnSchema),
+    defaultValues: { ...column, isPrimaryKey, tableId },
   });
 
   const onSubmit = handleSubmit((data) => {
@@ -65,7 +83,7 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
   }, []);
 
   useEffect(() => {
-    reset({ ...column, tableId });
+    reset({ ...column, isPrimaryKey, tableId });
   }, [reset, column, tableId]);
 
   const handleKeyEscape: KeyboardEventHandler<HTMLElement> = (e) => {
@@ -97,12 +115,8 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
           } else if (e.shiftKey && e.key === 'Enter') {
             e.preventDefault();
             e.stopPropagation();
-            addTableColumn({
-              name: '',
-              type: 'varchar',
-              isPrimaryKey: false,
-              tableId: tableId,
-            });
+
+            addTableColumn({ ...emptyVarcharColumn(), tableId });
           }
         }
       }}
@@ -157,7 +171,7 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
             <Select
               label="Type"
               {...register('type')}
-              options={TableColumnTypeEnum.options.map((type) => ({ label: type, value: type }))}
+              options={ColumnTypeEnum.options.map((type) => ({ label: type, value: type }))}
               srOnlyLabel
               size="small"
               disabled={isSubmitting}
@@ -176,12 +190,12 @@ export function TableColumn({ column, tableId, hideAction, className }: TableCol
       ) : (
         <>
           <span className="h-4 w-4">
-            {(column.isPrimaryKey || isForeignKey) && (
+            {(isPrimaryKey || isForeignKey) && (
               <Key
                 weight="fill"
                 className={clsx('h-4 w-4', {
-                  'text-yellow-400': column.isPrimaryKey,
-                  'text-slate-400': isForeignKey,
+                  'text-yellow-400': isPrimaryKey,
+                  'text-slate-400': isForeignKey && !isPrimaryKey,
                 })}
               />
             )}

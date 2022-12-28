@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { Check, Pencil, Trash } from 'phosphor-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TableWithIdProps, TableWithIdSchema } from '@/schemas/table';
 import { useState } from 'react';
 import FocusLock from 'react-focus-lock';
 import { IconButton } from './IconButton';
@@ -11,9 +10,11 @@ import { useDeleteTable } from '@/flow-hooks/useDeleteTable';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
 import { useAddTableColumn } from '@/flow-hooks/useAddTableColumn';
+import { TableSchema, TableType } from '@/schemas/base';
+import { emptyVarcharColumn } from '@/utils/reactflow';
 
 interface TableHeaderProps {
-  table: TableWithIdProps;
+  table: TableType;
 }
 
 export function TableHeader({ table }: TableHeaderProps) {
@@ -28,8 +29,8 @@ export function TableHeader({ table }: TableHeaderProps) {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<TableWithIdProps>({
-    resolver: zodResolver(TableWithIdSchema),
+  } = useForm<TableType>({
+    resolver: zodResolver(TableSchema),
     defaultValues: table,
   });
 
@@ -73,9 +74,7 @@ export function TableHeader({ table }: TableHeaderProps) {
             deleteTable(table.id);
           } else if (e.shiftKey && e.key === 'Enter') {
             addTableColumn({
-              name: '',
-              type: 'varchar',
-              isPrimaryKey: false,
+              ...emptyVarcharColumn(),
               tableId: table.id,
             });
           }

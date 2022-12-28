@@ -1,10 +1,11 @@
 import { z } from 'zod';
-import { TableNodeSchema } from './table';
+import { TableSchema } from './table';
 
 export const DatabaseSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
-  tables: TableNodeSchema.array(),
+  vendor: z.string(),
+  tables: TableSchema.array(),
 });
 
 export type DatabaseProps = z.infer<typeof DatabaseSchema>;

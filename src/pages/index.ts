@@ -1,6 +1,6 @@
-import { fetchLocalDatabase, localDatabaseQuery } from '@/queries/useDatabaseQuery';
-import { DatabaseProps, DatabaseSchema } from '@/schemas/database';
-import { base64UrlToDatabase, emptyDatabaseFactory } from '@/utils/database';
+import { fetchLocalSchema, localSchemaQuery } from '@/queries/useSchemaQuery';
+import { SchemaType } from '@/schemas/base';
+import { base64UrlToSchema, emptySchemaFactory } from '@/utils/schema';
 import { QueryClient } from '@tanstack/react-query';
 import { createRouteConfig, createReactRouter } from '@tanstack/react-router';
 import localforage from 'localforage';
@@ -17,17 +17,17 @@ function routeConfig(queryClient: QueryClient) {
       async loader({ search }) {
         const { schema: base64Schema } = search;
 
-        const { queryKey } = localDatabaseQuery();
+        const { queryKey } = localSchemaQuery();
 
         const existingDatabase =
-          queryClient.getQueryData<DatabaseProps>(queryKey) ??
-          (await queryClient.prefetchQuery(queryKey, fetchLocalDatabase));
+          queryClient.getQueryData<SchemaType>(queryKey) ??
+          (await queryClient.prefetchQuery(queryKey, fetchLocalSchema));
 
-        const database: DatabaseProps = base64Schema
-          ? base64UrlToDatabase(base64Schema)
-          : existingDatabase ?? emptyDatabaseFactory();
+        const database: SchemaType = base64Schema
+          ? base64UrlToSchema(base64Schema)
+          : existingDatabase ?? emptySchemaFactory();
 
-        await localforage.setItem<DatabaseProps>('database', database);
+        await localforage.setItem<SchemaType>('schema', database);
 
         queryClient.setQueryData(queryKey, database);
 

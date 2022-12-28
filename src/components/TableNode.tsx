@@ -1,16 +1,13 @@
 import { Plus } from 'phosphor-react';
 import { Handle, Position, useStore } from 'reactflow';
-import { TableNodeProps as BaseTableNodeProps } from '@/schemas/table';
 import { TableColumn } from './TableColumn';
 import { clsx } from '@/utils/clsx';
 import { TableHeader } from './TableHeader';
 import { useAddTableColumn } from '@/flow-hooks/useAddTableColumn';
+import { emptyVarcharColumn } from '@/utils/reactflow';
+import { TableNodeType } from '@/schemas/base';
 
-type TableNodeProps = Pick<BaseTableNodeProps, 'id'> & {
-  data: BaseTableNodeProps['data'];
-};
-
-export function TableNode({ id, data: table }: TableNodeProps) {
+export function TableNode({ id, data: table }: TableNodeType) {
   const addTableColumn = useAddTableColumn();
   const connectionNodeId = useStore((state) => state.connectionNodeId);
   const connectionHandleId = useStore((state) => state.connectionHandleId);
@@ -69,6 +66,8 @@ export function TableNode({ id, data: table }: TableNodeProps) {
             />
             <TableColumn
               column={column}
+              tableIndexes={table.indexes}
+              tableRelations={table.relations}
               tableId={id}
               hideAction={!!connectionNodeId}
               className="peer-hover:bg-slate-100"
@@ -77,14 +76,7 @@ export function TableNode({ id, data: table }: TableNodeProps) {
         ))}
       </ul>
       <button
-        onClick={() =>
-          addTableColumn({
-            name: '',
-            type: 'varchar',
-            isPrimaryKey: false,
-            tableId: id,
-          })
-        }
+        onClick={() => addTableColumn({ ...emptyVarcharColumn(), tableId: id })}
         className={clsx(
           'noimage nodrag flex w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
           'hover:bg-sky-50 hover:text-sky-600',

@@ -1,22 +1,41 @@
-import { Node, useReactFlow } from 'reactflow';
-import { z } from 'zod';
-import { TableColumnSchema, TableProps } from '@/schemas/table';
-
-export const UpdateTableColumnSchema = TableColumnSchema.extend({
-  tableId: z.string(),
-});
-
-export type UpdateTableColumnSchemaType = z.infer<typeof UpdateTableColumnSchema>;
+import { TableNodeType, UpdateColumnType } from '@/schemas/base';
+import { useReactFlow } from 'reactflow';
 
 export function useUpdateTableColumn() {
   const reactFlowInstance = useReactFlow();
 
-  return (columnPayload: UpdateTableColumnSchemaType) => {
-    const { tableId, name, ...newColumn } = columnPayload;
+  return (columnPayload: UpdateColumnType) => {
+    const { tableId, name, isPrimaryKey, ...newColumn } = columnPayload;
 
-    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) => {
+    reactFlowInstance.setNodes((currentNodes: TableNodeType[]) => {
       return currentNodes.map((node) => {
         if (node.id === tableId) {
+          let newIndexes = node.data.indexes;
+
+          if (isPrimaryKey) {
+            const hasExistingPrimaryKey = !!node.data.indexes.find(
+              (index) => index.type === 'PRIMARY_KEY',
+            );
+
+            if (hasExistingPrimaryKey) {
+              newIndexes = node.data.indexes.map((index) => {
+                if (index.type === 'PRIMARY_KEY') {
+                  return {
+                    ...index,
+                    columns: [...index.columns, newColumn.id],
+                  };
+                }
+                return index;
+              });
+            } else {
+              newIndexes = newIndexes.concat({
+                id: crypto.randomUUID(),
+                type: 'PRIMARY_KEY',
+                columns: [newColumn.id],
+              });
+            }
+          }
+
           return {
             ...node,
             data: {
@@ -30,6 +49,7 @@ export function useUpdateTableColumn() {
                 }
                 return column;
               }),
+              indexes: newIndexes,
             },
           };
         }

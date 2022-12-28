@@ -1,11 +1,11 @@
-import { TableProps } from '@/schemas/table';
-import { Node, ReactFlowInstance, useReactFlow } from 'reactflow';
+import { TableNodeType } from '@/schemas/base';
+import { ReactFlowInstance, useReactFlow } from 'reactflow';
 
 export function useCreateTable() {
   const reactFlowInstance = useReactFlow();
 
-  return (newTableNode: Node<TableProps>) => {
-    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) =>
+  return (newTableNode: TableNodeType) => {
+    reactFlowInstance.setNodes((currentNodes: TableNodeType[]) =>
       currentNodes.concat(newTableNode),
     );
   };
@@ -16,7 +16,7 @@ export function createTableWithInstance(reactFlowInstance?: ReactFlowInstance | 
     return () => {};
   }
 
-  return (newTable: Node<TableProps>) => {
-    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) => [...currentNodes, newTable]);
+  return (newTable: TableNodeType) => {
+    reactFlowInstance.setNodes((currentNodes: TableNodeType[]) => [...currentNodes, newTable]);
   };
 }
