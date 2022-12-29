@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import { ReactFlowInstance } from 'reactflow';
 import { useCreateTableWithInstance } from './useCreateTable';
 
-type useAddCreateTableShortcutParams = {
+type UseAddCreateTableShortcutParams = {
   reactFlowInstance: ReactFlowInstance | null;
 };
 
-export function useAddCreateTableShortcut({ reactFlowInstance }: useAddCreateTableShortcutParams) {
+export function useAddCreateTableShortcut({ reactFlowInstance }: UseAddCreateTableShortcutParams) {
   const createTable = useCreateTableWithInstance(reactFlowInstance);
 
   useEffect(() => {

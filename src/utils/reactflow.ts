@@ -67,3 +67,23 @@ export function emptyVarcharColumn(): VarcharColumnType {
     attributes: [],
   };
 }
+
+export function getColumnIdFromHandleId(handleId: string): string {
+  const columnId = handleId
+    .replace('-source-left', '')
+    .replace('-source-right', '')
+    .replace('-target', '');
+
+  return columnId;
+}
+
+export function getHandlePositionFromHandleId(handleId: string): 'right' | 'left' {
+  if (handleId.includes('right')) {
+    return 'right';
+  }
+  if (handleId.includes('left')) {
+    return 'left';
+  }
+
+  throw Error(`Cannot get position from handleId ${handleId}`);
+}

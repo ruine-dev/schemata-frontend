@@ -7,6 +7,7 @@ type SimpleFLoatingEdgeProps = {
   id: string;
   source: string;
   target: string;
+  markerStart?: string;
   markerEnd?: string;
   style?: CSSProperties;
 };
@@ -15,6 +16,7 @@ export function SimpleFloatingEdge({
   id,
   source,
   target,
+  markerStart,
   markerEnd,
   style,
 }: SimpleFLoatingEdgeProps) {
@@ -50,8 +52,9 @@ export function SimpleFloatingEdge({
   return (
     <path
       id={id}
-      className="react-flow__edge-path stroke-slate-400 stroke-2"
+      className="react-flow__edge-path stroke-slate-400 stroke-1"
       d={edgePath}
+      markerStart={markerStart}
       markerEnd={markerEnd}
       style={style}
     />
