@@ -9,6 +9,7 @@ export function emptySchemaFactory(): SchemaType {
     tables: [],
     groups: [],
     positions: [],
+    relations: [],
   };
 }
 

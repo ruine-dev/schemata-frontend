@@ -1,11 +1,9 @@
-import { DragEventHandler, useCallback, useState, useRef, useEffect } from 'react';
+import { DragEventHandler, useCallback, useState, useRef } from 'react';
 import ReactFlow, {
   Background,
   Controls,
-  Edge,
   EdgeTypes,
   MiniMap,
-  Node,
   NodeTypes,
   Panel,
   ReactFlowInstance,
@@ -16,17 +14,17 @@ import { TableNode } from './TableNode';
 import { GeneralPropsPanel } from './GeneralPropsPanel';
 import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
-import { createTableWithInstance } from '@/flow-hooks/useCreateTable';
-import { useSaveLocalSchema } from '@/mutations/useSaveLocalSchema';
 import { SimpleFloatingEdge } from './ReactFlow/SimpleFloatingEdge';
 import {
-  PositionType,
   SchemaType,
   TableNodeType,
   TableType,
   transformSchemaToReactFlowData,
 } from '@/schemas/base';
-import { emptyTableNode, tableNodeToPosition, tableNodeToTable } from '@/utils/reactflow';
+import { emptyTableNode } from '@/utils/reactflow';
+import { useAddCreateTableShortcut } from '@/flow-hooks/useAddCreateTableShortcut';
+import { useHandleSaveLocalSchema } from '@/flow-hooks/useHandleSaveLocalSchema';
+import { isUuid } from '@/utils/zod';
 
 const nodeTypes: NodeTypes = { table: TableNode } as unknown as NodeTypes;
 
@@ -81,41 +79,8 @@ export function Canvas({ schema }: CanvasProps) {
     [reactFlowInstance],
   );
 
-  const createTable = createTableWithInstance(reactFlowInstance);
-
-  useEffect(() => {
-    const handleCreateTableShortcut = (e: KeyboardEvent) => {
-      if (document.activeElement !== document.body) {
-        return;
-      }
-
-      if (e.key === 't') {
-        const rect = document.body.getBoundingClientRect();
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        const position = reactFlowInstance?.project({
-          x: rect.width / 2,
-          y: rect.height / 2,
-        });
-
-        createTable(
-          emptyTableNode({
-            position,
-          }),
-        );
-      }
-    };
-
-    document.body.addEventListener('keydown', handleCreateTableShortcut);
-
-    return () => {
-      document.body.removeEventListener('keydown', handleCreateTableShortcut);
-    };
-  }, [createTable]);
-
-  const { mutate: saveLocalSchema } = useSaveLocalSchema();
+  useAddCreateTableShortcut({ reactFlowInstance });
+  const handleSaveSchema = useHandleSaveLocalSchema({ reactFlowInstance });
 
   return (
     <ReactFlowProvider>
@@ -129,32 +94,18 @@ export function Canvas({ schema }: CanvasProps) {
           onDrop={onDrop}
           onInit={setReactFlowInstance}
           defaultEdgeOptions={{ type: 'floating' }}
-          onNodesChange={() => {
-            const tables: TableType[] =
-              reactFlowInstance?.getNodes().map((node) => tableNodeToTable(node)) ?? [];
+          onNodesChange={handleSaveSchema}
+          onConnect={() => {
+            const edges =
+              reactFlowInstance?.getEdges()?.map((edge) => {
+                const id = isUuid(edge.id) ? edge.id : crypto.randomUUID();
 
-            const positions: PositionType[] =
-              reactFlowInstance?.getNodes().map((node) => tableNodeToPosition(node)) ?? [];
+                return { ...edge, id };
+              }) ?? [];
 
-            saveLocalSchema((currentDatabase) => ({
-              ...currentDatabase,
-              tables,
-              positions,
-            }));
+            reactFlowInstance?.setEdges(edges);
           }}
-          onConnect={(connection) => {
-            // const tableRelations = TableRelationSchema.array().safeParse(
-            //   reactFlowInstance?.getEdges().map((edge) => edgeToTableRelation(edge)),
-            // );
-            console.log(connection);
-            // console.log(reactFlowInstance?.getEdges());
-
-            // saveDatabaseLocal((currentDatabase) => ({
-            //   ...currentDatabase,
-            //   relations: tableRelations.success ? tableRelations.data : currentDatabase.relations,
-            // }));
-            return;
-          }}
+          onConnectEnd={handleSaveSchema}
         >
           <Panel position="top-left">
             <GeneralPropsPanel schema={schema} />

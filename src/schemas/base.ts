@@ -59,14 +59,23 @@ export type IndexType = z.infer<typeof IndexSchema>;
 
 export const RelationSchema = z.object({
   id: z.string().uuid(),
-  source: z.object({ columnId: z.string().uuid() }),
-  target: z.object({
-    tableId: z.string().uuid(),
+  source: z.object({
     columnId: z.string().uuid(),
+    tableId: z.string().uuid(),
+  }),
+  target: z.object({
+    columnId: z.string().uuid(),
+    tableId: z.string().uuid(),
   }),
 });
 
 export type RelationType = z.infer<typeof RelationSchema>;
+
+export const CreateRelationSchema = RelationSchema.omit({ id: true }).extend({
+  tableId: z.string().uuid(),
+});
+
+export type CreateRelationType = z.infer<typeof CreateRelationSchema>;
 
 export const VisibilityAttribute = z.union([z.literal('INVISIBLE'), z.literal('VISIBLE')]);
 export const NullabilityAttribute = z.union([z.literal('NULLABLE'), z.literal('NOT_NULL')]);
@@ -622,17 +631,24 @@ export const UpdateColumnSchema = z.discriminatedUnion('type', [
 
 export type UpdateColumnType = z.infer<typeof UpdateColumnSchema>;
 
+export const DeleteColumnSchema = BaseColumnSchema.pick({ id: true }).extend({
+  tableId: z.string().uuid(),
+});
+
+export type DeleteColumnType = z.infer<typeof DeleteColumnSchema>;
+
 export const TableSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
   columns: ColumnSchema.array(),
   indexes: IndexSchema.array(),
-  relations: RelationSchema.array(),
 });
 
 export type TableType = z.infer<typeof TableSchema>;
 
-export type TableNodeType = Node<Omit<TableType, 'id'>>;
+export type TableTypeWithoutId = Omit<TableType, 'id'>;
+
+export type TableNodeType = Node<TableTypeWithoutId>;
 
 export const GroupSchema = z.object({
   id: z.string().uuid(),
@@ -661,6 +677,7 @@ export const SchemaSchema = z.object({
   tables: TableSchema.array(),
   groups: GroupSchema.array(),
   positions: PositionSchema.array(),
+  relations: RelationSchema.array(),
 });
 
 export type SchemaType = z.infer<typeof SchemaSchema>;
@@ -693,26 +710,21 @@ export const transformSchemaToReactFlowData = SchemaSchema.transform<{
         name: tablePayload.name,
         columns: tablePayload.columns,
         indexes: tablePayload.indexes,
-        relations: tablePayload.relations,
       },
       position,
     };
   });
 
-  const edges: Edge[] = schema.tables.flatMap((table) => {
-    const relationEdges: Edge[] =
-      table.relations?.map((relation) => {
-        return {
-          id: relation.id,
-          source: table.id,
-          sourceHandle: relation.source.columnId,
-          target: relation.target.tableId,
-          targetHandle: relation.target.columnId,
-        };
-      }) ?? [];
-
-    return relationEdges;
-  });
+  const edges: Edge[] =
+    schema.relations?.map((relation) => {
+      return {
+        id: relation.id,
+        source: relation.source.tableId,
+        sourceHandle: `${relation.source.columnId}-source-right`,
+        target: relation.target.tableId,
+        targetHandle: `${relation.target.columnId}-target`,
+      };
+    }) ?? [];
 
   return {
     nodes,

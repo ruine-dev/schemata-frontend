@@ -1,20 +1,45 @@
-import { PositionType, TableNodeType, TableType, VarcharColumnType } from '@/schemas/base';
+import {
+  PositionType,
+  RelationType,
+  TableNodeType,
+  TableType,
+  VarcharColumnType,
+} from '@/schemas/base';
+import { Edge } from 'reactflow';
+import { isUuid } from './zod';
 
-export function tableNodeToTable(node: TableNodeType): TableType {
+export function nodeToTable(node: TableNodeType): TableType {
   return {
     id: node.id,
     name: node.data.name,
     columns: node.data.columns,
     indexes: node.data.indexes,
-    relations: node.data.relations,
   };
 }
 
-export function tableNodeToPosition(node: TableNodeType): PositionType {
+export function nodeToPosition(node: TableNodeType): PositionType {
   return {
     itemId: node.id,
     x: node.position.x,
     y: node.position.y,
+  };
+}
+
+export function edgeToRelation(edge: Edge): RelationType {
+  if (!edge.sourceHandle || !edge.targetHandle) {
+    throw Error(`Handle id for edge ${edge.id} is empty`);
+  }
+
+  return {
+    id: edge.id,
+    source: {
+      columnId: edge.sourceHandle.split('-').slice(0, -2).join('-'),
+      tableId: edge.source,
+    },
+    target: {
+      columnId: edge.targetHandle.split('-').slice(0, -1).join('-'),
+      tableId: edge.target,
+    },
   };
 }
 
@@ -26,7 +51,6 @@ export function emptyTableNode(overrides?: Partial<TableNodeType>): TableNodeTyp
       name: '',
       columns: [],
       indexes: [],
-      relations: [],
     },
     position: {
       x: 200,

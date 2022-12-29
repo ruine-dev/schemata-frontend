@@ -1,13 +1,13 @@
-import { TableNodeType, UpdateColumnType } from '@/schemas/base';
+import { TableTypeWithoutId, UpdateColumnType } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
 export function useUpdateTableColumn() {
-  const reactFlowInstance = useReactFlow();
+  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: UpdateColumnType) => {
     const { tableId, name, isPrimaryKey, ...newColumn } = columnPayload;
 
-    reactFlowInstance.setNodes((currentNodes: TableNodeType[]) => {
+    reactFlowInstance.setNodes((currentNodes) => {
       return currentNodes.map((node) => {
         if (node.id === tableId) {
           let newIndexes = node.data.indexes;

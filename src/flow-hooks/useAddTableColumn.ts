@@ -1,13 +1,13 @@
-import { CreateColumnType, TableNodeType, TableType } from '@/schemas/base';
+import { CreateColumnType, TableTypeWithoutId } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
 export function useAddTableColumn() {
-  const reactFlowInstance = useReactFlow();
+  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: CreateColumnType) => {
     const { tableId, ...newColumn } = columnPayload;
 
-    reactFlowInstance.setNodes((currentNodes: TableNodeType[]) => {
+    reactFlowInstance.setNodes((currentNodes) => {
       return currentNodes.map((node) => {
         if (node.id === tableId) {
           return {

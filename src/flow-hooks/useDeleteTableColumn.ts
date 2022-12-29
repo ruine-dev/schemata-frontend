@@ -1,20 +1,13 @@
-import { Node, useReactFlow } from 'reactflow';
-import { z } from 'zod';
-import { TableColumnSchema, TableProps } from '@/schemas/table';
-
-export const DeleteTableColumnSchema = TableColumnSchema.pick({ id: true }).extend({
-  tableId: z.string(),
-});
-
-export type DeleteTableColumnSchemaType = z.infer<typeof DeleteTableColumnSchema>;
+import { DeleteColumnType, TableTypeWithoutId } from '@/schemas/base';
+import { useReactFlow } from 'reactflow';
 
 export function useDeleteTableColumn() {
-  const reactFlowInstance = useReactFlow();
+  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
-  return (columnPayload: DeleteTableColumnSchemaType) => {
+  return (columnPayload: DeleteColumnType) => {
     const { tableId, id } = columnPayload;
 
-    reactFlowInstance.setNodes((currentNodes: Node<TableProps>[]) => {
+    reactFlowInstance.setNodes((currentNodes) => {
       return currentNodes.map((node) => {
         if (node.id === tableId) {
           return {

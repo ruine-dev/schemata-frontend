@@ -21,27 +21,22 @@ import {
   UpdateColumnSchema,
   UpdateColumnType,
 } from '@/schemas/base';
+import { useStore } from 'reactflow';
 
 type TableColumnFinalProps = {
   column: ColumnType;
   tableIndexes: IndexType[];
-  tableRelations: RelationType[];
   tableId: string;
   hideAction?: boolean;
   className?: string;
-  onFocus?: () => void;
-  onBlur?: () => void;
 };
 
 export function TableColumn({
   column,
   tableIndexes,
-  tableRelations,
   tableId,
   hideAction,
   className,
-  onFocus,
-  onBlur,
 }: TableColumnFinalProps) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -56,7 +51,9 @@ export function TableColumn({
     (index) => index.columns.includes(column.id) && index.type === 'PRIMARY_KEY',
   );
 
-  const isForeignKey = !!tableRelations.find((relation) => relation.target.columnId === column.id);
+  const edges = useStore((state) => state.edges);
+
+  const isForeignKey = !!edges.find((edge) => edge.targetHandle === `${column.id}-target`);
 
   const {
     register,
@@ -146,7 +143,6 @@ export function TableColumn({
           }
         }
       }}
-      onFocus={onFocus}
       className={clsx(
         'group flex items-center gap-x-2 py-0.5 pl-3 pr-1.5 outline-none ring-sky-500',
         'hover:bg-slate-100',

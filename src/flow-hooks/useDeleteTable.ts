@@ -1,10 +1,10 @@
-import { TableWithIdProps } from '@/schemas/table';
+import { TableType, TableTypeWithoutId } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
 export function useDeleteTable() {
-  const reactFlowInstance = useReactFlow();
+  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
-  return (tableId: TableWithIdProps['id']) => {
+  return (tableId: TableType['id']) => {
     reactFlowInstance.deleteElements({ nodes: [{ id: tableId }] });
   };
 }

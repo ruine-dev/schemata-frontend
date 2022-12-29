@@ -1,22 +1,22 @@
-import { TableNodeType } from '@/schemas/base';
+import { TableNodeType, TableTypeWithoutId } from '@/schemas/base';
 import { ReactFlowInstance, useReactFlow } from 'reactflow';
 
 export function useCreateTable() {
-  const reactFlowInstance = useReactFlow();
+  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (newTableNode: TableNodeType) => {
-    reactFlowInstance.setNodes((currentNodes: TableNodeType[]) =>
-      currentNodes.concat(newTableNode),
-    );
+    reactFlowInstance.setNodes((currentNodes) => currentNodes.concat(newTableNode));
   };
 }
 
-export function createTableWithInstance(reactFlowInstance?: ReactFlowInstance | null) {
+export function useCreateTableWithInstance(
+  reactFlowInstance?: ReactFlowInstance<TableTypeWithoutId> | null,
+) {
   if (!reactFlowInstance) {
     return () => {};
   }
 
-  return (newTable: TableNodeType) => {
-    reactFlowInstance.setNodes((currentNodes: TableNodeType[]) => [...currentNodes, newTable]);
+  return (newTableNode: TableNodeType) => {
+    reactFlowInstance.setNodes((currentNodes) => currentNodes.concat(newTableNode));
   };
 }

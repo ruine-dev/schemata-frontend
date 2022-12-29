@@ -26,7 +26,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
         {table.columns.map((column) => (
           <li key={column.id} className="group relative">
             <Handle
-              id={`${table.name}-${column.name}-source-right`}
+              id={`${column.id}-source-right`}
               position={Position.Right}
               type="source"
               className={clsx('peer absolute -right-[0.3125rem] z-10 h-2.5 w-2.5 bg-sky-500', {
@@ -35,7 +35,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
               })}
             />
             <Handle
-              id={`${table.name}-${column.name}-source-left`}
+              id={`${column.id}-source-left`}
               position={Position.Left}
               type="source"
               className={clsx('peer absolute -left-[0.3125rem] z-10 h-2.5 w-2.5 bg-sky-500', {
@@ -44,7 +44,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
               })}
             />
             <Handle
-              id={`${table.name}-${column.name}-target`}
+              id={`${column.id}-target`}
               position={Position.Top}
               type="target"
               className={clsx(
@@ -57,7 +57,6 @@ export function TableNode({ id, data: table }: TableNodeType) {
             <TableColumn
               column={column}
               tableIndexes={table.indexes}
-              tableRelations={table.relations}
               tableId={id}
               hideAction={!!connectionNodeId}
               className="peer-hover:bg-slate-100"

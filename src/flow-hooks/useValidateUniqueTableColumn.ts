@@ -1,22 +1,20 @@
-import { Node, useReactFlow } from 'reactflow';
+import { BaseColumnSchema, TableTypeWithoutId } from '@/schemas/base';
+import { useReactFlow } from 'reactflow';
 import { z } from 'zod';
-import { TableColumnSchema, TableProps } from '@/schemas/table';
 
-export const ValidateUniqueTableColumnSchema = TableColumnSchema.pick({ name: true }).extend({
-  tableId: z.string(),
+export const ValidateUniqueTableColumnSchema = BaseColumnSchema.pick({ name: true }).extend({
+  tableId: z.string().uuid(),
 });
 
 export type ValidateUniqueTableColumnSchemaType = z.infer<typeof ValidateUniqueTableColumnSchema>;
 
 export function useValidateUniqueTableColumn() {
-  const reactFlowInstance = useReactFlow();
+  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: ValidateUniqueTableColumnSchemaType) => {
     const { tableId, name } = columnPayload;
 
-    const nodes: Node<TableProps>[] = reactFlowInstance.getNodes();
-
-    const node = nodes.find((node) => node.id === tableId);
+    const node = reactFlowInstance.getNode(tableId);
 
     if (!node) {
       throw Error(`Table with id ${tableId} not found`);
