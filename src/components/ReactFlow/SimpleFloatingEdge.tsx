@@ -20,12 +20,22 @@ export function SimpleFloatingEdge({
 }: SimpleFLoatingEdgeProps) {
   const sourceNode = useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
   const targetNode = useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
+  const relatedEdge = useStore(
+    useCallback(
+      (store) => store.edges.find((edge) => edge.source === source && edge.target === target),
+      [source, target],
+    ),
+  );
 
-  if (!sourceNode || !targetNode) {
+  if (!sourceNode || !targetNode || !relatedEdge) {
     return null;
   }
 
-  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(sourceNode, targetNode);
+  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
+    sourceNode,
+    targetNode,
+    relatedEdge,
+  );
 
   const [edgePath] = getSmoothStepPath({
     sourceX: sx as number,
@@ -40,7 +50,7 @@ export function SimpleFloatingEdge({
   return (
     <path
       id={id}
-      className="react-flow__edge-path stroke-2 stroke-slate-400"
+      className="react-flow__edge-path stroke-slate-400 stroke-2"
       d={edgePath}
       markerEnd={markerEnd}
       style={style}

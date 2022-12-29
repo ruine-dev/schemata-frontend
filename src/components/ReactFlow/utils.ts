@@ -1,9 +1,9 @@
-import { Position, internalsSymbol, Node } from 'reactflow';
+import { Position, internalsSymbol, Node, Edge } from 'reactflow';
 
 // returns the position (top,right,bottom or right) passed node compared to
-function getParams(nodeA: Node, nodeB: Node) {
-  const centerA = getNodeCenter(nodeA);
-  const centerB = getNodeCenter(nodeB);
+function getParams(sourceNode: Node, targetNode: Node, relatedEdge: Edge) {
+  const centerA = getNodeCenter(sourceNode);
+  const centerB = getNodeCenter(targetNode);
 
   const horizontalDiff = Math.abs(centerA.x - centerB.x);
   const verticalDiff = Math.abs(centerA.y - centerB.y);
@@ -18,15 +18,19 @@ function getParams(nodeA: Node, nodeB: Node) {
   // position = centerA.y > centerB.y ? Position.Top : Position.Bottom;
   // }
 
-  const [x, y] = getHandleCoordsByPosition(nodeA, position);
+  const [x, y] = getHandleCoordsByPosition(sourceNode, position, relatedEdge);
   return [x, y, position];
 }
 
-function getHandleCoordsByPosition(node: Node, handlePosition: Position) {
+function getHandleCoordsByPosition(sourceNode: Node, handlePosition: Position, relatedEdge: Edge) {
+  const sourceHandleId = relatedEdge.sourceHandle?.split('-').slice(0, -2).join('-');
+  const targetHandleId = relatedEdge.targetHandle?.split('-').slice(0, -1).join('-');
+
   // all handles are from type source, that's why we use handleBounds.source here
-  const handle = node?.[internalsSymbol]?.handleBounds?.source?.find(
-    (h) => h.position === handlePosition,
-  );
+  const handle = sourceNode?.[internalsSymbol]?.handleBounds?.source?.find((h) => {
+    const hId = h.id?.split('-').slice(0, -2).join('-');
+    return h.position === handlePosition && (hId === sourceHandleId || hId === targetHandleId);
+  });
 
   let offsetX = (handle?.width ?? 0) / 2;
   let offsetY = (handle?.height ?? 0) / 2;
@@ -49,8 +53,8 @@ function getHandleCoordsByPosition(node: Node, handlePosition: Position) {
       break;
   }
 
-  const x = (node?.positionAbsolute?.x ?? 0) + (handle?.x ?? 0) + offsetX;
-  const y = (node?.positionAbsolute?.y ?? 0) + (handle?.y ?? 0) + offsetY;
+  const x = (sourceNode?.positionAbsolute?.x ?? 0) + (handle?.x ?? 0) + offsetX;
+  const y = (sourceNode?.positionAbsolute?.y ?? 0) + (handle?.y ?? 0) + offsetY;
 
   return [x, y];
 }
@@ -63,9 +67,9 @@ function getNodeCenter(node: Node) {
 }
 
 // returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
-export function getEdgeParams(source: Node, target: Node) {
-  const [sx, sy, sourcePos] = getParams(source, target);
-  const [tx, ty, targetPos] = getParams(target, source);
+export function getEdgeParams(sourceNode: Node, targetNode: Node, relatedEdge: Edge) {
+  const [sx, sy, sourcePos] = getParams(sourceNode, targetNode, relatedEdge);
+  const [tx, ty, targetPos] = getParams(targetNode, sourceNode, relatedEdge);
 
   return {
     sx,

@@ -6,7 +6,6 @@ import {
   VarcharColumnType,
 } from '@/schemas/base';
 import { Edge } from 'reactflow';
-import { isUuid } from './zod';
 
 export function nodeToTable(node: TableNodeType): TableType {
   return {

@@ -13,8 +13,8 @@ export function emptySchemaFactory(): SchemaType {
   };
 }
 
-export function schemaToBase64Url(database: SchemaType): string {
-  const encoded = encode(JSON.stringify(database));
+export function schemaToBase64Url(schema: SchemaType): string {
+  const encoded = encode(JSON.stringify(schema));
 
   return encoded;
 }

@@ -45,7 +45,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
             />
             <Handle
               id={`${column.id}-target`}
-              position={Position.Top}
+              position={Position.Right}
               type="target"
               className={clsx(
                 'peer invisible absolute top-0 left-0 h-full w-full translate-y-0 rounded-none border-0 opacity-0',

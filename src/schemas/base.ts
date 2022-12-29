@@ -706,6 +706,7 @@ export const transformSchemaToReactFlowData = SchemaSchema.transform<{
 
     return {
       id,
+      type: 'table',
       data: {
         name: tablePayload.name,
         columns: tablePayload.columns,
