@@ -1,7 +1,7 @@
 import { DeleteColumnType, TableTypeWithoutId } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
-export function useDeleteTableColumn() {
+export function useDeleteColumn() {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: DeleteColumnType) => {

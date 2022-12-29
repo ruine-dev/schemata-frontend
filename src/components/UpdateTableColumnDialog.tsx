@@ -1,4 +1,4 @@
-import { useUpdateTableColumn } from '@/flow-hooks/useUpdateTableColumn';
+import { useUpdateColumn } from '@/flow-hooks/useUpdateColumn';
 import {
   ColumnType,
   ColumnTypeEnum,
@@ -25,7 +25,7 @@ export function UpdateTableColumnDialog({
   column,
   trigger,
 }: UpdateTableColumnDialogProps) {
-  const updateTableColumn = useUpdateTableColumn();
+  const updateTableColumn = useUpdateColumn();
 
   const {
     register,

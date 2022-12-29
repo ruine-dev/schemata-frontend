@@ -1,7 +1,7 @@
 import { TableTypeWithoutId, UpdateColumnType } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
-export function useUpdateTableColumn() {
+export function useUpdateColumn() {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: UpdateColumnType) => {

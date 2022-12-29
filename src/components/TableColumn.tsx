@@ -6,12 +6,12 @@ import FocusLock from 'react-focus-lock';
 import { IconButton } from './IconButton';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
-import { useUpdateTableColumn } from '@/flow-hooks/useUpdateTableColumn';
+import { useUpdateColumn } from '@/flow-hooks/useUpdateColumn';
 import { Select } from './Select';
-import { useValidateUniqueTableColumn } from '@/flow-hooks/useValidateUniqueTableColumn';
-import { useDeleteTableColumn } from '@/flow-hooks/useDeleteTableColumn';
+import { useValidateUniqueColumnName } from '@/flow-hooks/useValidateUniqueColumnName';
+import { useDeleteColumn } from '@/flow-hooks/useDeleteColumn';
 import { CustomCheckbox } from './CustomCheckbox';
-import { useAddTableColumn } from '@/flow-hooks/useAddTableColumn';
+import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { emptyVarcharColumn } from '@/utils/reactflow';
 import {
   ColumnType,
@@ -42,10 +42,10 @@ export function TableColumn({
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const updateTableColumn = useUpdateTableColumn();
-  const deleteTableColumn = useDeleteTableColumn();
-  const addTableColumn = useAddTableColumn();
-  const validateUniqueTableColumn = useValidateUniqueTableColumn();
+  const updateColumn = useUpdateColumn();
+  const deleteColumn = useDeleteColumn();
+  const createColumn = useCreateColumn();
+  const validateUniqueColumnName = useValidateUniqueColumnName();
 
   const isPrimaryKey = !!tableIndexes.find(
     (index) => index.columns.includes(column.id) && index.type === 'PRIMARY_KEY',
@@ -67,7 +67,7 @@ export function TableColumn({
   });
 
   const onSubmit = handleSubmit((data) => {
-    updateTableColumn(data);
+    updateColumn(data);
     setIsEditing(false);
 
     queueMicrotask(() => {
@@ -101,7 +101,7 @@ export function TableColumn({
       parent?.previousElementSibling?.lastElementChild ||
       parent?.nextElementSibling?.lastElementChild;
 
-    deleteTableColumn({
+    deleteColumn({
       id: column.id,
       tableId,
     });
@@ -134,7 +134,7 @@ export function TableColumn({
             e.preventDefault();
             e.stopPropagation();
 
-            addTableColumn({ ...emptyVarcharColumn(), tableId });
+            createColumn({ ...emptyVarcharColumn(), tableId });
           } else if (e.key === 'Escape') {
             e.preventDefault();
             e.stopPropagation();
@@ -179,9 +179,7 @@ export function TableColumn({
               {...register('name', {
                 validate: {
                   unique: (value) => {
-                    return (
-                      validateUniqueTableColumn({ name: value, tableId }) || 'should be unique'
-                    );
+                    return validateUniqueColumnName({ name: value, tableId }) || 'should be unique';
                   },
                 },
               })}

@@ -3,12 +3,12 @@ import { Handle, Position, useStore } from 'reactflow';
 import { TableColumn } from './TableColumn';
 import { clsx } from '@/utils/clsx';
 import { TableHeader } from './TableHeader';
-import { useAddTableColumn } from '@/flow-hooks/useAddTableColumn';
+import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { emptyVarcharColumn } from '@/utils/reactflow';
 import { TableNodeType } from '@/schemas/base';
 
 export function TableNode({ id, data: table }: TableNodeType) {
-  const addTableColumn = useAddTableColumn();
+  const addTableColumn = useCreateColumn();
   const connectionNodeId = useStore((state) => state.connectionNodeId);
   const connectionHandleId = useStore((state) => state.connectionHandleId);
 

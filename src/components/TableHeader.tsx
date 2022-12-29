@@ -9,7 +9,7 @@ import { useUpdateTable } from '@/flow-hooks/useUpdateTable';
 import { useDeleteTable } from '@/flow-hooks/useDeleteTable';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
-import { useAddTableColumn } from '@/flow-hooks/useAddTableColumn';
+import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { TableSchema, TableType } from '@/schemas/base';
 import { emptyVarcharColumn } from '@/utils/reactflow';
 
@@ -20,7 +20,7 @@ interface TableHeaderProps {
 export function TableHeader({ table }: TableHeaderProps) {
   const updateTable = useUpdateTable();
   const deleteTable = useDeleteTable();
-  const addTableColumn = useAddTableColumn();
+  const addTableColumn = useCreateColumn();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 

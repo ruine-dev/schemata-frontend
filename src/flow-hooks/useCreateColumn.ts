@@ -1,7 +1,7 @@
 import { CreateColumnType, TableTypeWithoutId } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
-export function useAddTableColumn() {
+export function useCreateColumn() {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: CreateColumnType) => {

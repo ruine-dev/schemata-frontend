@@ -2,16 +2,16 @@ import { BaseColumnSchema, TableTypeWithoutId } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 import { z } from 'zod';
 
-export const ValidateUniqueTableColumnSchema = BaseColumnSchema.pick({ name: true }).extend({
+export const ValidateUniqueColumnNameSchema = BaseColumnSchema.pick({ name: true }).extend({
   tableId: z.string().uuid(),
 });
 
-export type ValidateUniqueTableColumnSchemaType = z.infer<typeof ValidateUniqueTableColumnSchema>;
+export type ValidateUniqueTableColumnNameType = z.infer<typeof ValidateUniqueColumnNameSchema>;
 
-export function useValidateUniqueTableColumn() {
+export function useValidateUniqueColumnName() {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
-  return (columnPayload: ValidateUniqueTableColumnSchemaType) => {
+  return (columnPayload: ValidateUniqueTableColumnNameType) => {
     const { tableId, name } = columnPayload;
 
     const node = reactFlowInstance.getNode(tableId);
