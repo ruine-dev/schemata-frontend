@@ -61,6 +61,7 @@ export function TableHeader({ table }: TableHeaderProps) {
   return (
     <div
       ref={containerRef}
+      id={`table-header-${table.id}`}
       tabIndex={0}
       onKeyDown={(e) => {
         if (!isRenaming && e.target === e.currentTarget) {
@@ -77,6 +78,10 @@ export function TableHeader({ table }: TableHeaderProps) {
               ...emptyVarcharColumn(),
               tableId: table.id,
             });
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.blur();
           }
         }
       }}
@@ -125,19 +130,20 @@ export function TableHeader({ table }: TableHeaderProps) {
       ) : (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-x-2 text-white">{table.name}</div>
-          <div
-            className={clsx(
-              'flex items-center gap-x-1 opacity-0',
-              'group-hover:opacity-100',
-              'group-focus:opacity-100',
-              'focus-within:opacity-100',
-            )}
-          >
+          <div className={clsx('invisible flex items-center gap-x-1', 'group-hover:visible')}>
             <IconButton
               icon={Pencil}
               label="Rename"
               severity="dark"
               onClick={handleRename}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  containerRef.current?.focus();
+                }
+              }}
               className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
             />
             <IconButton
@@ -145,6 +151,14 @@ export function TableHeader({ table }: TableHeaderProps) {
               label="Delete"
               severity="dark"
               onClick={() => deleteTable(table.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  containerRef.current?.focus();
+                }
+              }}
               className="focus:bg-sky-600 enabled:hover:bg-sky-600"
             />
           </div>

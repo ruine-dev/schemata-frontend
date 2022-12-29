@@ -29,6 +29,8 @@ type TableColumnFinalProps = {
   tableId: string;
   hideAction?: boolean;
   className?: string;
+  onFocus?: () => void;
+  onBlur?: () => void;
 };
 
 export function TableColumn({
@@ -38,6 +40,8 @@ export function TableColumn({
   tableId,
   hideAction,
   className,
+  onFocus,
+  onBlur,
 }: TableColumnFinalProps) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -58,9 +62,8 @@ export function TableColumn({
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
     control,
-    watch,
   } = useForm<UpdateColumnType>({
     resolver: zodResolver(UpdateColumnSchema),
     defaultValues: { ...column, isPrimaryKey, tableId },
@@ -95,6 +98,26 @@ export function TableColumn({
     }
   };
 
+  const handleDelete = () => {
+    const parent = containerRef.current?.parentElement;
+    const nearestColumnSibling =
+      parent?.previousElementSibling?.lastElementChild ||
+      parent?.nextElementSibling?.lastElementChild;
+
+    deleteTableColumn({
+      id: column.id,
+      tableId,
+    });
+
+    if (nearestColumnSibling instanceof HTMLElement) {
+      nearestColumnSibling.focus();
+    }
+
+    if (nearestColumnSibling === undefined) {
+      document.getElementById(`table-header-${tableId}`)?.focus();
+    }
+  };
+
   return (
     <div
       ref={containerRef}
@@ -108,18 +131,22 @@ export function TableColumn({
           } else if (e.key === 'Delete') {
             e.preventDefault();
             e.stopPropagation();
-            deleteTableColumn({
-              id: column.id,
-              tableId,
-            });
+
+            handleDelete();
           } else if (e.shiftKey && e.key === 'Enter') {
             e.preventDefault();
             e.stopPropagation();
 
             addTableColumn({ ...emptyVarcharColumn(), tableId });
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+
+            document.getElementById(`table-header-${tableId}`)?.focus();
           }
         }
       }}
+      onFocus={onFocus}
       className={clsx(
         'group flex items-center gap-x-2 py-0.5 pl-3 pr-1.5 outline-none ring-sky-500',
         'hover:bg-slate-100',
@@ -203,12 +230,9 @@ export function TableColumn({
           <span className="text-slate-700">{column.name}</span>
           <span className="text-slate-500">{column.type}</span>
           <div
-            className={clsx(
-              'ml-auto flex opacity-0 focus-within:opacity-100 group-hover:opacity-100 group-focus:opacity-100',
-              {
-                invisible: hideAction,
-              },
-            )}
+            className={clsx('invisible ml-auto flex group-hover:visible', {
+              invisible: hideAction,
+            })}
           >
             <IconButton
               label="Edit column"
@@ -221,12 +245,7 @@ export function TableColumn({
               label="Delete column"
               icon={Trash}
               severity="danger"
-              onClick={() =>
-                deleteTableColumn({
-                  id: column.id,
-                  tableId,
-                })
-              }
+              onClick={handleDelete}
               disabled={hideAction}
               className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
             />

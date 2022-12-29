@@ -16,6 +16,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
 
   return (
     <div
+      id={`table-${id}`}
       className={clsx(
         'min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono text-sm shadow-sm',
       )}
@@ -43,22 +44,11 @@ export function TableNode({ id, data: table }: TableNodeType) {
               })}
             />
             <Handle
-              id={`${table.name}-${column.name}-target-right`}
-              position={Position.Right}
+              id={`${table.name}-${column.name}-target`}
+              position={Position.Top}
               type="target"
               className={clsx(
-                'peer invisible absolute top-0 right-0 h-full w-1/2 translate-y-0 rounded-none border-0 opacity-0',
-                {
-                  'visible z-20': isTarget,
-                },
-              )}
-            />
-            <Handle
-              id={`${table.name}-${column.name}-target-left`}
-              position={Position.Left}
-              type="target"
-              className={clsx(
-                'peer invisible absolute top-0 left-0 h-full w-1/2 translate-y-0 rounded-none border-0 opacity-0',
+                'peer invisible absolute top-0 left-0 h-full w-full translate-y-0 rounded-none border-0 opacity-0',
                 {
                   'visible z-20': isTarget,
                 },
@@ -77,6 +67,14 @@ export function TableNode({ id, data: table }: TableNodeType) {
       </ul>
       <button
         onClick={() => addTableColumn({ ...emptyVarcharColumn(), tableId: id })}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+
+            document.getElementById(`table-header-${id}`)?.focus();
+          }
+        }}
         className={clsx(
           'noimage nodrag flex w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
           'hover:bg-sky-50 hover:text-sky-600',
