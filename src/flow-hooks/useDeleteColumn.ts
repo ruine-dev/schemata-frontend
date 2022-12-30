@@ -1,4 +1,5 @@
 import { DeleteColumnType, TableTypeWithoutId } from '@/schemas/base';
+import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import { useReactFlow } from 'reactflow';
 
 export function useDeleteColumn() {
@@ -20,6 +21,17 @@ export function useDeleteColumn() {
         }
 
         return node;
+      });
+    });
+
+    reactFlowInstance.setEdges((currentEdges) => {
+      return currentEdges.filter((edge) => {
+        return (
+          edge.targetHandle &&
+          getColumnIdFromHandleId(edge.targetHandle) !== id &&
+          edge.sourceHandle &&
+          getColumnIdFromHandleId(edge.sourceHandle) !== id
+        );
       });
     });
   };
