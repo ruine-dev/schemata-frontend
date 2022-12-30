@@ -15,23 +15,13 @@ import { GeneralPropsPanel } from './GeneralPropsPanel';
 import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
 import { SimpleFloatingEdge } from './ReactFlow/SimpleFloatingEdge';
-import {
-  RelationType,
-  SchemaType,
-  TableNodeType,
-  TableType,
-  TableTypeWithoutId,
-  transformSchemaToReactFlowData,
-} from '@/schemas/base';
-import {
-  emptyTableNode,
-  getColumnIdFromHandleId,
-  getHandlePositionFromHandleId,
-} from '@/utils/reactflow';
+import { SchemaType, TableNodeType, TableTypeWithoutId } from '@/schemas/base';
+import { emptyTableNode } from '@/utils/reactflow';
 import { useAddCreateTableShortcut } from '@/flow-hooks/useAddCreateTableShortcut';
 import { useHandleSaveLocalSchema } from '@/flow-hooks/useHandleSaveLocalSchema';
 import { isUuid } from '@/utils/zod';
 import { useHandleEdgeMarker } from '@/flow-hooks/useHandleEdgeMarker';
+import { useTransformSchemaToReactFlowData } from '@/flow-hooks/useTransformSchemaToReactFlowData';
 
 const nodeTypes: NodeTypes = { table: TableNode } as unknown as NodeTypes;
 
@@ -44,12 +34,13 @@ interface CanvasProps {
 }
 
 export function Canvas({ schema }: CanvasProps) {
-  const { nodes: defaultNodes, edges: defaultEdges } = transformSchemaToReactFlowData.parse(schema);
-
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance<TableTypeWithoutId> | null>(null);
+
+  const transformSchemaToReactFlowData = useTransformSchemaToReactFlowData({ reactFlowInstance });
+  const { nodes: defaultNodes, edges: defaultEdges } = transformSchemaToReactFlowData.parse(schema);
 
   const onDragOver: DragEventHandler<HTMLDivElement> = useCallback((event) => {
     event.preventDefault();
@@ -93,61 +84,59 @@ export function Canvas({ schema }: CanvasProps) {
     <ReactFlowProvider>
       <svg
         style={{ position: 'absolute', top: 0, left: 0 }}
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="text-slate-400"
       >
         <defs>
           <marker
             id="many"
-            viewBox="0 0 40 40"
+            viewBox="0 0 10 20"
             markerUnits="strokeWidth"
-            markerHeight={24}
-            markerWidth={24}
-            refX={16}
-            refY={12}
+            markerHeight={20}
+            markerWidth={10}
+            refX={7}
+            refY={10}
             orient="auto-start-reverse"
+            className="text-slate-400"
           >
             <g clipPath="url(#clip0_2_2)">
               <line
-                x1="8.38268"
-                y1="12.0761"
-                x2="30.5558"
-                y2="21.2605"
+                x1="0.382683"
+                y1="10.2605"
+                x2="22.5558"
+                y2="19.4449"
                 stroke="currentColor"
-                strokeWidth={1.7}
+                strokeWidth={1}
               />
               <line
-                x1="7.96732"
-                y1="12.0761"
-                x2="30.1404"
-                y2="2.89172"
+                x1="-0.0326773"
+                y1="10.2605"
+                x2="22.1404"
+                y2="1.07612"
                 stroke="currentColor"
-                strokeWidth={1.7}
+                strokeWidth={1}
               />
-              <line y1="12" x2="24" y2="12" stroke="currentColor" strokeWidth={1.7} />
+              <line y1="10.1844" x2="20" y2="10.1844" stroke="currentColor" strokeWidth={1} />
             </g>
             <defs>
               <clipPath id="clip0_2_2">
-                <rect width="24" height="24" fill="white" />
+                <rect width="11" height="20" fill="white" />
               </clipPath>
             </defs>
           </marker>
           <marker
             id="one"
-            viewBox="0 0 40 40"
+            viewBox="0 0 10 20"
             markerUnits="strokeWidth"
-            markerHeight={24}
-            markerWidth={24}
-            refX={16}
-            refY={12}
+            markerHeight={20}
+            markerWidth={10}
+            refX={7}
+            refY={9.5}
             orient="auto-start-reverse"
+            className="text-slate-400"
           >
-            <line x1="8" y1="20" x2="8" y2="4" stroke="currentColor" strokeWidth={1.7} />
-            <line y1="12" x2="24" y2="12" stroke="currentColor" strokeWidth={1.7} />
+            <line x1="1" y1="16" x2="1" y2="4" stroke="currentColor" strokeWidth={1} />
+            <line x1="2" y1="9.5" x2="10" y2="9.5" stroke="currentColor" strokeWidth={1} />
           </marker>
         </defs>
       </svg>
@@ -161,6 +150,7 @@ export function Canvas({ schema }: CanvasProps) {
           onDragOver={onDragOver}
           onDrop={onDrop}
           onInit={setReactFlowInstance}
+          elevateEdgesOnSelect
           defaultEdgeOptions={{ type: 'floating' }}
           onNodesChange={handleSaveSchema}
           onConnect={() => {
