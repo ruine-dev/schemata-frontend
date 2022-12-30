@@ -5,7 +5,7 @@ export function useCreateTable() {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (newTableNode: TableNodeType) => {
-    reactFlowInstance.setNodes((currentNodes) => currentNodes.concat(newTableNode));
+    reactFlowInstance.addNodes(newTableNode);
   };
 }
 
@@ -17,6 +17,6 @@ export function useCreateTableWithInstance(
   }
 
   return (newTableNode: TableNodeType) => {
-    reactFlowInstance.setNodes((currentNodes) => currentNodes.concat(newTableNode));
+    reactFlowInstance.addNodes(newTableNode);
   };
 }
