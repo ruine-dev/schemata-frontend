@@ -12,28 +12,28 @@ export function useUpdateColumn() {
         if (node.id === tableId) {
           let newIndexes = node.data.indexes;
 
-          if (isPrimaryKey) {
-            const hasExistingPrimaryKey = !!node.data.indexes.find(
-              (index) => index.type === 'PRIMARY_KEY',
-            );
+          const hasExistingPrimaryKey = !!node.data.indexes.find(
+            (index) => index.type === 'PRIMARY_KEY',
+          );
 
-            if (hasExistingPrimaryKey) {
-              newIndexes = node.data.indexes.map((index) => {
-                if (index.type === 'PRIMARY_KEY') {
-                  return {
-                    ...index,
-                    columns: [...index.columns, newColumn.id],
-                  };
-                }
-                return index;
-              });
-            } else {
-              newIndexes = newIndexes.concat({
-                id: crypto.randomUUID(),
-                type: 'PRIMARY_KEY',
-                columns: [newColumn.id],
-              });
-            }
+          if (hasExistingPrimaryKey) {
+            newIndexes = node.data.indexes.map((index) => {
+              if (index.type === 'PRIMARY_KEY') {
+                return {
+                  ...index,
+                  columns: isPrimaryKey
+                    ? index.columns.concat(newColumn.id)
+                    : index.columns.filter((columnId) => columnId !== newColumn.id),
+                };
+              }
+              return index;
+            });
+          } else if (isPrimaryKey) {
+            newIndexes = newIndexes.concat({
+              id: crypto.randomUUID(),
+              type: 'PRIMARY_KEY',
+              columns: [newColumn.id],
+            });
           }
 
           return {
