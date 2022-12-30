@@ -153,6 +153,7 @@ export function Canvas({ schema }: CanvasProps) {
           elevateEdgesOnSelect
           defaultEdgeOptions={{ type: 'floating' }}
           onNodesChange={handleSaveSchema}
+          onEdgesChange={handleSaveSchema}
           onConnect={() => {
             const edges =
               reactFlowInstance?.getEdges()?.map((edge) => {

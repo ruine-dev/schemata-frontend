@@ -29,7 +29,7 @@ function routeConfig(queryClient: QueryClient) {
 
         await localforage.setItem<SchemaType>('schema', database);
 
-        queryClient.setQueryData(queryKey, database);
+        queryClient.invalidateQueries(queryKey);
 
         return {
           database,
