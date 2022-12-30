@@ -12,16 +12,16 @@ import { useValidateUniqueColumnName } from '@/flow-hooks/useValidateUniqueColum
 import { useDeleteColumn } from '@/flow-hooks/useDeleteColumn';
 import { CustomCheckbox } from './CustomCheckbox';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
-import { emptyVarcharColumn } from '@/utils/reactflow';
+import { emptyVarcharColumn, getColumnIdFromHandleId } from '@/utils/reactflow';
 import {
   ColumnType,
   ColumnTypeEnum,
   IndexType,
-  RelationType,
   UpdateColumnSchema,
   UpdateColumnType,
 } from '@/schemas/base';
 import { useStore } from 'reactflow';
+import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -53,7 +53,9 @@ export function TableColumn({
 
   const edges = useStore((state) => state.edges);
 
-  const isForeignKey = !!edges.find((edge) => edge.targetHandle === `${column.id}-target`);
+  const isForeignKey = !!edges.find(
+    (edge) => edge.targetHandle && getColumnIdFromHandleId(edge.targetHandle) === column.id,
+  );
 
   const {
     register,
@@ -156,6 +158,7 @@ export function TableColumn({
             onSubmit={onSubmit}
             onKeyDown={handleKeyEscape}
             autoComplete="off"
+            onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
             className="flex items-center gap-x-2"
           >
             <Controller

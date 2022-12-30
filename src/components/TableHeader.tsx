@@ -12,6 +12,7 @@ import { Textbox } from './Textbox';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { TableSchema, TableType } from '@/schemas/base';
 import { emptyVarcharColumn } from '@/utils/reactflow';
+import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
 
 interface TableHeaderProps {
   table: TableType;
@@ -101,6 +102,7 @@ export function TableHeader({ table }: TableHeaderProps) {
                 onSubmit();
               }
             }}
+            onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
             autoComplete="off"
             className="flex items-center justify-between"
           >
