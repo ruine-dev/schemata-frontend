@@ -53,7 +53,7 @@ export function TableHeader({ table }: TableHeaderProps) {
 
   useEffect(() => {
     reset(table);
-  }, [reset, table]);
+  }, [reset, table.name]);
 
   const handleRename = () => {
     setIsRenaming(true);
