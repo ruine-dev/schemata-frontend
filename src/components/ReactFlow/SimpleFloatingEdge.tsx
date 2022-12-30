@@ -46,13 +46,13 @@ export function SimpleFloatingEdge({
     targetPosition: targetPos as Position,
     targetX: tx as number,
     targetY: ty as number,
-    borderRadius: 24,
+    borderRadius: 16,
   });
 
   return (
     <path
       id={id}
-      className="react-flow__edge-path stroke-slate-400 stroke-1"
+      className="react-flow__edge-path stroke-slate-400 stroke-[1.5]"
       d={edgePath}
       markerStart={markerStart}
       markerEnd={markerEnd}

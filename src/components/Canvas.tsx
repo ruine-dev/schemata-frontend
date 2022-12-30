@@ -67,7 +67,7 @@ export function Canvas({ schema }: CanvasProps) {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const type = event.dataTransfer.getData('application/reactflow');
 
-      if (typeof type === 'undefined' || !type) {
+      if (!type) {
         return;
       }
 

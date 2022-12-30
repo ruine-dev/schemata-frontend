@@ -18,11 +18,11 @@ export function TableNode({ id, data: table }: TableNodeType) {
     <div
       id={`table-${id}`}
       className={clsx(
-        'min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono text-sm shadow-sm',
+        'group/node min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono text-sm shadow-sm',
       )}
     >
       <TableHeader table={{ id, ...table }} />
-      <ul className="mt-1">
+      <ul className="mt-1 pb-1">
         {table.columns.map((column) => (
           <li key={column.id} className="group relative">
             <Handle
@@ -75,8 +75,10 @@ export function TableNode({ id, data: table }: TableNodeType) {
           }
         }}
         className={clsx(
-          'noimage nodrag flex w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
+          'noimage nodrag hidden w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
           'hover:bg-sky-50 hover:text-sky-600',
+          'group-hover/node:flex',
+          'group-focus-within/node:flex',
           'focus:relative focus:z-10 focus:ring-2',
           'enabled:active:bg-sky-50 enabled:active:text-sky-600',
         )}
