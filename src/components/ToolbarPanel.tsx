@@ -1,22 +1,37 @@
-import { DragEvent, MouseEvent } from 'react';
+import { DragEvent } from 'react';
 import { useCreateTable } from '@/flow-hooks/useCreateTable';
-import { Table } from 'phosphor-react';
+import { ArrowClockwise, ArrowCounterClockwise, Table } from 'phosphor-react';
 import { EditorPanelContainer } from './EditorPanelContainer';
 import { Tooltip } from './Tooltip';
 import { useReactFlow } from 'reactflow';
 import { clsx } from '@/utils/clsx';
 import { emptyTableNode } from '@/utils/reactflow';
+import { IconButton } from './IconButton';
 
-export function ToolbarPanel() {
+type ToolbarPanelProps = {
+  canUndo: boolean;
+  canRedo: boolean;
+  handleUndo: () => void;
+  handleRedo: () => void;
+  onCreateTable: () => void;
+};
+
+export function ToolbarPanel({
+  canUndo,
+  canRedo,
+  handleUndo,
+  handleRedo,
+  onCreateTable,
+}: ToolbarPanelProps) {
   const { project } = useReactFlow();
-  const createTable = useCreateTable();
+  const createTable = useCreateTable(onCreateTable);
 
   const onDragStart = (event: DragEvent<HTMLButtonElement>, nodeType: 'table') => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleCreateTable = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleCreateTable = () => {
     const rect = document.body.getBoundingClientRect();
 
     const position = project({
@@ -49,6 +64,22 @@ export function ToolbarPanel() {
             Add Table
           </button>
         </Tooltip>
+        <IconButton
+          icon={ArrowCounterClockwise}
+          label="Undo"
+          size="large"
+          onClick={handleUndo}
+          disabled={!canUndo}
+          filled
+        />
+        <IconButton
+          icon={ArrowClockwise}
+          label="Redo"
+          size="large"
+          onClick={handleRedo}
+          disabled={!canRedo}
+          filled
+        />
       </div>
     </EditorPanelContainer>
   );

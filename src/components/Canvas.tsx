@@ -1,4 +1,12 @@
-import { DragEventHandler, useCallback, useState, useRef } from 'react';
+import {
+  DragEventHandler,
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+  createContext,
+  useMemo,
+} from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -15,7 +23,7 @@ import { GeneralPropsPanel } from './GeneralPropsPanel';
 import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
 import { SimpleFloatingEdge } from './ReactFlow/SimpleFloatingEdge';
-import { SchemaType, TableTypeWithoutId } from '@/schemas/base';
+import { SchemaType, TableNodeType, TableTypeWithoutId } from '@/schemas/base';
 import { useAddCreateTableShortcut } from '@/flow-hooks/useAddCreateTableShortcut';
 import { useHandleSaveLocalSchema } from '@/flow-hooks/useHandleSaveLocalSchema';
 import { isUuid } from '@/utils/zod';
@@ -23,6 +31,8 @@ import { useHandleEdgeMarker } from '@/flow-hooks/useHandleEdgeMarker';
 import { useTransformSchemaToReactFlowData } from '@/flow-hooks/useTransformSchemaToReactFlowData';
 import { Markers } from './Markers';
 import { useHandleCreateTableOnDrop } from '@/flow-hooks/useHandleCreateTableOnDrop';
+import useUndoable from 'use-undoable';
+import { appendDataChangeListenerToNodes } from '@/utils/reactflow';
 
 const nodeTypes: NodeTypes = { table: TableNode } as unknown as NodeTypes;
 
@@ -41,21 +51,79 @@ export function Canvas({ schema }: CanvasProps) {
     useState<ReactFlowInstance<TableTypeWithoutId> | null>(null);
 
   const transformSchemaToReactFlowData = useTransformSchemaToReactFlowData({ reactFlowInstance });
-  const { nodes: defaultNodes, edges: defaultEdges } = transformSchemaToReactFlowData.parse(schema);
+  const { nodes: preDefaultNodes, edges: defaultEdges } = useMemo(
+    () => transformSchemaToReactFlowData.parse(schema),
+    [schema],
+  );
+
+  const [reactFlowData, setReactFlowData, { undo, redo, canUndo, canRedo }] = useUndoable({
+    nodes: preDefaultNodes,
+    edges: defaultEdges,
+  });
+
+  const handleUpdateReactFlowDataNode = () => {
+    const nodes = reactFlowInstance?.getNodes() ?? [];
+
+    const nodePositionsMap = new Map(nodes.map((node) => [node.id, node.position]));
+
+    setReactFlowData((currentData) => {
+      const isPositionChanged = !!currentData.nodes.find((node) => {
+        const newPosition = nodePositionsMap.get(node.id);
+
+        return node.position.x !== newPosition?.x && node.position.y !== newPosition?.y;
+      });
+
+      const isNodeCountChanged = currentData.nodes.length !== nodes.length;
+
+      if (!isPositionChanged && !isNodeCountChanged) {
+        return currentData;
+      }
+
+      return { ...currentData, nodes };
+    });
+  };
+
+  const handleUpdateReactFlowDataEdge = () => {
+    const edges = reactFlowInstance?.getEdges() ?? [];
+
+    setReactFlowData((currentData) => ({ ...currentData, edges }));
+  };
+
+  const defaultNodes: TableNodeType[] = useMemo(
+    () =>
+      appendDataChangeListenerToNodes({
+        nodes: preDefaultNodes,
+        onDataChange() {
+          const nodes = reactFlowInstance?.getNodes() ?? [];
+          const edges = reactFlowInstance?.getEdges() ?? [];
+
+          setReactFlowData({ edges, nodes });
+        },
+      }),
+    [preDefaultNodes],
+  );
 
   const onDragOver: DragEventHandler<HTMLDivElement> = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const onDrop: DragEventHandler<HTMLDivElement> = useHandleCreateTableOnDrop({
-    reactFlowInstance,
-    reactFlowWrapper,
-  });
+  const onDrop: DragEventHandler<HTMLDivElement> = useHandleCreateTableOnDrop(
+    {
+      reactFlowInstance,
+      reactFlowWrapper,
+    },
+    handleUpdateReactFlowDataNode,
+  );
 
   useAddCreateTableShortcut({ reactFlowInstance });
   const handleSaveSchema = useHandleSaveLocalSchema({ reactFlowInstance });
   const handleEdgeMarker = useHandleEdgeMarker({ reactFlowInstance });
+
+  useEffect(() => {
+    reactFlowInstance?.setNodes(reactFlowData.nodes);
+    reactFlowInstance?.setEdges(reactFlowData.edges);
+  }, [reactFlowData]);
 
   return (
     <ReactFlowProvider>
@@ -71,6 +139,9 @@ export function Canvas({ schema }: CanvasProps) {
           onInit={setReactFlowInstance}
           elevateEdgesOnSelect
           defaultEdgeOptions={{ type: 'floating' }}
+          onNodesDelete={handleUpdateReactFlowDataNode}
+          onEdgesDelete={handleUpdateReactFlowDataEdge}
+          onNodeDragStop={handleUpdateReactFlowDataNode}
           onNodesChange={handleSaveSchema}
           onEdgesChange={handleSaveSchema}
           onConnect={() => {
@@ -90,7 +161,11 @@ export function Canvas({ schema }: CanvasProps) {
 
             reactFlowInstance?.setEdges(edges);
           }}
-          onConnectEnd={handleSaveSchema}
+          onConnectEnd={() => {
+            handleSaveSchema();
+
+            handleUpdateReactFlowDataEdge();
+          }}
         >
           <Panel position="top-left">
             <GeneralPropsPanel schema={schema} />
@@ -99,7 +174,13 @@ export function Canvas({ schema }: CanvasProps) {
             <EditorPropsPanel schema={schema} />
           </Panel>
           <Panel position="bottom-center">
-            <ToolbarPanel />
+            <ToolbarPanel
+              canUndo={canUndo}
+              canRedo={canRedo}
+              handleUndo={undo}
+              handleRedo={redo}
+              onCreateTable={handleUpdateReactFlowDataNode}
+            />
           </Panel>
           <Background className="bg-white" />
           <Controls />

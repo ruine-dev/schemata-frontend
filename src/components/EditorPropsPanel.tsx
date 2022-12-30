@@ -54,7 +54,13 @@ export function EditorPropsPanel({ schema }: EditorPropsPanelProps) {
 
   return (
     <EditorPanelContainer>
-      <IconButton label="Export as image" icon={Export} size="large" onClick={exportToImage} />
+      <IconButton
+        label="Export as image"
+        icon={Export}
+        size="large"
+        onClick={exportToImage}
+        filled
+      />
       <ShareLinkButton schema={schema} />
     </EditorPanelContainer>
   );
@@ -81,6 +87,12 @@ function ShareLinkButton({ schema }: ShareLinkButtonProps) {
   };
 
   return (
-    <IconButton label="Share link" icon={ShareNetwork} onClick={copyLinkToClipboard} size="large" />
+    <IconButton
+      label="Share link"
+      icon={ShareNetwork}
+      onClick={copyLinkToClipboard}
+      size="large"
+      filled
+    />
   );
 }

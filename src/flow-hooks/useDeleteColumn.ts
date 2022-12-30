@@ -2,7 +2,7 @@ import { DeleteColumnType, TableTypeWithoutId } from '@/schemas/base';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import { useReactFlow } from 'reactflow';
 
-export function useDeleteColumn() {
+export function useDeleteColumn(callback?: () => void) {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: DeleteColumnType) => {
@@ -34,5 +34,7 @@ export function useDeleteColumn() {
         );
       });
     });
+
+    callback?.();
   };
 }

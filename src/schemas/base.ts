@@ -646,7 +646,7 @@ export const TableSchema = z.object({
 
 export type TableType = z.infer<typeof TableSchema>;
 
-export type TableTypeWithoutId = Omit<TableType, 'id'>;
+export type TableTypeWithoutId = Omit<TableType, 'id'> & { onDataChange?: () => void };
 
 export type TableNodeType = Node<TableTypeWithoutId>;
 

@@ -8,7 +8,7 @@ import { emptyVarcharColumn } from '@/utils/reactflow';
 import { TableNodeType } from '@/schemas/base';
 
 export function TableNode({ id, data: table }: TableNodeType) {
-  const addTableColumn = useCreateColumn();
+  const createColumn = useCreateColumn();
   const connectionNodeId = useStore((state) => state.connectionNodeId);
   const connectionHandleId = useStore((state) => state.connectionHandleId);
 
@@ -21,7 +21,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
         'group/node min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono text-sm shadow-sm',
       )}
     >
-      <TableHeader table={{ id, ...table }} />
+      <TableHeader table={{ id, ...table }} onDataChange={table.onDataChange} />
       <ul className="mt-1 pb-1">
         {table.columns.map((column) => (
           <li key={column.id} className="group relative">
@@ -59,13 +59,14 @@ export function TableNode({ id, data: table }: TableNodeType) {
               tableIndexes={table.indexes}
               tableId={id}
               hideAction={!!connectionNodeId}
+              onDataChange={table.onDataChange}
               className="peer-hover:bg-slate-100"
             />
           </li>
         ))}
       </ul>
       <button
-        onClick={() => addTableColumn({ ...emptyVarcharColumn(), tableId: id })}
+        onClick={() => createColumn({ ...emptyVarcharColumn(), tableId: id })}
         onKeyDown={(e) => {
           if (e.key === 'Escape') {
             e.preventDefault();

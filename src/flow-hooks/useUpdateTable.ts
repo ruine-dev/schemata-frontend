@@ -1,7 +1,7 @@
 import { TableType, TableTypeWithoutId } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
-export function useUpdateTable() {
+export function useUpdateTable(callback?: () => void) {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (newTable: TableType) => {
@@ -15,6 +15,7 @@ export function useUpdateTable() {
             data: {
               name: name || 'untitled',
               ...tablePayload,
+              onDataChange: callback,
             },
           };
         }
@@ -22,5 +23,7 @@ export function useUpdateTable() {
         return node;
       }),
     );
+
+    callback?.();
   };
 }

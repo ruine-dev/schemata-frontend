@@ -1,7 +1,7 @@
 import { TableTypeWithoutId, UpdateColumnType } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
-export function useUpdateColumn() {
+export function useUpdateColumn(callback?: () => void) {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: UpdateColumnType) => {
@@ -57,5 +57,7 @@ export function useUpdateColumn() {
         return node;
       });
     });
+
+    callback?.();
   };
 }

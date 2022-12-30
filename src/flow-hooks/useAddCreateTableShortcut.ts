@@ -8,8 +8,11 @@ type UseAddCreateTableShortcutParams = {
   reactFlowInstance: ReactFlowInstance<TableTypeWithoutId> | null;
 };
 
-export function useAddCreateTableShortcut({ reactFlowInstance }: UseAddCreateTableShortcutParams) {
-  const createTable = useCreateTableWithInstance(reactFlowInstance);
+export function useAddCreateTableShortcut(
+  { reactFlowInstance }: UseAddCreateTableShortcutParams,
+  callback?: () => void,
+) {
+  const createTable = useCreateTableWithInstance(reactFlowInstance, callback);
 
   useEffect(() => {
     const handleCreateTableShortcut = (e: KeyboardEvent) => {

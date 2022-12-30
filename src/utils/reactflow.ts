@@ -3,9 +3,10 @@ import {
   RelationType,
   TableNodeType,
   TableType,
+  TableTypeWithoutId,
   VarcharColumnType,
 } from '@/schemas/base';
-import { Edge } from 'reactflow';
+import { Edge, ReactFlowInstance } from 'reactflow';
 
 export function nodeToTable(node: TableNodeType): TableType {
   return {
@@ -86,4 +87,20 @@ export function getHandlePositionFromHandleId(handleId: string): 'right' | 'left
   }
 
   throw Error(`Cannot get position from handleId ${handleId}`);
+}
+
+export function appendDataChangeListenerToNodes({
+  nodes,
+  onDataChange,
+}: {
+  nodes: TableNodeType[];
+  onDataChange: () => void;
+}) {
+  return nodes.map((node) => ({
+    ...node,
+    data: {
+      ...node.data,
+      onDataChange,
+    },
+  }));
 }

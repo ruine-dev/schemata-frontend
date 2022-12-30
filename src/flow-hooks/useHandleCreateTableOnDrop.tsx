@@ -9,11 +9,11 @@ type UseHandleCreateTableOnDropParams = {
   reactFlowWrapper: RefObject<HTMLDivElement>;
 };
 
-export function useHandleCreateTableOnDrop({
-  reactFlowInstance,
-  reactFlowWrapper,
-}: UseHandleCreateTableOnDropParams) {
-  const createTable = useCreateTableWithInstance(reactFlowInstance);
+export function useHandleCreateTableOnDrop(
+  { reactFlowInstance, reactFlowWrapper }: UseHandleCreateTableOnDropParams,
+  callback?: () => void,
+) {
+  const createTable = useCreateTableWithInstance(reactFlowInstance, callback);
 
   return useCallback(
     (event: DragEvent<HTMLDivElement>) => {
@@ -41,6 +41,6 @@ export function useHandleCreateTableOnDrop({
         }),
       );
     },
-    [reactFlowInstance],
+    [reactFlowInstance, callback],
   );
 }

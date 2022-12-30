@@ -16,12 +16,13 @@ import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
 
 interface TableHeaderProps {
   table: TableType;
+  onDataChange?: () => void;
 }
 
-export function TableHeader({ table }: TableHeaderProps) {
-  const updateTable = useUpdateTable();
+export function TableHeader({ table, onDataChange }: TableHeaderProps) {
+  const updateTable = useUpdateTable(onDataChange);
   const deleteTable = useDeleteTable();
-  const addTableColumn = useCreateColumn();
+  const addColumn = useCreateColumn();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -75,7 +76,7 @@ export function TableHeader({ table }: TableHeaderProps) {
             e.stopPropagation();
             deleteTable(table.id);
           } else if (e.shiftKey && e.key === 'Enter') {
-            addTableColumn({
+            addColumn({
               ...emptyVarcharColumn(),
               tableId: table.id,
             });
