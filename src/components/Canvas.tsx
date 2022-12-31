@@ -108,9 +108,42 @@ export function Canvas({ schema }: CanvasProps) {
     handleUpdateReactFlowDataNode,
   );
 
-  useAddCreateTableShortcut({ reactFlowInstance });
+  useAddCreateTableShortcut({ reactFlowInstance }, handleUpdateReactFlowDataNode);
   const handleSaveSchema = useHandleSaveLocalSchema({ reactFlowInstance });
   const handleEdgeMarker = useHandleEdgeMarker({ reactFlowInstance });
+
+  useEffect(() => {
+    const handleUndoRedoShortcut = (e: KeyboardEvent) => {
+      if (
+        !(
+          document.activeElement instanceof HTMLDivElement ||
+          document.activeElement instanceof HTMLBodyElement
+        )
+      ) {
+        return;
+      }
+
+      if (e.ctrlKey && e.key === 'z') {
+        e.preventDefault();
+        e.stopPropagation();
+
+        undo();
+      }
+
+      if (e.ctrlKey && e.key === 'y') {
+        e.preventDefault();
+        e.stopPropagation();
+
+        redo();
+      }
+    };
+
+    document.body.addEventListener('keydown', handleUndoRedoShortcut);
+
+    return () => {
+      document.body.removeEventListener('keydown', handleUndoRedoShortcut);
+    };
+  });
 
   useEffect(() => {
     reactFlowInstance?.setNodes(reactFlowData.nodes);

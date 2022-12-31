@@ -40,6 +40,7 @@ export function TableColumn({
   hideAction,
   className,
 }: TableColumnFinalProps) {
+  const [isColumnFocused, setIsColumnFocused] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -123,6 +124,8 @@ export function TableColumn({
     <div
       ref={containerRef}
       tabIndex={0}
+      onFocus={() => setIsColumnFocused(true)}
+      onBlur={() => setIsColumnFocused(false)}
       onKeyDown={(e) => {
         if (!isEditing && e.target === e.currentTarget) {
           if (e.key === 'e') {
@@ -247,7 +250,7 @@ export function TableColumn({
             })}
           >
             <IconButton
-              label="Edit column"
+              label={`Edit${isColumnFocused ? ' (E)' : ''}`}
               icon={Pencil}
               onClick={() => setIsEditing(true)}
               disabled={hideAction}
@@ -255,7 +258,7 @@ export function TableColumn({
               className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
             />
             <IconButton
-              label="Delete column"
+              label={`Delete${isColumnFocused ? ' (Delete)' : ''}`}
               icon={Trash}
               severity="danger"
               onClick={handleDelete}

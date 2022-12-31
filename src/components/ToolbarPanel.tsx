@@ -49,7 +49,7 @@ export function ToolbarPanel({
   return (
     <EditorPanelContainer>
       <div className="flex items-center">
-        <Tooltip text="Drag and drop to create a table">
+        <Tooltip text="Drag and drop to create a table (T)">
           <button
             onClick={handleCreateTable}
             onDragStart={(event) => onDragStart(event, 'table')}
@@ -67,7 +67,7 @@ export function ToolbarPanel({
         </Tooltip>
         <IconButton
           icon={ArrowCounterClockwise}
-          label="Undo"
+          label="Undo (Ctrl + Z)"
           size="large"
           onClick={handleUndo}
           disabled={!canUndo}
@@ -75,7 +75,7 @@ export function ToolbarPanel({
         />
         <IconButton
           icon={ArrowClockwise}
-          label="Redo"
+          label="Redo (Ctrl + Y)"
           size="large"
           onClick={handleRedo}
           disabled={!canRedo}

@@ -37,6 +37,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
     defaultValues: table,
   });
 
+  const [isHeaderFocused, setIsHeaderFocused] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -90,6 +91,8 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
           }
         }
       }}
+      onFocus={() => setIsHeaderFocused(true)}
+      onBlur={() => setIsHeaderFocused(false)}
       data-test="table-header"
       className={clsx(
         'group rounded-t-xl bg-sky-500 px-3 pb-1.5 pt-2 font-medium outline-none ring-sky-500 ring-offset-2',
@@ -143,7 +146,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
           <div className={clsx('invisible flex items-center gap-x-1', 'group-hover:visible')}>
             <IconButton
               icon={Pencil}
-              label="Rename"
+              label={`Rename${isHeaderFocused ? ' (E)' : ''}`}
               severity="dark"
               onClick={handleRename}
               onKeyDown={(e) => {
@@ -159,7 +162,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
             />
             <IconButton
               icon={Trash}
-              label="Delete"
+              label={`Delete${isHeaderFocused ? ' (Delete)' : ''}`}
               severity="dark"
               onClick={() => deleteTable(table.id)}
               onKeyDown={(e) => {

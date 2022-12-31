@@ -8,6 +8,7 @@ import { EditorPanelContainer } from './EditorPanelContainer';
 import { IconButton } from './IconButton';
 import { SchemaType } from '@/schemas/base';
 import { schemaToBase64Url } from '@/utils/schema';
+import { useEffect } from 'react';
 
 interface EditorPropsPanelProps {
   schema: SchemaType;
@@ -86,9 +87,26 @@ function ShareLinkButton({ schema }: ShareLinkButtonProps) {
     toast.success('URL copied to clipboard');
   };
 
+  useEffect(() => {
+    const handleShareLinkShortcut = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        e.stopPropagation();
+
+        copyLinkToClipboard();
+      }
+    };
+
+    document.body.addEventListener('keydown', handleShareLinkShortcut);
+
+    return () => {
+      document.body.removeEventListener('keydown', handleShareLinkShortcut);
+    };
+  });
+
   return (
     <IconButton
-      label="Share link"
+      label="Share link (Ctrl + S)"
       icon={ShareNetwork}
       onClick={copyLinkToClipboard}
       size="large"
