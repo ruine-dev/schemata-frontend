@@ -71,14 +71,18 @@ export function Canvas({ schema }: CanvasProps) {
         return currentData;
       }
 
-      return { ...currentData, nodes };
+      const edges = reactFlowInstance?.getEdges() ?? [];
+
+      return { edges, nodes };
     });
   };
 
   const handleUpdateReactFlowDataEdge = () => {
     const edges = reactFlowInstance?.getEdges() ?? [];
 
-    setReactFlowData((currentData) => ({ ...currentData, edges }));
+    setReactFlowData((currentData) => {
+      return { ...currentData, edges };
+    });
   };
 
   const defaultNodes: TableNodeType[] = useMemo(
