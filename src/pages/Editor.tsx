@@ -12,17 +12,15 @@ export function Editor() {
   const queryClient = useQueryClient();
   const { loaderData } = useMatch('/');
 
-  const {
-    data: schema,
-    isLoading,
-    isSuccess,
-  } = useLocalSchemaQuery(loaderData.schema?.id ?? starterSchema.id);
+  const initialSchema = loaderData.schema ?? starterSchema;
+
+  const { data: schema, isLoading, isSuccess } = useLocalSchemaQuery(initialSchema.id);
 
   useEffect(() => {
     localforage.clear();
 
-    localforage.setItem(`schema-${starterSchema.id}`, starterSchema);
-    queryClient.setQueryData(['schema', starterSchema.id], starterSchema);
+    localforage.setItem(`schema-${initialSchema.id}`, initialSchema);
+    queryClient.setQueryData(['schema', initialSchema.id], initialSchema);
   }, []);
 
   if (isLoading) {
