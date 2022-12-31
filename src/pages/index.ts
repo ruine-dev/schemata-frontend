@@ -17,19 +17,11 @@ function routeConfig(queryClient: QueryClient) {
       async loader({ search }) {
         const { schema: base64Schema } = search;
 
-        const { queryKey } = localSchemaQuery();
-
-        const existingDatabase =
-          queryClient.getQueryData<SchemaType>(queryKey) ??
-          (await queryClient.prefetchQuery(queryKey, fetchLocalSchema));
-
         const database: SchemaType = base64Schema
           ? base64UrlToSchema(base64Schema)
-          : existingDatabase ?? emptySchemaFactory();
+          : emptySchemaFactory();
 
         await localforage.setItem<SchemaType>('schema', database);
-
-        queryClient.invalidateQueries(queryKey);
 
         return {
           database,

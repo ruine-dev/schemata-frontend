@@ -71,17 +71,21 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
             severity="primary"
             disabled={!isDirty}
             loading={isSubmitting}
+            data-test="submit-schema"
             size="large"
           />
         </form>
       ) : (
         <>
-          <span className="py-2 px-3 text-slate-800">{schema?.name}</span>
+          <span data-test="schema-name" className="py-2 px-3 text-slate-800">
+            {schema?.name}
+          </span>
           <IconButton
             label="Change title"
             icon={Pencil}
             onClick={handleRename}
             size="large"
+            data-test="edit-schema-button"
             className="ml-2"
           />
         </>

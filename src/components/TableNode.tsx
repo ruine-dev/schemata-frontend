@@ -17,6 +17,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
   return (
     <div
       id={`table-${id}`}
+      data-test="table-node"
       className={clsx(
         'group/node min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono text-sm shadow-sm',
       )}
@@ -75,6 +76,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
             document.getElementById(`table-header-${id}`)?.focus();
           }
         }}
+        data-test="create-column-button"
         className={clsx(
           'noimage nodrag hidden w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
           'hover:bg-sky-50 hover:text-sky-600',

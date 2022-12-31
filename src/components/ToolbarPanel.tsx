@@ -54,6 +54,7 @@ export function ToolbarPanel({
             onClick={handleCreateTable}
             onDragStart={(event) => onDragStart(event, 'table')}
             draggable
+            data-test="create-table-button"
             className={clsx(
               'flex cursor-pointer items-center gap-x-2 rounded-lg px-3 py-2 text-gray-500 outline-none ring-sky-500',
               'hover:bg-slate-100',

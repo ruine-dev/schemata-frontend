@@ -147,6 +147,7 @@ export function TableColumn({
           }
         }
       }}
+      data-test="column"
       className={clsx(
         'group flex items-center gap-x-2 py-0.5 pl-3 pr-1.5 outline-none ring-sky-500',
         'hover:bg-slate-100',
@@ -210,6 +211,7 @@ export function TableColumn({
               severity="primary"
               label="Save"
               type="submit"
+              data-test="submit-column"
             />
           </form>
         </FocusLock>
@@ -217,17 +219,28 @@ export function TableColumn({
         <>
           <span className="h-4 w-4">
             {(isPrimaryKey || isForeignKey) && (
-              <Key
-                weight="fill"
-                className={clsx('h-4 w-4', {
-                  'text-yellow-400': isPrimaryKey,
-                  'text-slate-400': isForeignKey && !isPrimaryKey,
-                })}
-              />
+              <>
+                <Key
+                  weight="fill"
+                  className={clsx('h-4 w-4', {
+                    'text-yellow-400': isPrimaryKey,
+                    'text-slate-400': isForeignKey && !isPrimaryKey,
+                  })}
+                  aria-hidden
+                />
+                <div className="sr-only" data-test="column-key">
+                  {isPrimaryKey && 'Primary key'}
+                  {isForeignKey && (isPrimaryKey ? 'and Foreign key' : 'Foreign key')}
+                </div>
+              </>
             )}
           </span>
-          <span className="text-slate-700">{column.name}</span>
-          <span className="text-slate-500">{column.type}</span>
+          <span className="text-slate-700" data-test="column-name">
+            {column.name}
+          </span>
+          <span className="text-slate-500" data-test="column-type">
+            {column.type}
+          </span>
           <div
             className={clsx('invisible ml-auto flex group-hover:visible', {
               invisible: hideAction,
@@ -238,6 +251,7 @@ export function TableColumn({
               icon={Pencil}
               onClick={() => setIsEditing(true)}
               disabled={hideAction}
+              data-test="edit-column-button"
               className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
             />
             <IconButton
@@ -246,6 +260,7 @@ export function TableColumn({
               severity="danger"
               onClick={handleDelete}
               disabled={hideAction}
+              data-test="delete-column-button"
               className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
             />
           </div>

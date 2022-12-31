@@ -122,6 +122,7 @@ export function Canvas({ schema }: CanvasProps) {
       <Markers />
       <div className="h-screen w-full" ref={reactFlowWrapper}>
         <ReactFlow
+          id="canvas"
           defaultNodes={defaultNodes}
           defaultEdges={defaultEdges}
           nodeTypes={nodeTypes}
