@@ -1,4 +1,5 @@
 import { SchemaType } from '@/schemas/base';
+import { emptySchemaFactory } from '@/utils/schema';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import localforage from 'localforage';
@@ -13,8 +14,8 @@ export async function fetchSchema(id: SchemaType['id']): Promise<SchemaType> {
   return schema;
 }
 
-export async function fetchLocalSchema(): Promise<SchemaType> {
-  const schema = await localforage.getItem<SchemaType>('schema');
+export async function fetchLocalSchema(id?: SchemaType['id']): Promise<SchemaType> {
+  const schema = await localforage.getItem<SchemaType>(`schema-${id}`);
 
   if (!schema) {
     throw Error('Local schema not found');
@@ -30,15 +31,15 @@ export function schemaQuery(id: SchemaType['id']) {
   };
 }
 
-export function localSchemaQuery() {
+export function localSchemaQuery(id?: SchemaType['id']) {
   return {
-    queryKey: ['localSchema'],
-    queryFn: fetchLocalSchema,
+    queryKey: ['schema', id],
+    queryFn: async () => await fetchLocalSchema(id),
   };
 }
 
-export function useLocalSchemaQuery() {
-  return useQuery(localSchemaQuery());
+export function useLocalSchemaQuery(id?: SchemaType['id']) {
+  return useQuery(localSchemaQuery(id));
 }
 
 export function useSchemaQuery(id: SchemaType['id']) {

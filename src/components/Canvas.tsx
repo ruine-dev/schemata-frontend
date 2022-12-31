@@ -109,7 +109,7 @@ export function Canvas({ schema }: CanvasProps) {
   );
 
   useAddCreateTableShortcut({ reactFlowInstance }, handleUpdateReactFlowDataNode);
-  const handleSaveSchema = useHandleSaveLocalSchema({ reactFlowInstance });
+  const handleSaveSchema = useHandleSaveLocalSchema(schema.id, { reactFlowInstance });
   const handleEdgeMarker = useHandleEdgeMarker({ reactFlowInstance });
 
   useEffect(() => {

@@ -1,29 +1,40 @@
 import { localSchemaQuery } from '@/queries/useSchemaQuery';
 import { SchemaType } from '@/schemas/base';
-import { emptySchemaFactory } from '@/utils/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import localforage from 'localforage';
 
-export function useSaveLocalSchema() {
+export function useSaveLocalSchema(id: SchemaType['id']) {
   const queryClient = useQueryClient();
 
   return useMutation<SchemaType, unknown, SchemaType | ((currentSchema: SchemaType) => SchemaType)>(
     async (newSchema) => {
-      if (typeof newSchema === 'function') {
-        let currentSchema = await localforage.getItem<SchemaType>('schema');
+      let currentSchema = await localforage.getItem<SchemaType>(`schema-${id}`);
 
-        if (!currentSchema) {
-          currentSchema = emptySchemaFactory();
+      if (!currentSchema) {
+        const queryDataSchema = queryClient.getQueryData<SchemaType>(['schema', id]);
+
+        if (!queryDataSchema) {
+          throw Error('Schema not found');
         }
 
-        return await localforage.setItem<SchemaType>('schema', newSchema(currentSchema));
+        currentSchema = queryDataSchema;
       }
 
-      return await localforage.setItem<SchemaType>('schema', newSchema);
+      if (typeof newSchema === 'function') {
+        return await localforage.setItem<SchemaType>(`schema-${id}`, {
+          ...newSchema(currentSchema),
+          name: newSchema.name || currentSchema.name,
+        });
+      }
+
+      return await localforage.setItem<SchemaType>(`schema-${id}`, {
+        ...newSchema,
+        name: newSchema.name || currentSchema.name,
+      });
     },
     {
-      onSuccess() {
-        queryClient.invalidateQueries(localSchemaQuery());
+      onSuccess({ id }) {
+        queryClient.invalidateQueries(localSchemaQuery(id));
       },
     },
   );

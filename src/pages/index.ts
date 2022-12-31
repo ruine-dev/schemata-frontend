@@ -1,9 +1,7 @@
-import { fetchLocalSchema, localSchemaQuery } from '@/queries/useSchemaQuery';
 import { SchemaType } from '@/schemas/base';
-import { base64UrlToSchema, emptySchemaFactory } from '@/utils/schema';
+import { base64UrlToSchema } from '@/utils/schema';
 import { QueryClient } from '@tanstack/react-query';
 import { createRouteConfig, createReactRouter } from '@tanstack/react-router';
-import localforage from 'localforage';
 import { z } from 'zod';
 import { Editor } from './Editor';
 
@@ -17,14 +15,10 @@ function routeConfig(queryClient: QueryClient) {
       async loader({ search }) {
         const { schema: base64Schema } = search;
 
-        const database: SchemaType = base64Schema
-          ? base64UrlToSchema(base64Schema)
-          : emptySchemaFactory();
-
-        await localforage.setItem<SchemaType>('schema', database);
+        const schema: SchemaType | null = base64Schema ? base64UrlToSchema(base64Schema) : null;
 
         return {
-          database,
+          schema,
         };
       },
       validateSearch: z.object({

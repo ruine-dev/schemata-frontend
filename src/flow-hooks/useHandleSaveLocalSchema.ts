@@ -1,5 +1,11 @@
 import { useSaveLocalSchema } from '@/mutations/useSaveLocalSchema';
-import { PositionType, RelationType, TableType, TableTypeWithoutId } from '@/schemas/base';
+import {
+  PositionType,
+  RelationType,
+  SchemaType,
+  TableType,
+  TableTypeWithoutId,
+} from '@/schemas/base';
 import { nodeToTable, nodeToPosition, edgeToRelation } from '@/utils/reactflow';
 import { ReactFlowInstance } from 'reactflow';
 
@@ -7,8 +13,11 @@ type UseHandleSaveLocalSchemaParams = {
   reactFlowInstance: ReactFlowInstance<TableTypeWithoutId> | null;
 };
 
-export function useHandleSaveLocalSchema({ reactFlowInstance }: UseHandleSaveLocalSchemaParams) {
-  const { mutate: saveLocalSchema } = useSaveLocalSchema();
+export function useHandleSaveLocalSchema(
+  id: SchemaType['id'],
+  { reactFlowInstance }: UseHandleSaveLocalSchemaParams,
+) {
+  const { mutate: saveLocalSchema } = useSaveLocalSchema(id);
 
   return () => {
     const tables: TableType[] =
