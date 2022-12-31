@@ -12,6 +12,7 @@ interface BaseDialogProps {
   onClose?: () => void;
   open?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
+  closeOnInteractOutside?: boolean;
 }
 
 export function BaseDialog({
@@ -22,6 +23,7 @@ export function BaseDialog({
   onClose,
   open,
   onOpenChange,
+  closeOnInteractOutside,
 }: BaseDialogProps) {
   return (
     <Dialog.Root
@@ -37,7 +39,14 @@ export function BaseDialog({
       <Dialog.Portal>
         <Dialog.Overlay asChild>
           <Modal.Overlay>
-            <Dialog.Content onInteractOutside={(e) => e.preventDefault()} asChild>
+            <Dialog.Content
+              onInteractOutside={(e) => {
+                if (!closeOnInteractOutside) {
+                  e.preventDefault();
+                }
+              }}
+              asChild
+            >
               <Modal.Content>
                 <div className="flex items-center justify-between">
                   <Dialog.Title asChild>

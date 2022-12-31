@@ -1,5 +1,5 @@
 import { toPng } from 'html-to-image';
-import { Export, ShareNetwork } from 'phosphor-react';
+import { Export, Info, ShareNetwork } from 'phosphor-react';
 import { toast } from 'react-hot-toast';
 import { useReactFlow } from 'reactflow';
 import { useCopyToClipboard } from 'usehooks-ts';
@@ -9,6 +9,7 @@ import { IconButton } from './IconButton';
 import { SchemaType } from '@/schemas/base';
 import { schemaToBase64Url } from '@/utils/schema';
 import { useEffect } from 'react';
+import { InformationDialog } from './InformationDialog';
 
 interface EditorPropsPanelProps {
   schema: SchemaType;
@@ -55,6 +56,9 @@ export function EditorPropsPanel({ schema }: EditorPropsPanelProps) {
 
   return (
     <EditorPanelContainer>
+      <InformationDialog
+        trigger={<IconButton label="Information" icon={Info} size="large" filled />}
+      />
       <IconButton
         label="Export as image"
         icon={Export}

@@ -54,7 +54,7 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
               }
             }}
             autoComplete="off"
-            className="flex items-center"
+            className="flex items-center gap-x-1"
           >
             <Textbox
               label="Name"
@@ -75,6 +75,7 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
               loading={isSubmitting}
               data-test="submit-schema"
               size="large"
+              filled
             />
           </form>
         </FocusLock>
@@ -89,6 +90,7 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
             onClick={handleRename}
             size="large"
             data-test="edit-schema-button"
+            filled
             className="ml-2"
           />
         </>
