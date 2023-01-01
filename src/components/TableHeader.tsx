@@ -121,7 +121,6 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
                 },
               })}
               label="Name"
-              size="small"
               srOnlyLabel
               disabled={isSubmitting}
               data-test="table-name-input"

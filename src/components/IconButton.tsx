@@ -12,8 +12,8 @@ import { clsx } from '@/utils/clsx';
 const iconButtonIconClass = cva(null, {
   variants: {
     size: {
-      normal: 'w-4 h-4',
-      large: 'w-5 h-5',
+      small: 'w-4 h-4',
+      medium: 'w-5 h-5',
     },
   },
 });
@@ -83,7 +83,7 @@ function IconButtonComponent(
     darkMode,
     loading = false,
     filled = false,
-    size = 'normal',
+    size = 'medium',
     severity = 'normal',
     ...props
   }: IconButtonProps,

@@ -54,7 +54,7 @@ export function BaseDialog({
                   </Dialog.Title>
                   {!noCloseButton && (
                     <Dialog.Close asChild>
-                      <IconButton icon={X} label="Close" size="large" />
+                      <IconButton icon={X} label="Close" />
                     </Dialog.Close>
                   )}
                 </div>

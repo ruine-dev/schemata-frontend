@@ -34,6 +34,7 @@
     "react-focus-lock": "^2.9.2",
     "react-hook-form": "^7.41.0",
     "react-hot-toast": "^2.4.0",
+    "react-select": "^5.7.0",
     "reactflow": "^11.3.3",
     "tailwind-merge": "^1.8.0",
     "tailwindcss-radix": "^2.6.1",

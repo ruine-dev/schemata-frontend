@@ -25,7 +25,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
       onBlur={() => setIsFocused(false)}
       data-test="table-node"
       className={clsx(
-        'group/node min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono text-sm shadow-sm',
+        'group/node min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono shadow-sm',
       )}
     >
       <TableHeader table={{ id, ...table }} onDataChange={table.onDataChange} />
@@ -84,7 +84,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
           }}
           data-test="create-column-button"
           className={clsx(
-            'noimage nodrag hidden w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
+            'noimage nodrag hidden w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans font-medium text-sky-500 outline-none ring-sky-500',
             'hover:bg-sky-50 hover:text-sky-600',
             'group-hover/node:flex',
             'group-focus-within/node:flex',
@@ -93,7 +93,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
           )}
         >
           <span className="-ml-4 flex items-center gap-x-2 uppercase tracking-wider">
-            <Plus aria-hidden className="h-4 w-4" />
+            <Plus aria-hidden className="h-5 w-5" />
             Add field
           </span>
         </button>

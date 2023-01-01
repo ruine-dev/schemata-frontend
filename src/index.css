@@ -1,3 +1,63 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.react-select-container {
+  @apply text-sm !important;
+}
+
+.react-select\_\_option--is-focused {
+  @apply bg-slate-100 !important;
+}
+
+.react-select\_\_option--is-focused.react-select\_\_option--is-selected {
+  @apply bg-sky-600 !important;
+}
+
+.react-select\_\_option--is-selected {
+  @apply bg-sky-500 !important;
+}
+
+.react-select\_\_control {
+  @apply rounded-xl border-slate-400 shadow-sm py-0.5 text-base !important;
+}
+
+.react-select\_\_control.react-select\_\_control--is-focused {
+  @apply border-sky-400 !important;
+}
+
+.react-select\_\_control--is-focused {
+  @apply border-sky-500 ring-1 ring-sky-500 !important;
+}
+
+.react-select\_\_control--is-focused:hover {
+  @apply border-sky-400 !important;
+}
+
+.react-select\_\_indicator-separator {
+  @apply w-0 !important;
+}
+
+.react-select\_\_value-container {
+  @apply px-3 !important;
+}
+
+.react-select\_\_placeholder {
+  @apply mx-0 !important;
+}
+
+.react-select\_\_input:focus {
+  @apply ring-0 !important;
+}
+
+.react-select\_\_multi-value {
+  @apply overflow-hidden rounded-md bg-slate-200 text-slate-700 !important;
+}
+
+.react-select\_\_multi-value\_\_label {
+  @apply text-sm !important;
+}
+
+.react-select\_\_multi-value\_\_remove:hover {
+  @apply bg-red-100 text-red-600 !important;
+}

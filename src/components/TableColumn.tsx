@@ -22,6 +22,7 @@ import {
 } from '@/schemas/base';
 import { useStore } from 'reactflow';
 import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
+import { Combobox } from './Combobox';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -164,8 +165,8 @@ export function TableColumn({
             onSubmit={onSubmit}
             onKeyDown={handleKeyEscape}
             autoComplete="off"
-            onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
-            className="flex items-center gap-x-2"
+            // onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
+            className="flex items-center gap-x-2 nodrag"
           >
             <Controller
               control={control}
@@ -174,8 +175,8 @@ export function TableColumn({
                 <CustomCheckbox
                   ref={ref}
                   name={name}
-                  checkedElement={<Key weight="fill" className="h-4 w-4 text-yellow-400" />}
-                  uncheckedElement={<Key className="h-4 w-4 text-yellow-600" />}
+                  checkedElement={<Key weight="fill" className="h-5 w-5 text-yellow-400" />}
+                  uncheckedElement={<Key className="h-5 w-5 text-yellow-600" />}
                   onBlur={onBlur}
                   onChange={onChange}
                   checked={value}
@@ -193,21 +194,34 @@ export function TableColumn({
                 },
               })}
               srOnlyLabel
-              size="small"
               disabled={isSubmitting}
               autoFocus
               className="w-32"
             />
-            <Select
-              label="Type"
-              {...register('type')}
-              options={ColumnTypeEnum.options.map((type) => ({ label: type, value: type }))}
-              srOnlyLabel
-              size="small"
-              disabled={isSubmitting}
-              required
-              className="w-32"
+            <Controller
+              control={control}
+              name="type"
+              render={({ field: { name, onBlur, onChange, value, ref } }) => (
+                <Combobox
+                  ref={ref}
+                  label="Type"
+                  name={name}
+                  options={ColumnTypeEnum.options.map((type) => ({ label: type, value: type }))}
+                  onBlur={onBlur}
+                  onChange={(option) => {
+                    if (option && 'value' in option) {
+                      onChange(option.value);
+                    }
+                  }}
+                  value={ColumnTypeEnum.options
+                    .map((type) => ({ label: type, value: type }))
+                    .find((option) => option.value === value)}
+                  srOnlyLabel
+                  className="w-56"
+                />
+              )}
             />
+
             <IconButton
               icon={Check}
               iconProps={{ weight: 'bold' }}
@@ -215,6 +229,7 @@ export function TableColumn({
               label="Save (ENTER)"
               type="submit"
               data-test="submit-column"
+              className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
             />
           </form>
         </FocusLock>

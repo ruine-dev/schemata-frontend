@@ -74,7 +74,7 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
               severity="primary"
               loading={isSubmitting}
               data-test="submit-schema"
-              size="large"
+             
               filled
             />
           </form>
@@ -88,7 +88,7 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
             label="Change title"
             icon={Pencil}
             onClick={handleRename}
-            size="large"
+           
             data-test="edit-schema-button"
             filled
             className="ml-2"

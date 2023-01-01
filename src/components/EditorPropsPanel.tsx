@@ -57,12 +57,12 @@ export function EditorPropsPanel({ schema }: EditorPropsPanelProps) {
   return (
     <EditorPanelContainer>
       <InformationDialog
-        trigger={<IconButton label="Information" icon={Info} size="large" filled />}
+        trigger={<IconButton label="Information" icon={Info} filled />}
       />
       <IconButton
         label="Export as image"
         icon={Export}
-        size="large"
+       
         onClick={exportToImage}
         filled
       />
@@ -113,7 +113,7 @@ function ShareLinkButton({ schema }: ShareLinkButtonProps) {
       label="Share link (CTRL + S)"
       icon={ShareNetwork}
       onClick={copyLinkToClipboard}
-      size="large"
+     
       filled
     />
   );
