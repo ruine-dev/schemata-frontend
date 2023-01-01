@@ -67,7 +67,7 @@ export function ToolbarPanel({
         </Tooltip>
         <IconButton
           icon={ArrowCounterClockwise}
-          label="Undo (Ctrl + Z)"
+          label="Undo (CTRL + Z)"
           size="large"
           onClick={handleUndo}
           disabled={!canUndo}
@@ -75,7 +75,7 @@ export function ToolbarPanel({
         />
         <IconButton
           icon={ArrowClockwise}
-          label="Redo (Ctrl + Y)"
+          label="Redo (CTRL + Y)"
           size="large"
           onClick={handleRedo}
           disabled={!canRedo}

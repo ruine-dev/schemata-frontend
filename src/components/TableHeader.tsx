@@ -131,7 +131,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
               icon={Check}
               iconProps={{ weight: 'bold' }}
               severity="dark"
-              label="Save"
+              label="Save (ENTER)"
               type="submit"
               data-test="submit-table"
               className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
@@ -162,7 +162,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
             />
             <IconButton
               icon={Trash}
-              label={`Delete${isHeaderFocused ? ' (Delete)' : ''}`}
+              label={`Delete${isHeaderFocused ? ' (DEL)' : ''}`}
               severity="dark"
               onClick={() => deleteTable(table.id)}
               onKeyDown={(e) => {

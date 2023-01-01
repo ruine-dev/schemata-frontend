@@ -6,6 +6,8 @@ import { TableHeader } from './TableHeader';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { emptyVarcharColumn } from '@/utils/reactflow';
 import { TableNodeType } from '@/schemas/base';
+import { Tooltip } from './Tooltip';
+import { useState } from 'react';
 
 export function TableNode({ id, data: table }: TableNodeType) {
   const createColumn = useCreateColumn();
@@ -14,9 +16,13 @@ export function TableNode({ id, data: table }: TableNodeType) {
 
   const isTarget = connectionNodeId && connectionNodeId !== id;
 
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <div
       id={`table-${id}`}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
       data-test="table-node"
       className={clsx(
         'group/node min-w-[16rem] rounded-xl border border-slate-300 bg-white font-mono text-sm shadow-sm',
@@ -66,31 +72,32 @@ export function TableNode({ id, data: table }: TableNodeType) {
           </li>
         ))}
       </ul>
-      <button
-        onClick={() => createColumn({ ...emptyVarcharColumn(), tableId: id })}
-        onKeyDown={(e) => {
-          if (e.key === 'Escape') {
-            e.preventDefault();
-            e.stopPropagation();
-
-            document.getElementById(`table-header-${id}`)?.focus();
-          }
-        }}
-        data-test="create-column-button"
-        className={clsx(
-          'noimage nodrag hidden w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
-          'hover:bg-sky-50 hover:text-sky-600',
-          'group-hover/node:flex',
-          'group-focus-within/node:flex',
-          'focus:relative focus:z-10 focus:ring-2',
-          'enabled:active:bg-sky-50 enabled:active:text-sky-600',
-        )}
-      >
-        <span className="-ml-4 flex items-center gap-x-2 uppercase tracking-wider">
-          <Plus aria-hidden className="h-4 w-4" />
-          Add field
-        </span>
-      </button>
+      <Tooltip text="(SHIFT + ENTER)" allowOpen={isFocused}>
+        <button
+          onClick={() => createColumn({ ...emptyVarcharColumn(), tableId: id })}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              e.preventDefault();
+              e.stopPropagation();
+              document.getElementById(`table-header-${id}`)?.focus();
+            }
+          }}
+          data-test="create-column-button"
+          className={clsx(
+            'noimage nodrag hidden w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans text-xs font-medium text-sky-500 outline-none ring-sky-500',
+            'hover:bg-sky-50 hover:text-sky-600',
+            'group-hover/node:flex',
+            'group-focus-within/node:flex',
+            'focus:relative focus:z-10 focus:ring-2',
+            'enabled:active:bg-sky-50 enabled:active:text-sky-600',
+          )}
+        >
+          <span className="-ml-4 flex items-center gap-x-2 uppercase tracking-wider">
+            <Plus aria-hidden className="h-4 w-4" />
+            Add field
+          </span>
+        </button>
+      </Tooltip>
     </div>
   );
 }

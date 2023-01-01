@@ -69,7 +69,7 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
             />
             <IconButton
               type="submit"
-              label="Save"
+              label="Save (ENTER)"
               icon={Check}
               severity="primary"
               loading={isSubmitting}

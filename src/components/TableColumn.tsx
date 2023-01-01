@@ -212,7 +212,7 @@ export function TableColumn({
               icon={Check}
               iconProps={{ weight: 'bold' }}
               severity="primary"
-              label="Save"
+              label="Save (ENTER)"
               type="submit"
               data-test="submit-column"
             />
@@ -258,7 +258,7 @@ export function TableColumn({
               className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
             />
             <IconButton
-              label={`Delete${isColumnFocused ? ' (Delete)' : ''}`}
+              label={`Delete${isColumnFocused ? ' (DEL)' : ''}`}
               icon={Trash}
               severity="danger"
               onClick={handleDelete}

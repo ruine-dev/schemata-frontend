@@ -16,7 +16,12 @@ export function useAddCreateTableShortcut(
 
   useEffect(() => {
     const handleCreateTableShortcut = (e: KeyboardEvent) => {
-      if (document.activeElement !== document.body) {
+      if (
+        !(
+          document.activeElement instanceof HTMLDivElement ||
+          document.activeElement instanceof HTMLBodyElement
+        )
+      ) {
         return;
       }
 

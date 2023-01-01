@@ -110,7 +110,7 @@ function ShareLinkButton({ schema }: ShareLinkButtonProps) {
 
   return (
     <IconButton
-      label="Share link (Ctrl + S)"
+      label="Share link (CTRL + S)"
       icon={ShareNetwork}
       onClick={copyLinkToClipboard}
       size="large"
