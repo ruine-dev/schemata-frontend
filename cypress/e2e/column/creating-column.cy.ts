@@ -20,16 +20,102 @@ describe('creating column', () => {
         cy.getBySel('column-name').should('have.text', 'untitled');
       });
 
-      it('clicking "Save" button to submit', () => {
-        cy.getBySel('submit-column').click();
+      context('with default data type', () => {
+        afterEach(() => {
+          cy.getBySel('column-type').should('have.text', 'VARCHAR');
+        });
+
+        context('left primary key unchecked', () => {
+          afterEach(() => {
+            cy.getBySel('column-key').should('not.have.text', 'Primary key');
+          });
+
+          it('clicking "Save" button to submit', () => {
+            cy.getBySel('submit-column').click();
+          });
+
+          it('pressing "Enter" to submit', () => {
+            cy.focused().type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
+        });
+
+        context('checked primary key', () => {
+          beforeEach(() => {
+            cy.getBySel('column-primary-key-checkbox').click();
+          });
+
+          afterEach(() => {
+            cy.getBySel('column-key').should('have.text', 'Primary key');
+          });
+
+          it('clicking "Save" button to submit', () => {
+            cy.getBySel('submit-column').click();
+          });
+
+          it('pressing "Enter" after change focus to name input to submit', () => {
+            cy.getBySel('column-name-textbox').type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
+        });
       });
 
-      it('pressing "Enter" to submit', () => {
-        cy.focused().type('{enter}');
-      });
+      context('with custom data type', () => {
+        beforeEach(() => {
+          cy.getBySel('column-type-combobox').click();
 
-      it('pressing "Escape" to submit', () => {
-        cy.focused().type('{esc}');
+          cy.getBySel('column-type-combobox-INTEGER').click();
+        });
+
+        afterEach(() => {
+          cy.getBySel('column-type').should('have.text', 'INTEGER');
+        });
+
+        context('left primary key unchecked', () => {
+          afterEach(() => {
+            cy.getBySel('column-key').should('not.have.text', 'Primary key');
+          });
+
+          it('clicking "Save" button to submit', () => {
+            cy.getBySel('submit-column').click();
+          });
+
+          it('pressing "Enter" to submit', () => {
+            cy.focused().type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
+        });
+
+        context('checked primary key', () => {
+          beforeEach(() => {
+            cy.getBySel('column-primary-key-checkbox').click();
+          });
+
+          afterEach(() => {
+            cy.getBySel('column-key').should('have.text', 'Primary key');
+          });
+
+          it('clicking "Save" button to submit', () => {
+            cy.getBySel('submit-column').click();
+          });
+
+          it('pressing "Enter" after change focus to name input to submit', () => {
+            cy.getBySel('column-name-textbox').type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
+        });
       });
     });
 
@@ -42,16 +128,102 @@ describe('creating column', () => {
         cy.getBySel('column-name').should('have.text', 'foo');
       });
 
-      it('clicking "Save" button to submit', () => {
-        cy.getBySel('submit-column').click();
+      context('with default data type', () => {
+        afterEach(() => {
+          cy.getBySel('column-type').should('have.text', 'VARCHAR');
+        });
+
+        context('left primary key unchecked', () => {
+          afterEach(() => {
+            cy.getBySel('column-key').should('not.have.text', 'Primary key');
+          });
+
+          it('clicking "Save" button to submit', () => {
+            cy.getBySel('submit-column').click();
+          });
+
+          it('pressing "Enter" to submit', () => {
+            cy.focused().type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
+        });
+
+        context('checked primary key', () => {
+          beforeEach(() => {
+            cy.getBySel('column-primary-key-checkbox').click();
+          });
+
+          afterEach(() => {
+            cy.getBySel('column-key').should('have.text', 'Primary key');
+          });
+
+          it('clicking "Save" button to submit', () => {
+            cy.getBySel('submit-column').click();
+          });
+
+          it('pressing "Enter" after change focus to name input to submit', () => {
+            cy.getBySel('column-name-textbox').type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
+        });
       });
 
-      it('pressing "Enter" to submit', () => {
-        cy.focused().type('{enter}');
-      });
+      context('with custom data type', () => {
+        beforeEach(() => {
+          cy.getBySel('column-type-combobox').click();
 
-      it('pressing "Escape" to submit', () => {
-        cy.focused().type('{esc}');
+          cy.getBySel('column-type-combobox-INTEGER').click();
+        });
+
+        afterEach(() => {
+          cy.getBySel('column-type').should('have.text', 'INTEGER');
+        });
+
+        context('left primary key unchecked', () => {
+          afterEach(() => {
+            cy.getBySel('column-key').should('not.have.text', 'Primary key');
+          });
+
+          it('clicking "Save" button to submit', () => {
+            cy.getBySel('submit-column').click();
+          });
+
+          it('pressing "Enter" to submit', () => {
+            cy.focused().type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
+        });
+
+        context('checked primary key', () => {
+          beforeEach(() => {
+            cy.getBySel('column-primary-key-checkbox').click();
+          });
+
+          afterEach(() => {
+            cy.getBySel('column-key').should('have.text', 'Primary key');
+          });
+
+          it('clicking "Save" button to submit', () => {
+            cy.getBySel('submit-column').click();
+          });
+
+          it('pressing "Enter" after change focus to name input to submit', () => {
+            cy.getBySel('column-name-textbox').type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
+        });
       });
     });
   });

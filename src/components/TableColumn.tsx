@@ -2,7 +2,7 @@ import { Check, Key, Pencil, Trash } from 'phosphor-react';
 import { KeyboardEventHandler, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import FocusLock from 'react-focus-lock';
+import FocusLock, { AutoFocusInside } from 'react-focus-lock';
 import { IconButton } from './IconButton';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
@@ -165,8 +165,8 @@ export function TableColumn({
             onSubmit={onSubmit}
             onKeyDown={handleKeyEscape}
             autoComplete="off"
-            // onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
-            className="flex items-center gap-x-2 nodrag"
+            onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
+            className="nodrag flex items-center gap-x-2"
           >
             <Controller
               control={control}
@@ -180,24 +180,29 @@ export function TableColumn({
                   onBlur={onBlur}
                   onChange={onChange}
                   checked={value}
+                  data-test="column-primary-key-checkbox"
                 />
               )}
             />
 
-            <Textbox
-              label="Name"
-              {...register('name', {
-                validate: {
-                  unique: (value) => {
-                    return validateUniqueColumnName({ name: value, tableId }) || 'should be unique';
+            <AutoFocusInside>
+              <Textbox
+                label="Name"
+                {...register('name', {
+                  validate: {
+                    unique: (value) => {
+                      return (
+                        validateUniqueColumnName({ name: value, tableId }) || 'should be unique'
+                      );
+                    },
                   },
-                },
-              })}
-              srOnlyLabel
-              disabled={isSubmitting}
-              autoFocus
-              className="w-32"
-            />
+                })}
+                srOnlyLabel
+                disabled={isSubmitting}
+                data-test="column-name-textbox"
+                className="w-32"
+              />
+            </AutoFocusInside>
             <Controller
               control={control}
               name="type"
@@ -217,6 +222,7 @@ export function TableColumn({
                     .map((type) => ({ label: type, value: type }))
                     .find((option) => option.value === value)}
                   srOnlyLabel
+                  data-test="column-type-combobox"
                   className="w-56"
                 />
               )}
@@ -235,7 +241,7 @@ export function TableColumn({
         </FocusLock>
       ) : (
         <>
-          <span className="h-4 w-4">
+          <span className="h-4 w-4" data-test="column-key">
             {(isPrimaryKey || isForeignKey) && (
               <>
                 <Key
@@ -246,7 +252,7 @@ export function TableColumn({
                   })}
                   aria-hidden
                 />
-                <div className="sr-only" data-test="column-key">
+                <div className="sr-only">
                   {isPrimaryKey && 'Primary key'}
                   {isForeignKey && (isPrimaryKey ? 'and Foreign key' : 'Foreign key')}
                 </div>

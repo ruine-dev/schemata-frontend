@@ -19,7 +19,7 @@ describe('deleting table', () => {
   });
 
   it('can delete table by pressing "delete" button', () => {
-    cy.getBySel('table-header').realPress('Delete');
+    cy.getBySel('table-header').type('{del}');
   });
 });
 

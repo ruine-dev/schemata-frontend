@@ -29,6 +29,10 @@ function CustomCheckboxComponent(
     checked ?? 'indeterminate',
   );
 
+  const toggleChekcboxState = () => {
+    setCheckboxState((currentChecked) => !currentChecked);
+  };
+
   return (
     <Checkbox.Root
       ref={ref}
@@ -38,6 +42,14 @@ function CustomCheckboxComponent(
       onCheckedChange={(checked) => {
         setCheckboxState(checked);
         onChange?.(checked);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.stopPropagation();
+
+          toggleChekcboxState();
+        }
       }}
       {...props}
       className="rounded-xl p-2 outline-none ring-sky-500 focus:ring-2"

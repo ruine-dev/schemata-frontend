@@ -38,7 +38,7 @@ describe('updating table', () => {
 
   context('can rename table by pressing "E"', () => {
     beforeEach(() => {
-      cy.getBySel('table-header').realPress('e');
+      cy.getBySel('table-header').type('e');
 
       cy.focused().clear().type('foo');
     });

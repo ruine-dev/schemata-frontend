@@ -3,7 +3,7 @@ import { Check, Pencil, Trash } from 'phosphor-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import FocusLock from 'react-focus-lock';
+import FocusLock, { AutoFocusInside } from 'react-focus-lock';
 import { IconButton } from './IconButton';
 import { useUpdateTable } from '@/flow-hooks/useUpdateTable';
 import { useDeleteTable } from '@/flow-hooks/useDeleteTable';
@@ -114,18 +114,20 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
             autoComplete="off"
             className="flex items-center justify-between"
           >
-            <Textbox
-              {...register('name', {
-                setValueAs(value: string) {
-                  return value.trim();
-                },
-              })}
-              label="Name"
-              srOnlyLabel
-              disabled={isSubmitting}
-              data-test="table-name-input"
-              className="nodrag"
-            />
+            <AutoFocusInside>
+              <Textbox
+                {...register('name', {
+                  setValueAs(value: string) {
+                    return value.trim();
+                  },
+                })}
+                label="Name"
+                srOnlyLabel
+                disabled={isSubmitting}
+                data-test="table-name-input"
+                className="nodrag"
+              />
+            </AutoFocusInside>
             <IconButton
               icon={Check}
               iconProps={{ weight: 'bold' }}

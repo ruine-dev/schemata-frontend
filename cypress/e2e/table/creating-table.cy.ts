@@ -50,9 +50,9 @@ describe('creating table', () => {
   });
 
   context('can create table by dragging "Add Table" button', () => {
-    const dataTransfer = new DataTransfer();
-
     beforeEach(() => {
+      const dataTransfer = new DataTransfer();
+
       cy.findByRole('button', { name: /Add Table/ }).trigger('dragstart', {
         dataTransfer,
       });

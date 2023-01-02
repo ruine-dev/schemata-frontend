@@ -1,11 +1,49 @@
 import { clsx } from '@/utils/clsx';
 import { forwardRef, Ref } from 'react';
-import ReactSelect, { GroupBase, Props, SelectInstance } from 'react-select';
+import ReactSelect, {
+  components,
+  ControlProps,
+  GroupBase,
+  OptionProps,
+  Props,
+  SelectInstance,
+} from 'react-select';
 
 type ComboboxOption = {
   label: string;
   value: string;
 };
+
+function Option<
+  Option extends ComboboxOption,
+  isMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+>({ data, ...props }: OptionProps<Option, isMulti, Group> & { 'data-test'?: string }) {
+  return (
+    <components.Option
+      {...props}
+      innerProps={{
+        ...props.innerProps,
+        // @ts-ignore
+        'data-test': `${props.selectProps['data-test']}-${data.value}`,
+      }}
+    />
+  );
+}
+
+function Control<
+  Option extends ComboboxOption,
+  isMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+>(props: ControlProps<Option, isMulti, Group> & { 'data-test'?: string }) {
+  return (
+    <components.Control
+      {...props}
+      // @ts-ignore
+      innerProps={{ ...props.innerProps, 'data-test': props.selectProps['data-test'] }}
+    />
+  );
+}
 
 type ComboboxProps<
   Option extends ComboboxOption,
@@ -34,6 +72,7 @@ function ComboboxComponent<
       </label>
       <ReactSelect
         ref={ref}
+        components={{ Control, Option }}
         name={name}
         id={elementId}
         menuPortalTarget={document.body}

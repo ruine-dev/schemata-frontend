@@ -26,7 +26,7 @@ describe('deleting column', () => {
   });
 
   it('can delete table by pressing "delete" button', () => {
-    cy.getBySel('column').realPress('Delete');
+    cy.getBySel('column').type('{del}');
   });
 });
 
