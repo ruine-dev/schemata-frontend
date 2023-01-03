@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Edge, Node } from 'reactflow';
+import { Node } from 'reactflow';
 import { uniqueArrayElement } from '@/utils/zod';
 // import { TableNodeType } from './reactflow';
 
@@ -85,7 +85,7 @@ export const BaseColumnAttributeEnum = z.union([VisibilityAttribute, Nullability
 
 export const BaseColumnSchema = z.object({
   id: z.string().uuid(),
-  name: z.string(),
+  name: z.string().trim().max(64),
   default: z.string().optional(),
 });
 
@@ -639,7 +639,7 @@ export type DeleteColumnType = z.infer<typeof DeleteColumnSchema>;
 
 export const TableSchema = z.object({
   id: z.string().uuid(),
-  name: z.string(),
+  name: z.string().trim().max(64),
   columns: ColumnSchema.array(),
   indexes: IndexSchema.array(),
 });
@@ -672,7 +672,7 @@ export type PositionType = z.infer<typeof PositionSchema>;
 
 export const SchemaSchema = z.object({
   id: z.string().uuid(),
-  name: z.string().trim(),
+  name: z.string().trim().max(64),
   vendor: z.enum(['MYSQL:8.0']),
   tables: TableSchema.array(),
   groups: GroupSchema.array(),

@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Pencil, Trash } from 'phosphor-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
 import FocusLock, { AutoFocusInside } from 'react-focus-lock';
+import * as ContextMenu from '@radix-ui/react-context-menu';
 import { IconButton } from './IconButton';
 import { useUpdateTable } from '@/flow-hooks/useUpdateTable';
 import { useDeleteTable } from '@/flow-hooks/useDeleteTable';
@@ -13,6 +13,8 @@ import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { TableSchema, TableType } from '@/schemas/base';
 import { emptyVarcharColumn } from '@/utils/reactflow';
 import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
+import { useCreateTable } from '@/flow-hooks/useCreateTable';
+import { useReactFlow } from 'reactflow';
 
 interface TableHeaderProps {
   table: TableType;
@@ -20,6 +22,8 @@ interface TableHeaderProps {
 }
 
 export function TableHeader({ table, onDataChange }: TableHeaderProps) {
+  const { project } = useReactFlow();
+  const createTable = useCreateTable(onDataChange);
   const updateTable = useUpdateTable(onDataChange);
   const deleteTable = useDeleteTable();
   const addColumn = useCreateColumn();
@@ -47,10 +51,38 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
     queueMicrotask(() => containerRef.current?.focus());
   });
 
+  const triggerRename = () => {
+    setIsRenaming(true);
+  };
+
+  const triggerDelete = () => {
+    deleteTable(table.id);
+  };
+
+  const triggerDuplicate = () => {
+    const { id, ...tableWithoutId } = table;
+
+    const rect = containerRef.current?.getBoundingClientRect();
+
+    const position = project({
+      x: (rect?.x ?? 0) + (rect?.width ?? 0),
+      y: rect?.y ?? 0,
+    });
+
+    createTable(tableWithoutId, position);
+  };
+
+  const triggerAddColumn = () => {
+    addColumn({
+      ...emptyVarcharColumn(),
+      tableId: table.id,
+    });
+  };
+
   // Automatically focus after creation
   useEffect(() => {
     if (table.name === '') {
-      setIsRenaming(true);
+      triggerRename();
 
       setTimeout(() => setFocus('name'), 1);
     }
@@ -59,10 +91,6 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
   useEffect(() => {
     reset(table);
   }, [reset, table.id, table.name, table.columns, table.indexes]);
-
-  const handleRename = () => {
-    setIsRenaming(true);
-  };
 
   return (
     <div
@@ -74,16 +102,13 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
           if (e.key === 'e') {
             e.preventDefault();
             e.stopPropagation();
-            setIsRenaming(true);
+            triggerRename();
           } else if (e.key === 'Delete') {
             e.preventDefault();
             e.stopPropagation();
-            deleteTable(table.id);
+            triggerDelete();
           } else if (e.shiftKey && e.key === 'Enter') {
-            addColumn({
-              ...emptyVarcharColumn(),
-              tableId: table.id,
-            });
+            triggerAddColumn();
           } else if (e.key === 'Escape') {
             e.preventDefault();
             e.stopPropagation();
@@ -116,11 +141,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
           >
             <AutoFocusInside>
               <Textbox
-                {...register('name', {
-                  setValueAs(value: string) {
-                    return value.trim();
-                  },
-                })}
+                {...register('name')}
                 label="Name"
                 srOnlyLabel
                 disabled={isSubmitting}
@@ -140,45 +161,90 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
           </form>
         </FocusLock>
       ) : (
-        <div className="flex items-center justify-between">
-          <div data-test="table-name" className="flex items-center gap-x-2 text-white">
-            {table.name}
-          </div>
-          <div className={clsx('invisible flex items-center gap-x-1', 'group-hover:visible')}>
-            <IconButton
-              icon={Pencil}
-              label={`Rename${isHeaderFocused ? ' (E)' : ''}`}
-              severity="dark"
-              onClick={handleRename}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') {
-                  e.preventDefault();
-                  e.stopPropagation();
+        <ContextMenu.Root>
+          <ContextMenu.Trigger asChild>
+            <div className="flex items-center justify-between">
+              <div data-test="table-name" className="flex items-center gap-x-2 text-white">
+                {table.name}
+              </div>
+              <div className={clsx('invisible flex items-center gap-x-1', 'group-hover:visible')}>
+                <IconButton
+                  icon={Pencil}
+                  label={`Rename${isHeaderFocused ? ' (E)' : ''}`}
+                  severity="dark"
+                  onClick={triggerRename}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      e.preventDefault();
+                      e.stopPropagation();
 
-                  containerRef.current?.focus();
-                }
-              }}
-              data-test="rename-table-button"
-              className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
-            />
-            <IconButton
-              icon={Trash}
-              label={`Delete${isHeaderFocused ? ' (DEL)' : ''}`}
-              severity="dark"
-              onClick={() => deleteTable(table.id)}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') {
-                  e.preventDefault();
-                  e.stopPropagation();
+                      containerRef.current?.focus();
+                    }
+                  }}
+                  data-test="rename-table-button"
+                  className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
+                />
+                <IconButton
+                  icon={Trash}
+                  label={`Delete${isHeaderFocused ? ' (DEL)' : ''}`}
+                  severity="dark"
+                  onClick={triggerDelete}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      e.preventDefault();
+                      e.stopPropagation();
 
-                  containerRef.current?.focus();
-                }
-              }}
-              data-test="delete-table-button"
-              className="focus:bg-sky-600 enabled:hover:bg-sky-600"
-            />
-          </div>
-        </div>
+                      containerRef.current?.focus();
+                    }
+                  }}
+                  data-test="delete-table-button"
+                  className="focus:bg-sky-600 enabled:hover:bg-sky-600"
+                />
+              </div>
+            </div>
+          </ContextMenu.Trigger>
+          <ContextMenu.Portal>
+            <ContextMenu.Content asChild>
+              <div
+                onKeyDown={(e) => e.stopPropagation()}
+                className="w-52 overflow-hidden rounded-xl border border-slate-300/70 bg-white/70 shadow backdrop-blur-lg"
+              >
+                <ContextMenu.Item asChild>
+                  <button
+                    onClick={triggerRename}
+                    className="w-full py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
+                  >
+                    Rename
+                  </button>
+                </ContextMenu.Item>
+                <ContextMenu.Item asChild>
+                  <button
+                    onClick={triggerDuplicate}
+                    className="w-full py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
+                  >
+                    Duplicate
+                  </button>
+                </ContextMenu.Item>
+                <ContextMenu.Item asChild>
+                  <button
+                    onClick={triggerAddColumn}
+                    className="w-full py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
+                  >
+                    New field
+                  </button>
+                </ContextMenu.Item>
+                <ContextMenu.Item asChild>
+                  <button
+                    onClick={triggerDelete}
+                    className="w-full py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
+                  >
+                    Delete
+                  </button>
+                </ContextMenu.Item>
+              </div>
+            </ContextMenu.Content>
+          </ContextMenu.Portal>
+        </ContextMenu.Root>
       )}
     </div>
   );

@@ -6,7 +6,7 @@ import {
   TableTypeWithoutId,
   VarcharColumnType,
 } from '@/schemas/base';
-import { Edge, ReactFlowInstance } from 'reactflow';
+import { Edge } from 'reactflow';
 
 export function nodeToTable(node: TableNodeType): TableType {
   return {
@@ -40,6 +40,14 @@ export function edgeToRelation(edge: Edge): RelationType {
       columnId: edge.targetHandle.split('-').slice(0, -1).join('-'),
       tableId: edge.target,
     },
+  };
+}
+
+export function emptyTableWithoutId(): TableTypeWithoutId {
+  return {
+    name: '',
+    columns: [],
+    indexes: [],
   };
 }
 

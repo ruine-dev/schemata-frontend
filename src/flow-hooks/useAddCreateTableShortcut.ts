@@ -1,5 +1,5 @@
 import { TableTypeWithoutId } from '@/schemas/base';
-import { emptyTableNode } from '@/utils/reactflow';
+import { emptyTableWithoutId } from '@/utils/reactflow';
 import { useEffect } from 'react';
 import { ReactFlowInstance } from 'reactflow';
 import { useCreateTableWithInstance } from './useCreateTable';
@@ -36,11 +36,7 @@ export function useAddCreateTableShortcut(
           y: rect.height / 2,
         });
 
-        createTable(
-          emptyTableNode({
-            position,
-          }),
-        );
+        createTable(emptyTableWithoutId(), position);
       }
     };
 

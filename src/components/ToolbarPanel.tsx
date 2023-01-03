@@ -5,7 +5,7 @@ import { EditorPanelContainer } from './EditorPanelContainer';
 import { Tooltip } from './Tooltip';
 import { useReactFlow } from 'reactflow';
 import { clsx } from '@/utils/clsx';
-import { emptyTableNode } from '@/utils/reactflow';
+import { emptyTableWithoutId } from '@/utils/reactflow';
 import { IconButton } from './IconButton';
 
 type ToolbarPanelProps = {
@@ -39,11 +39,7 @@ export function ToolbarPanel({
       y: rect.height / 2,
     });
 
-    createTable(
-      emptyTableNode({
-        position,
-      }),
-    );
+    createTable(emptyTableWithoutId(), position);
   };
 
   return (
@@ -68,7 +64,6 @@ export function ToolbarPanel({
         <IconButton
           icon={ArrowCounterClockwise}
           label="Undo (CTRL + Z)"
-         
           onClick={handleUndo}
           disabled={!canUndo}
           filled
@@ -76,7 +71,6 @@ export function ToolbarPanel({
         <IconButton
           icon={ArrowClockwise}
           label="Redo (CTRL + Y)"
-         
           onClick={handleRedo}
           disabled={!canRedo}
           filled

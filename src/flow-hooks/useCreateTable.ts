@@ -4,11 +4,13 @@ import { ReactFlowInstance, useReactFlow } from 'reactflow';
 export function useCreateTable(callback?: () => void) {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
-  return (newTableNode: TableNodeType) => {
+  return (newTable: TableTypeWithoutId, position: TableNodeType['position'] = { x: 0, y: 0 }) => {
     reactFlowInstance.addNodes({
-      ...newTableNode,
+      id: crypto.randomUUID(),
+      type: 'table',
+      position,
       data: {
-        ...newTableNode.data,
+        ...newTable,
         onDataChange: callback,
       },
     });
@@ -23,11 +25,13 @@ export function useCreateTableWithInstance(
     return () => {};
   }
 
-  return (newTableNode: TableNodeType) => {
+  return (newTable: TableTypeWithoutId, position: TableNodeType['position'] = { x: 0, y: 0 }) => {
     reactFlowInstance.addNodes({
-      ...newTableNode,
+      id: crypto.randomUUID(),
+      type: 'table',
+      position,
       data: {
-        ...newTableNode.data,
+        ...newTable,
         onDataChange: callback,
       },
     });

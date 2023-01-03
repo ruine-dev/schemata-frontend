@@ -1,5 +1,5 @@
 import { TableTypeWithoutId } from '@/schemas/base';
-import { emptyTableNode } from '@/utils/reactflow';
+import { emptyTableWithoutId } from '@/utils/reactflow';
 import { DragEvent, RefObject, useCallback } from 'react';
 import { ReactFlowInstance } from 'reactflow';
 import { useCreateTableWithInstance } from './useCreateTable';
@@ -35,11 +35,7 @@ export function useHandleCreateTableOnDrop(
         y: event.clientY - reactFlowBounds.top,
       });
 
-      createTable(
-        emptyTableNode({
-          position,
-        }),
-      );
+      createTable(emptyTableWithoutId(), position);
     },
     [reactFlowInstance, callback],
   );
