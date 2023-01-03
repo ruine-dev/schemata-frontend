@@ -28,6 +28,12 @@ describe('deleting column', () => {
   it('can delete table by pressing "delete" button', () => {
     cy.getBySel('column').type('{del}');
   });
+
+  it('can delete column by clicking "Delete" button in column\'s context menu', () => {
+    cy.getBySel('column').rightclick();
+
+    cy.getBySel('column-context-menu-delete').click();
+  });
 });
 
 export {};
