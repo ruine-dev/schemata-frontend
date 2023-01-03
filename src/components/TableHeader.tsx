@@ -100,98 +100,99 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
   }, [reset, table.id, table.name, table.columns, table.indexes]);
 
   return (
-    <div
-      ref={containerRef}
-      id={`table-header-${table.id}`}
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (!isRenaming && e.target === e.currentTarget) {
-          if (e.key === 'e') {
-            e.preventDefault();
-            e.stopPropagation();
-            triggerRename();
-          } else if (e.key === 'Delete') {
-            e.preventDefault();
-            e.stopPropagation();
-            triggerDelete();
-          } else if (e.shiftKey && e.key === 'Enter') {
-            triggerAddColumn();
-          } else if (e.key === 'Escape') {
-            e.preventDefault();
-            e.stopPropagation();
-            e.currentTarget.blur();
-          }
-        }
-      }}
-      onFocus={() => setIsHeaderFocused(true)}
-      onBlur={() => setIsHeaderFocused(false)}
-      data-test="table-header"
-      className={clsx(
-        'group rounded-t-xl bg-sky-500 px-3 pb-1.5 pt-2 font-medium outline-none ring-sky-500 ring-offset-2',
-        'focus:ring-2',
-      )}
+    <ContextMenu
+      disabled={isRenaming}
+      menu={[
+        {
+          label: 'Rename',
+          'data-test': 'table-header-context-menu-rename',
+          onClick: triggerRename,
+        },
+        {
+          label: 'Duplicate',
+          'data-test': 'table-header-context-menu-duplicate',
+          onClick: triggerDuplicate,
+        },
+        {
+          label: 'Add field',
+          'data-test': 'table-header-context-menu-add-field',
+          onClick: triggerAddColumn,
+        },
+        {
+          label: 'Delete',
+          'data-test': 'table-header-context-menu-delete',
+          onClick: triggerDelete,
+        },
+      ]}
     >
-      {isRenaming ? (
-        <FocusLock>
-          <form
-            onSubmit={onSubmit}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') {
-                e.preventDefault();
-                e.stopPropagation();
-                onSubmit();
-              }
-            }}
-            onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
-            autoComplete="off"
-            className="flex items-center justify-between"
-          >
-            <AutoFocusInside>
-              <Textbox
-                {...register('name')}
-                label="Name"
-                srOnlyLabel
-                disabled={isSubmitting}
-                data-test="table-name-input"
-                className="nodrag"
+      <div
+        ref={containerRef}
+        id={`table-header-${table.id}`}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (!isRenaming && e.target === e.currentTarget) {
+            if (e.key === 'e') {
+              e.preventDefault();
+              e.stopPropagation();
+              triggerRename();
+            } else if (e.key === 'Delete') {
+              e.preventDefault();
+              e.stopPropagation();
+              triggerDelete();
+            } else if (e.shiftKey && e.key === 'Enter') {
+              triggerAddColumn();
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              e.stopPropagation();
+              e.currentTarget.blur();
+            }
+          }
+        }}
+        onFocus={() => setIsHeaderFocused(true)}
+        onBlur={() => setIsHeaderFocused(false)}
+        data-test="table-header"
+        className={clsx(
+          'group rounded-t-xl bg-sky-500 px-3 pb-1.5 pt-2 font-medium outline-none ring-sky-500 ring-offset-2',
+          'focus:ring-2',
+        )}
+      >
+        {isRenaming ? (
+          <FocusLock>
+            <form
+              onSubmit={onSubmit}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onSubmit();
+                }
+              }}
+              onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
+              autoComplete="off"
+              className="flex items-center justify-between"
+            >
+              <AutoFocusInside>
+                <Textbox
+                  {...register('name')}
+                  label="Name"
+                  srOnlyLabel
+                  disabled={isSubmitting}
+                  data-test="table-name-input"
+                  className="nodrag"
+                />
+              </AutoFocusInside>
+              <IconButton
+                icon={Check}
+                iconProps={{ weight: 'bold' }}
+                severity="dark"
+                label="Save (ENTER)"
+                type="submit"
+                data-test="submit-table"
+                className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
               />
-            </AutoFocusInside>
-            <IconButton
-              icon={Check}
-              iconProps={{ weight: 'bold' }}
-              severity="dark"
-              label="Save (ENTER)"
-              type="submit"
-              data-test="submit-table"
-              className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
-            />
-          </form>
-        </FocusLock>
-      ) : (
-        <ContextMenu
-          menu={[
-            {
-              label: 'Rename',
-              'data-test': 'table-header-context-menu-rename',
-              onClick: triggerRename,
-            },
-            {
-              label: 'Duplicate',
-              'data-test': 'table-header-context-menu-duplicate',
-              onClick: triggerDuplicate,
-            },
-            {
-              label: 'Add field',
-              'data-test': 'table-header-context-menu-add-field',
-              onClick: triggerAddColumn,
-            },
-            {
-              label: 'Delete',
-              'data-test': 'table-header-context-menu-delete',
-              onClick: triggerDelete,
-            },
-          ]}
-        >
+            </form>
+          </FocusLock>
+        ) : (
           <div className="flex items-center justify-between">
             <div data-test="table-name" className="flex items-center gap-x-2 text-white">
               {table.name}
@@ -231,8 +232,8 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
               />
             </div>
           </div>
-        </ContextMenu>
-      )}
-    </div>
+        )}
+      </div>
+    </ContextMenu>
   );
 }

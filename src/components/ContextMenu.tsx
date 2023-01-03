@@ -9,12 +9,15 @@ interface ContextMenuProps {
   }[];
   children: ReactNode;
   label?: string;
+  disabled?: boolean;
 }
 
-export function ContextMenu({ menu, children, label }: ContextMenuProps) {
+export function ContextMenu({ menu, children, label, disabled }: ContextMenuProps) {
   return (
     <RadixContextMenu.Root>
-      <RadixContextMenu.Trigger asChild>{children}</RadixContextMenu.Trigger>
+      <RadixContextMenu.Trigger disabled={disabled} asChild>
+        {children}
+      </RadixContextMenu.Trigger>
 
       <RadixContextMenu.Portal>
         <RadixContextMenu.Content asChild>
