@@ -23,6 +23,7 @@ import {
 import { useStore } from 'reactflow';
 import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
 import { Combobox } from './Combobox';
+import { ContextMenu } from './ContextMenu';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -84,7 +85,7 @@ export function TableColumn({
   useEffect(() => {
     // Automatically edit after creation
     if (column.name === '') {
-      setIsEditing(true);
+      triggerEdit();
     }
   }, []);
 
@@ -101,7 +102,7 @@ export function TableColumn({
     }
   };
 
-  const handleDelete = () => {
+  const triggerDelete = () => {
     const parent = containerRef.current?.parentElement;
     const nearestColumnSibling =
       parent?.previousElementSibling?.lastElementChild ||
@@ -121,175 +122,204 @@ export function TableColumn({
     }
   };
 
+  const triggerEdit = () => {
+    setIsEditing(true);
+  };
+
+  const triggerDuplicate = () => {
+    createColumn({ ...column, tableId });
+  };
+
   return (
-    <div
-      ref={containerRef}
-      tabIndex={0}
-      onFocus={() => setIsColumnFocused(true)}
-      onBlur={() => setIsColumnFocused(false)}
-      onKeyDown={(e) => {
-        if (!isEditing && e.target === e.currentTarget) {
-          if (e.key === 'e') {
-            e.preventDefault();
-            e.stopPropagation();
-            setIsEditing(true);
-          } else if (e.key === 'Delete') {
-            e.preventDefault();
-            e.stopPropagation();
-
-            handleDelete();
-          } else if (e.shiftKey && e.key === 'Enter') {
-            e.preventDefault();
-            e.stopPropagation();
-
-            createColumn({ ...emptyVarcharColumn(), tableId });
-          } else if (e.key === 'Escape') {
-            e.preventDefault();
-            e.stopPropagation();
-
-            document.getElementById(`table-header-${tableId}`)?.focus();
-          }
-        }
-      }}
-      data-test="column"
-      className={clsx(
-        'group flex items-center gap-x-2 py-0.5 pl-3 pr-1.5 outline-none ring-sky-500',
-        'hover:bg-slate-100',
-        'focus:relative focus:z-10 focus:ring-2',
-        className,
-      )}
+    <ContextMenu
+      disabled={isEditing}
+      menu={[
+        {
+          label: 'Edit',
+          'data-test': 'column-context-menu-edit',
+          onClick: triggerEdit,
+        },
+        {
+          label: 'Duplicate',
+          'data-test': 'column-context-menu-duplicate',
+          onClick: triggerDuplicate,
+        },
+        {
+          label: 'Delete',
+          'data-test': 'column-context-menu-delete',
+          onClick: triggerDelete,
+        },
+      ]}
     >
-      {isEditing ? (
-        <FocusLock>
-          <form
-            onSubmit={onSubmit}
-            onKeyDown={handleKeyEscape}
-            autoComplete="off"
-            onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
-            className="nodrag flex items-center gap-x-2"
-          >
-            <Controller
-              control={control}
-              name="isPrimaryKey"
-              render={({ field: { name, onBlur, onChange, ref, value } }) => (
-                <CustomCheckbox
-                  ref={ref}
-                  name={name}
-                  checkedElement={<Key weight="fill" className="h-5 w-5 text-yellow-400" />}
-                  uncheckedElement={<Key className="h-5 w-5 text-yellow-600" />}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  checked={value}
-                  data-test="column-primary-key-checkbox"
-                />
-              )}
-            />
+      <div
+        ref={containerRef}
+        tabIndex={0}
+        onFocus={() => setIsColumnFocused(true)}
+        onBlur={() => setIsColumnFocused(false)}
+        onKeyDown={(e) => {
+          if (!isEditing && e.target === e.currentTarget) {
+            if (e.key === 'e') {
+              e.preventDefault();
+              e.stopPropagation();
+              triggerEdit();
+            } else if (e.key === 'Delete') {
+              e.preventDefault();
+              e.stopPropagation();
 
-            <AutoFocusInside>
-              <Textbox
-                label="Name"
-                {...register('name', {
-                  validate: {
-                    unique: (value) => {
-                      return (
-                        validateUniqueColumnName({ name: value, tableId }) || 'should be unique'
-                      );
-                    },
-                  },
-                })}
-                srOnlyLabel
-                disabled={isSubmitting}
-                data-test="column-name-textbox"
-                className="w-32"
+              triggerDelete();
+            } else if (e.shiftKey && e.key === 'Enter') {
+              e.preventDefault();
+              e.stopPropagation();
+
+              createColumn({ ...emptyVarcharColumn(), tableId });
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              e.stopPropagation();
+
+              document.getElementById(`table-header-${tableId}`)?.focus();
+            }
+          }
+        }}
+        data-test="column"
+        className={clsx(
+          'group flex items-center gap-x-2 py-0.5 pl-3 pr-1.5 outline-none ring-sky-500',
+          'hover:bg-slate-100',
+          'focus:relative focus:z-10 focus:ring-2',
+          className,
+        )}
+      >
+        {isEditing ? (
+          <FocusLock>
+            <form
+              onSubmit={onSubmit}
+              onKeyDown={handleKeyEscape}
+              autoComplete="off"
+              onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
+              className="nodrag flex items-center gap-x-2"
+            >
+              <Controller
+                control={control}
+                name="isPrimaryKey"
+                render={({ field: { name, onBlur, onChange, ref, value } }) => (
+                  <CustomCheckbox
+                    ref={ref}
+                    name={name}
+                    checkedElement={<Key weight="fill" className="h-5 w-5 text-yellow-400" />}
+                    uncheckedElement={<Key className="h-5 w-5 text-yellow-600" />}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    checked={value}
+                    data-test="column-primary-key-checkbox"
+                  />
+                )}
               />
-            </AutoFocusInside>
-            <Controller
-              control={control}
-              name="type"
-              render={({ field: { name, onBlur, onChange, value, ref } }) => (
-                <Combobox
-                  ref={ref}
-                  label="Type"
-                  name={name}
-                  options={ColumnTypeEnum.options.map((type) => ({ label: type, value: type }))}
-                  onBlur={onBlur}
-                  onChange={(option) => {
-                    if (option && 'value' in option) {
-                      onChange(option.value);
-                    }
-                  }}
-                  value={ColumnTypeEnum.options
-                    .map((type) => ({ label: type, value: type }))
-                    .find((option) => option.value === value)}
-                  srOnlyLabel
-                  data-test="column-type-combobox"
-                  className="w-56"
-                />
-              )}
-            />
 
-            <IconButton
-              icon={Check}
-              iconProps={{ weight: 'bold' }}
-              severity="primary"
-              label="Save (ENTER)"
-              type="submit"
-              data-test="submit-column"
-              className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
-            />
-          </form>
-        </FocusLock>
-      ) : (
-        <>
-          <span className="h-4 w-4" data-test="column-key">
-            {(isPrimaryKey || isForeignKey) && (
-              <>
-                <Key
-                  weight="fill"
-                  className={clsx('h-4 w-4', {
-                    'text-yellow-400': isPrimaryKey,
-                    'text-slate-400': isForeignKey && !isPrimaryKey,
+              <AutoFocusInside>
+                <Textbox
+                  label="Name"
+                  {...register('name', {
+                    validate: {
+                      unique: (value) => {
+                        return (
+                          validateUniqueColumnName({ name: value, tableId }) || 'should be unique'
+                        );
+                      },
+                    },
                   })}
-                  aria-hidden
+                  srOnlyLabel
+                  disabled={isSubmitting}
+                  data-test="column-name-textbox"
+                  className="w-32"
                 />
-                <div className="sr-only">
-                  {isPrimaryKey && 'Primary key'}
-                  {isForeignKey && (isPrimaryKey ? 'and Foreign key' : 'Foreign key')}
-                </div>
-              </>
-            )}
-          </span>
-          <span className="text-slate-700" data-test="column-name">
-            {column.name}
-          </span>
-          <span className="text-slate-500" data-test="column-type">
-            {column.type}
-          </span>
-          <div
-            className={clsx('invisible ml-auto flex group-hover:visible', {
-              invisible: hideAction,
-            })}
-          >
-            <IconButton
-              label={`Edit${isColumnFocused ? ' (E)' : ''}`}
-              icon={Pencil}
-              onClick={() => setIsEditing(true)}
-              disabled={hideAction}
-              data-test="edit-column-button"
-              className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
-            />
-            <IconButton
-              label={`Delete${isColumnFocused ? ' (DEL)' : ''}`}
-              icon={Trash}
-              severity="danger"
-              onClick={handleDelete}
-              disabled={hideAction}
-              data-test="delete-column-button"
-              className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
-            />
-          </div>
-        </>
-      )}
-    </div>
+              </AutoFocusInside>
+              <Controller
+                control={control}
+                name="type"
+                render={({ field: { name, onBlur, onChange, value, ref } }) => (
+                  <Combobox
+                    ref={ref}
+                    label="Type"
+                    name={name}
+                    options={ColumnTypeEnum.options.map((type) => ({ label: type, value: type }))}
+                    onBlur={onBlur}
+                    onChange={(option) => {
+                      if (option && 'value' in option) {
+                        onChange(option.value);
+                      }
+                    }}
+                    value={ColumnTypeEnum.options
+                      .map((type) => ({ label: type, value: type }))
+                      .find((option) => option.value === value)}
+                    srOnlyLabel
+                    data-test="column-type-combobox"
+                    className="w-56"
+                  />
+                )}
+              />
+
+              <IconButton
+                icon={Check}
+                iconProps={{ weight: 'bold' }}
+                severity="primary"
+                label="Save (ENTER)"
+                type="submit"
+                data-test="submit-column"
+                className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
+              />
+            </form>
+          </FocusLock>
+        ) : (
+          <>
+            <span className="h-4 w-4" data-test="column-key">
+              {(isPrimaryKey || isForeignKey) && (
+                <>
+                  <Key
+                    weight="fill"
+                    className={clsx('h-4 w-4', {
+                      'text-yellow-400': isPrimaryKey,
+                      'text-slate-400': isForeignKey && !isPrimaryKey,
+                    })}
+                    aria-hidden
+                  />
+                  <div className="sr-only">
+                    {isPrimaryKey && 'Primary key'}
+                    {isForeignKey && (isPrimaryKey ? 'and Foreign key' : 'Foreign key')}
+                  </div>
+                </>
+              )}
+            </span>
+            <span className="text-slate-700" data-test="column-name">
+              {column.name}
+            </span>
+            <span className="text-slate-500" data-test="column-type">
+              {column.type}
+            </span>
+            <div
+              className={clsx('invisible ml-auto flex group-hover:visible', {
+                invisible: hideAction,
+              })}
+            >
+              <IconButton
+                label={`Edit${isColumnFocused ? ' (E)' : ''}`}
+                icon={Pencil}
+                onClick={triggerEdit}
+                disabled={hideAction}
+                data-test="edit-column-button"
+                className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
+              />
+              <IconButton
+                label={`Delete${isColumnFocused ? ' (DEL)' : ''}`}
+                icon={Trash}
+                severity="danger"
+                onClick={triggerDelete}
+                disabled={hideAction}
+                data-test="delete-column-button"
+                className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
+              />
+            </div>
+          </>
+        )}
+      </div>
+    </ContextMenu>
   );
 }
