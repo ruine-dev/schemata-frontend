@@ -5,6 +5,7 @@ interface ContextMenuProps {
   menu: {
     label: string;
     onClick?: () => void;
+    'data-test'?: string;
   }[];
   children: ReactNode;
   label?: string;
@@ -17,13 +18,17 @@ export function ContextMenu({ menu, children, label }: ContextMenuProps) {
 
       <RadixContextMenu.Portal>
         <RadixContextMenu.Content asChild>
-          <div className="min-w-[12rem] overflow-hidden rounded-xl border border-slate-300 bg-white/80 shadow backdrop-blur-xl">
+          <div
+            onKeyDown={(e) => e.stopPropagation()}
+            className="w-52 overflow-hidden rounded-xl border border-slate-300/70 bg-white/70 shadow backdrop-blur-lg"
+          >
             {label && <RadixContextMenu.Label>{label}</RadixContextMenu.Label>}
             {menu.map((item) => (
               <RadixContextMenu.Item asChild>
                 <div
                   onClick={item.onClick}
-                  className="cursor-default px-3 py-2 text-slate-800 hover:bg-slate-100/80"
+                  data-test={item['data-test']}
+                  className="w-full cursor-default py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
                 >
                   {item.label}
                 </div>
