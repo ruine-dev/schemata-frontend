@@ -26,7 +26,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
   const createTable = useCreateTable(onDataChange);
   const updateTable = useUpdateTable(onDataChange);
   const deleteTable = useDeleteTable();
-  const addColumn = useCreateColumn();
+  const createColumn = useCreateColumn();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -77,10 +77,12 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
       },
       position,
     );
+
+    onDataChange?.();
   };
 
-  const triggerAddColumn = () => {
-    addColumn({
+  const triggerCreateColumn = () => {
+    createColumn({
       ...emptyVarcharColumn(),
       tableId: table.id,
     });
@@ -116,7 +118,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
         {
           label: 'Add field',
           'data-test': 'table-header-context-menu-add-field',
-          onClick: triggerAddColumn,
+          onClick: triggerCreateColumn,
         },
         {
           label: 'Delete',
@@ -140,7 +142,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
               e.stopPropagation();
               triggerDelete();
             } else if (e.shiftKey && e.key === 'Enter') {
-              triggerAddColumn();
+              triggerCreateColumn();
             } else if (e.key === 'Escape') {
               e.preventDefault();
               e.stopPropagation();

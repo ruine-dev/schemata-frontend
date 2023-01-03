@@ -128,6 +128,8 @@ export function TableColumn({
 
   const triggerDuplicate = () => {
     createColumn({ ...column, tableId });
+
+    onDataChange?.();
   };
 
   return (

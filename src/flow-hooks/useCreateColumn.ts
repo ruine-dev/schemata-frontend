@@ -1,11 +1,11 @@
-import { CreateColumnType, TableTypeWithoutId } from '@/schemas/base';
+import { CreateColumnSchema, CreateColumnType, TableTypeWithoutId } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 
 export function useCreateColumn() {
   const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
 
   return (columnPayload: CreateColumnType) => {
-    const { tableId, ...newColumn } = columnPayload;
+    const { tableId, ...newColumn } = CreateColumnSchema.parse(columnPayload);
 
     reactFlowInstance.setNodes((currentNodes) => {
       return currentNodes.map((node) => {
