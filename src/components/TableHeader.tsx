@@ -207,11 +207,13 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
             <ContextMenu.Content asChild>
               <div
                 onKeyDown={(e) => e.stopPropagation()}
+                data-test="table-header-context-menu"
                 className="w-52 overflow-hidden rounded-xl border border-slate-300/70 bg-white/70 shadow backdrop-blur-lg"
               >
                 <ContextMenu.Item asChild>
                   <button
                     onClick={triggerRename}
+                    data-test="table-header-context-menu-rename"
                     className="w-full py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
                   >
                     Rename
@@ -220,6 +222,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
                 <ContextMenu.Item asChild>
                   <button
                     onClick={triggerDuplicate}
+                    data-test="table-header-context-menu-duplicate"
                     className="w-full py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
                   >
                     Duplicate
@@ -228,14 +231,16 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
                 <ContextMenu.Item asChild>
                   <button
                     onClick={triggerAddColumn}
+                    data-test="table-header-context-menu-add-field"
                     className="w-full py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
                   >
-                    New field
+                    Add field
                   </button>
                 </ContextMenu.Item>
                 <ContextMenu.Item asChild>
                   <button
                     onClick={triggerDelete}
+                    data-test="table-header-context-menu-delete"
                     className="w-full py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
                   >
                     Delete

@@ -21,6 +21,12 @@ describe('deleting table', () => {
   it('can delete table by pressing "delete" button', () => {
     cy.getBySel('table-header').type('{del}');
   });
+
+  it('can delete table by clicking "Delete" button in table header\'s context menu', () => {
+    cy.getBySel('table-header').rightclick();
+
+    cy.getBySel('table-header-context-menu-delete').click();
+  });
 });
 
 export {};

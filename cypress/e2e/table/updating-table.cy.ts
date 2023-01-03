@@ -55,6 +55,28 @@ describe('updating table', () => {
       cy.focused().type('{esc}');
     });
   });
+
+  context('can rename table by clicking "Rename" button in table header\'s context menu', () => {
+    beforeEach(() => {
+      cy.getBySel('table-header').rightclick();
+
+      cy.getBySel('table-header-context-menu-rename').click();
+
+      cy.focused().clear().type('foo');
+    });
+
+    it('clicking "Save" button to submit', () => {
+      cy.getBySel('submit-table').click();
+    });
+
+    it('pressing "Enter" to submit', () => {
+      cy.focused().type('{enter}');
+    });
+
+    it('pressing "Escape" to submit', () => {
+      cy.focused().type('{esc}');
+    });
+  });
 });
 
 export {};
