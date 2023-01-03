@@ -69,7 +69,14 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
       y: rect?.y ?? 0,
     });
 
-    createTable(tableWithoutId, position);
+    createTable(
+      {
+        ...tableWithoutId,
+        columns: tableWithoutId.columns.map((column) => ({ ...column, id: crypto.randomUUID() })),
+        indexes: tableWithoutId.indexes.map((index) => ({ ...index, id: crypto.randomUUID() })),
+      },
+      position,
+    );
   };
 
   const triggerAddColumn = () => {
