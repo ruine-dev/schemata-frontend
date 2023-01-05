@@ -1,4 +1,4 @@
-import { TableTypeWithoutId } from '@/schemas/base.js';
+import { TableWithoutIdType } from '@/schemas/base.js';
 import { X } from 'phosphor-react';
 import { CSSProperties, useCallback } from 'react';
 import { useStore, Position, getSmoothStepPath, useReactFlow } from 'reactflow';
@@ -25,7 +25,7 @@ export function SimpleFloatingEdge({
   markerEnd,
   style,
 }: SimpleFLoatingEdgeProps) {
-  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
+  const reactFlowInstance = useReactFlow<TableWithoutIdType>();
   const sourceNode = useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
   const targetNode = useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
   const relatedEdge = useStore(

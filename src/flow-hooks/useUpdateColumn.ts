@@ -1,8 +1,11 @@
-import { TableTypeWithoutId, UpdateColumnType } from '@/schemas/base';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
+import { TableWithoutIdType, UpdateColumnType } from '@/schemas/base';
+import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 
-export function useUpdateColumn(callback?: () => void) {
-  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
+export function useUpdateColumn() {
+  const { undoableService } = useContext(EditorStateContext);
+  const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
   return (columnPayload: UpdateColumnType) => {
     const { tableId, name, isPrimaryKey, ...newColumn } = columnPayload;
@@ -58,6 +61,6 @@ export function useUpdateColumn(callback?: () => void) {
       });
     });
 
-    callback?.();
+    undoableService.updateData(true);
   };
 }

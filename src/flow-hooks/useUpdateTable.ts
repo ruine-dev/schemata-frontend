@@ -1,8 +1,11 @@
-import { TableType, TableTypeWithoutId } from '@/schemas/base';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
+import { TableType, TableWithoutIdType } from '@/schemas/base';
+import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 
-export function useUpdateTable(callback?: () => void) {
-  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
+export function useUpdateTable() {
+  const { undoableService } = useContext(EditorStateContext);
+  const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
   return (newTable: TableType) => {
     const { id, name, ...tablePayload } = newTable;
@@ -15,7 +18,6 @@ export function useUpdateTable(callback?: () => void) {
             data: {
               name: name || 'untitled',
               ...tablePayload,
-              onDataChange: callback,
             },
           };
         }
@@ -24,6 +26,6 @@ export function useUpdateTable(callback?: () => void) {
       }),
     );
 
-    callback?.();
+    undoableService.updateData(true);
   };
 }

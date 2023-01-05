@@ -1,18 +1,11 @@
-import { TableTypeWithoutId } from '@/schemas/base';
 import { emptyTableWithoutId } from '@/utils/reactflow';
 import { useEffect } from 'react';
-import { ReactFlowInstance } from 'reactflow';
-import { useCreateTableWithInstance } from './useCreateTable';
+import { useReactFlow } from 'reactflow';
+import { useCreateTable } from './useCreateTable';
 
-type UseAddCreateTableShortcutParams = {
-  reactFlowInstance: ReactFlowInstance<TableTypeWithoutId> | null;
-};
-
-export function useAddCreateTableShortcut(
-  { reactFlowInstance }: UseAddCreateTableShortcutParams,
-  callback?: () => void,
-) {
-  const createTable = useCreateTableWithInstance(reactFlowInstance, callback);
+export function useAddCreateTableShortcut() {
+  const reactFlowInstance = useReactFlow();
+  const createTable = useCreateTable();
 
   useEffect(() => {
     const handleCreateTableShortcut = (e: KeyboardEvent) => {

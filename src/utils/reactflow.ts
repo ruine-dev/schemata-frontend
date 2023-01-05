@@ -3,7 +3,7 @@ import {
   RelationType,
   TableNodeType,
   TableType,
-  TableTypeWithoutId,
+  TableWithoutIdType,
   VarcharColumnType,
 } from '@/schemas/base';
 import { Edge } from 'reactflow';
@@ -43,7 +43,7 @@ export function edgeToRelation(edge: Edge): RelationType {
   };
 }
 
-export function emptyTableWithoutId(): TableTypeWithoutId {
+export function emptyTableWithoutId(): TableWithoutIdType {
   return {
     name: '',
     columns: [],

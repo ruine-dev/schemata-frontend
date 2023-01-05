@@ -646,9 +646,15 @@ export const TableSchema = z.object({
 
 export type TableType = z.infer<typeof TableSchema>;
 
-export type TableTypeWithoutId = Omit<TableType, 'id'> & { onDataChange?: () => void };
+export const TableWithoutIdSchema = TableSchema.omit({ id: true });
 
-export type TableNodeType = Node<TableTypeWithoutId>;
+export type TableWithoutIdType = z.infer<typeof TableWithoutIdSchema>;
+
+export const TableWithOptionalIdSchema = TableSchema.extend({ id: z.string().uuid().optional() });
+
+export type TableWithOptionalIdType = z.infer<typeof TableWithOptionalIdSchema>;
+
+export type TableNodeType = Node<TableWithoutIdType>;
 
 export const GroupSchema = z.object({
   id: z.string().uuid(),

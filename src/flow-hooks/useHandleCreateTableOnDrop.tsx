@@ -1,19 +1,15 @@
-import { TableTypeWithoutId } from '@/schemas/base';
 import { emptyTableWithoutId } from '@/utils/reactflow';
 import { DragEvent, RefObject, useCallback } from 'react';
-import { ReactFlowInstance } from 'reactflow';
-import { useCreateTableWithInstance } from './useCreateTable';
+import { useReactFlow } from 'reactflow';
+import { useCreateTable } from './useCreateTable';
 
 type UseHandleCreateTableOnDropParams = {
-  reactFlowInstance: ReactFlowInstance<TableTypeWithoutId> | null;
   reactFlowWrapper: RefObject<HTMLDivElement>;
 };
 
-export function useHandleCreateTableOnDrop(
-  { reactFlowInstance, reactFlowWrapper }: UseHandleCreateTableOnDropParams,
-  callback?: () => void,
-) {
-  const createTable = useCreateTableWithInstance(reactFlowInstance, callback);
+export function useHandleCreateTableOnDrop({ reactFlowWrapper }: UseHandleCreateTableOnDropParams) {
+  const reactFlowInstance = useReactFlow();
+  const createTable = useCreateTable();
 
   return useCallback(
     (event: DragEvent<HTMLDivElement>) => {
@@ -37,6 +33,6 @@ export function useHandleCreateTableOnDrop(
 
       createTable(emptyTableWithoutId(), position);
     },
-    [reactFlowInstance, callback],
+    [reactFlowInstance],
   );
 }

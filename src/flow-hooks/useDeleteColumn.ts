@@ -1,9 +1,12 @@
-import { DeleteColumnType, TableTypeWithoutId } from '@/schemas/base';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
+import { DeleteColumnType, TableWithoutIdType } from '@/schemas/base';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
+import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 
-export function useDeleteColumn(callback?: () => void) {
-  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
+export function useDeleteColumn() {
+  const { undoableService } = useContext(EditorStateContext);
+  const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
   return (columnPayload: DeleteColumnType) => {
     const { tableId, id } = columnPayload;
@@ -35,6 +38,6 @@ export function useDeleteColumn(callback?: () => void) {
       });
     });
 
-    callback?.();
+    undoableService.updateData(true);
   };
 }

@@ -1,39 +1,29 @@
-import { TableNodeType, TableTypeWithoutId } from '@/schemas/base';
-import { ReactFlowInstance, useReactFlow } from 'reactflow';
+import { useReactFlow } from 'reactflow';
+import { TableNodeType, TableWithOptionalIdType, TableWithoutIdType } from '@/schemas/base';
+import { useContext } from 'react';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
 
-export function useCreateTable(callback?: () => void) {
-  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
+export function useCreateTable() {
+  const { undoableService } = useContext(EditorStateContext);
+  const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
-  return (newTable: TableTypeWithoutId, position: TableNodeType['position'] = { x: 0, y: 0 }) => {
+  return (
+    newTable: TableWithOptionalIdType,
+    position: TableNodeType['position'] = { x: 0, y: 0 },
+  ) => {
+    const { id, ...payload } = newTable;
+
     reactFlowInstance.addNodes({
-      id: crypto.randomUUID(),
+      id: id ?? crypto.randomUUID(),
       type: 'table',
       position,
       data: {
-        ...newTable,
-        onDataChange: callback,
+        ...payload,
       },
     });
-  };
-}
 
-export function useCreateTableWithInstance(
-  reactFlowInstance?: ReactFlowInstance<TableTypeWithoutId> | null,
-  callback?: () => void,
-) {
-  if (!reactFlowInstance) {
-    return () => {};
-  }
-
-  return (newTable: TableTypeWithoutId, position: TableNodeType['position'] = { x: 0, y: 0 }) => {
-    reactFlowInstance.addNodes({
-      id: crypto.randomUUID(),
-      type: 'table',
-      position,
-      data: {
-        ...newTable,
-        onDataChange: callback,
-      },
-    });
+    if (payload.name !== '') {
+      undoableService.updateData(true);
+    }
   };
 }

@@ -29,7 +29,6 @@ type TableColumnFinalProps = {
   column: ColumnType;
   tableIndexes: IndexType[];
   tableId: string;
-  onDataChange?: () => void;
   hideAction?: boolean;
   className?: string;
 };
@@ -38,7 +37,6 @@ export function TableColumn({
   column,
   tableIndexes,
   tableId,
-  onDataChange,
   hideAction,
   className,
 }: TableColumnFinalProps) {
@@ -47,8 +45,8 @@ export function TableColumn({
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const updateColumn = useUpdateColumn(onDataChange);
-  const deleteColumn = useDeleteColumn(onDataChange);
+  const updateColumn = useUpdateColumn();
+  const deleteColumn = useDeleteColumn();
   const createColumn = useCreateColumn();
   const validateUniqueColumnName = useValidateUniqueColumnName();
 
@@ -128,8 +126,6 @@ export function TableColumn({
 
   const triggerDuplicate = () => {
     createColumn({ ...column, tableId });
-
-    onDataChange?.();
   };
 
   return (

@@ -28,7 +28,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
         'group/node min-w-[18rem] rounded-xl border border-slate-300 bg-white font-mono shadow-sm',
       )}
     >
-      <TableHeader table={{ id, ...table }} onDataChange={table.onDataChange} />
+      <TableHeader table={{ id, ...table }} />
       <ul className="mt-1 pb-1">
         {table.columns.map((column) => (
           <li key={column.id} className="group relative">
@@ -66,7 +66,6 @@ export function TableNode({ id, data: table }: TableNodeType) {
               tableIndexes={table.indexes}
               tableId={id}
               hideAction={!!connectionNodeId}
-              onDataChange={table.onDataChange}
               className="peer-hover:bg-slate-100"
             />
           </li>
@@ -92,7 +91,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
             'enabled:active:bg-sky-50 enabled:active:text-sky-600',
           )}
         >
-          <span className="-ml-4 flex items-center gap-x-2 uppercase tracking-wider text-sm">
+          <span className="-ml-4 flex items-center gap-x-2 text-sm uppercase tracking-wider">
             <Plus aria-hidden className="h-5 w-5" />
             Add field
           </span>

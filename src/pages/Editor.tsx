@@ -1,10 +1,12 @@
 import { Canvas } from '@/components/Canvas';
+import { EditorStateProvider } from '@/contexts/EditorStateContext';
 import { useLocalSchemaQuery } from '@/queries/useSchemaQuery';
 import { emptySchemaFactory } from '@/utils/schema';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMatch } from '@tanstack/react-router';
 import localforage from 'localforage';
 import { useEffect } from 'react';
+import { ReactFlowProvider } from 'reactflow';
 
 const starterSchema = emptySchemaFactory();
 
@@ -28,7 +30,13 @@ export function Editor() {
   }
 
   if (isSuccess) {
-    return <Canvas schema={schema} />;
+    return (
+      <ReactFlowProvider>
+        <EditorStateProvider schema={schema}>
+          <Canvas schema={schema} />
+        </EditorStateProvider>
+      </ReactFlowProvider>
+    );
   }
 
   throw Error('Failed to load schema');

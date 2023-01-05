@@ -1,12 +1,10 @@
-import { TableTypeWithoutId } from '@/schemas/base';
+import { TableWithoutIdType } from '@/schemas/base';
 import { getColumnIdFromHandleId, getHandlePositionFromHandleId } from '@/utils/reactflow';
-import { Edge, ReactFlowInstance } from 'reactflow';
+import { Edge, ReactFlowInstance, useReactFlow } from 'reactflow';
 
-type UseHandleEdgeMarkerParams = {
-  reactFlowInstance: ReactFlowInstance<TableTypeWithoutId> | null;
-};
+export function useHandleEdgeMarker() {
+  const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
-export function useHandleEdgeMarker({ reactFlowInstance }: UseHandleEdgeMarkerParams) {
   return (edge: Edge) => {
     const targetColumnId = edge.targetHandle ? getColumnIdFromHandleId(edge.targetHandle) : '';
 

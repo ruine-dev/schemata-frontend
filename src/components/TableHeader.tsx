@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Check, Pencil, Trash } from 'phosphor-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,16 +15,18 @@ import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
 import { useCreateTable } from '@/flow-hooks/useCreateTable';
 import { useReactFlow } from 'reactflow';
 import { ContextMenu } from './ContextMenu';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
 
 interface TableHeaderProps {
   table: TableType;
-  onDataChange?: () => void;
 }
 
-export function TableHeader({ table, onDataChange }: TableHeaderProps) {
-  const { project } = useReactFlow();
-  const createTable = useCreateTable(onDataChange);
-  const updateTable = useUpdateTable(onDataChange);
+export function TableHeader({ table }: TableHeaderProps) {
+  const { copyPasteService, undoableService } = useContext(EditorStateContext);
+
+  const reactFlowInstance = useReactFlow();
+  const createTable = useCreateTable();
+  const updateTable = useUpdateTable();
   const deleteTable = useDeleteTable();
   const createColumn = useCreateColumn();
 
@@ -64,7 +66,7 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
 
     const rect = containerRef.current?.getBoundingClientRect();
 
-    const position = project({
+    const position = reactFlowInstance.project({
       x: (rect?.x ?? 0) + (rect?.width ?? 0),
       y: rect?.y ?? 0,
     });
@@ -78,8 +80,29 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
       position,
     );
 
-    onDataChange?.();
+    undoableService.updateData();
   };
+
+  const triggerCopy = useCallback(() => {
+    copyPasteService.send({
+      type: 'COPY',
+      data: {
+        type: 'TABLE',
+        payload: table,
+      },
+    });
+  }, [copyPasteService, table]);
+
+  const triggerCut = useCallback(() => {
+    copyPasteService.send({
+      type: 'CUT',
+      data: {
+        type: 'TABLE',
+        payload: table,
+      },
+      reactFlowInstance,
+    });
+  }, [copyPasteService, reactFlowInstance, table]);
 
   const triggerCreateColumn = () => {
     createColumn({
@@ -111,9 +134,14 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
           onClick: triggerRename,
         },
         {
-          label: 'Duplicate',
-          'data-test': 'table-header-context-menu-duplicate',
-          onClick: triggerDuplicate,
+          label: 'Cut',
+          'data-test': 'table-header-context-menu-cut',
+          onClick: triggerCut,
+        },
+        {
+          label: 'Copy',
+          'data-test': 'table-header-context-menu-copy',
+          onClick: triggerCopy,
         },
         {
           label: 'Add field',
@@ -147,6 +175,10 @@ export function TableHeader({ table, onDataChange }: TableHeaderProps) {
               e.preventDefault();
               e.stopPropagation();
               e.currentTarget.blur();
+            } else if (e.ctrlKey && e.key === 'd') {
+              e.preventDefault();
+              e.stopPropagation();
+              triggerDuplicate();
             }
           }
         }}

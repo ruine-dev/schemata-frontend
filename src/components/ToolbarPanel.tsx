@@ -1,4 +1,4 @@
-import { DragEvent } from 'react';
+import { DragEvent, useContext } from 'react';
 import { useCreateTable } from '@/flow-hooks/useCreateTable';
 import { ArrowClockwise, ArrowCounterClockwise, Table } from 'phosphor-react';
 import { EditorPanelContainer } from './EditorPanelContainer';
@@ -7,24 +7,12 @@ import { useReactFlow } from 'reactflow';
 import { clsx } from '@/utils/clsx';
 import { emptyTableWithoutId } from '@/utils/reactflow';
 import { IconButton } from './IconButton';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
 
-type ToolbarPanelProps = {
-  canUndo: boolean;
-  canRedo: boolean;
-  handleUndo: () => void;
-  handleRedo: () => void;
-  onCreateTable: () => void;
-};
-
-export function ToolbarPanel({
-  canUndo,
-  canRedo,
-  handleUndo,
-  handleRedo,
-  onCreateTable,
-}: ToolbarPanelProps) {
+export function ToolbarPanel() {
   const { project } = useReactFlow();
-  const createTable = useCreateTable(onCreateTable);
+  const { undoableService } = useContext(EditorStateContext);
+  const createTable = useCreateTable();
 
   const onDragStart = (event: DragEvent<HTMLButtonElement>, nodeType: 'table') => {
     event.dataTransfer.setData('application/reactflow', nodeType);
@@ -64,15 +52,15 @@ export function ToolbarPanel({
         <IconButton
           icon={ArrowCounterClockwise}
           label="Undo (CTRL + Z)"
-          onClick={handleUndo}
-          disabled={!canUndo}
+          onClick={undoableService.undo}
+          disabled={!undoableService.canUndo}
           filled
         />
         <IconButton
           icon={ArrowClockwise}
           label="Redo (CTRL + Y)"
-          onClick={handleRedo}
-          disabled={!canRedo}
+          onClick={undoableService.redo}
+          disabled={!undoableService.canRedo}
           filled
         />
       </div>

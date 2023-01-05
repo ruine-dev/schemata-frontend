@@ -1,4 +1,4 @@
-import { DragEventHandler, useCallback, useState, useRef, useEffect, useMemo } from 'react';
+import { DragEventHandler, useCallback, useRef, useEffect, useContext, MouseEvent } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -6,8 +6,7 @@ import ReactFlow, {
   MiniMap,
   NodeTypes,
   Panel,
-  ReactFlowInstance,
-  ReactFlowProvider,
+  useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { TableNode } from './TableNode';
@@ -15,16 +14,17 @@ import { GeneralPropsPanel } from './GeneralPropsPanel';
 import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
 import { SimpleFloatingEdge } from './ReactFlow/SimpleFloatingEdge';
-import { SchemaType, TableNodeType, TableTypeWithoutId } from '@/schemas/base';
+import { SchemaType } from '@/schemas/base';
 import { useAddCreateTableShortcut } from '@/flow-hooks/useAddCreateTableShortcut';
 import { useHandleSaveLocalSchema } from '@/flow-hooks/useHandleSaveLocalSchema';
 import { isUuid } from '@/utils/zod';
 import { useHandleEdgeMarker } from '@/flow-hooks/useHandleEdgeMarker';
-import { useTransformSchemaToReactFlowData } from '@/flow-hooks/useTransformSchemaToReactFlowData';
 import { Markers } from './Markers';
 import { useHandleCreateTableOnDrop } from '@/flow-hooks/useHandleCreateTableOnDrop';
-import useUndoable from 'use-undoable';
-import { appendDataChangeListenerToNodes } from '@/utils/reactflow';
+import { emptyTableWithoutId } from '@/utils/reactflow';
+import { ContextMenu } from './ContextMenu';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
+import { useCreateTable } from '@/flow-hooks/useCreateTable';
 
 const nodeTypes: NodeTypes = { table: TableNode } as unknown as NodeTypes;
 
@@ -32,89 +32,28 @@ const edgeTypes: EdgeTypes = {
   floating: SimpleFloatingEdge,
 };
 
-interface CanvasProps {
+type CanvasProps = {
   schema: SchemaType;
-}
+};
 
 export function Canvas({ schema }: CanvasProps) {
+  const reactFlowInstance = useReactFlow();
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 
-  const [reactFlowInstance, setReactFlowInstance] =
-    useState<ReactFlowInstance<TableTypeWithoutId> | null>(null);
-
-  const transformSchemaToReactFlowData = useTransformSchemaToReactFlowData({ reactFlowInstance });
-  const { nodes: preDefaultNodes, edges: defaultEdges } = useMemo(
-    () => transformSchemaToReactFlowData.parse(schema),
-    [schema],
-  );
-
-  const [reactFlowData, setReactFlowData, { undo, redo, canUndo, canRedo }] = useUndoable({
-    nodes: preDefaultNodes,
-    edges: defaultEdges,
-  });
-
-  const handleUpdateReactFlowDataNode = () => {
-    const nodes = reactFlowInstance?.getNodes() ?? [];
-
-    const nodePositionsMap = new Map(nodes.map((node) => [node.id, node.position]));
-
-    setReactFlowData((currentData) => {
-      const isPositionChanged = !!currentData.nodes.find((node) => {
-        const newPosition = nodePositionsMap.get(node.id);
-
-        return node.position.x !== newPosition?.x && node.position.y !== newPosition?.y;
-      });
-
-      const isNodeCountChanged = currentData.nodes.length !== nodes.length;
-
-      if (!isPositionChanged && !isNodeCountChanged) {
-        return currentData;
-      }
-
-      const edges = reactFlowInstance?.getEdges() ?? [];
-
-      return { edges, nodes };
-    });
-  };
-
-  const handleUpdateReactFlowDataEdge = () => {
-    const edges = reactFlowInstance?.getEdges() ?? [];
-
-    setReactFlowData((currentData) => {
-      return { ...currentData, edges };
-    });
-  };
-
-  const defaultNodes: TableNodeType[] = useMemo(
-    () =>
-      appendDataChangeListenerToNodes({
-        nodes: preDefaultNodes,
-        onDataChange() {
-          const nodes = reactFlowInstance?.getNodes() ?? [];
-          const edges = reactFlowInstance?.getEdges() ?? [];
-
-          setReactFlowData({ edges, nodes });
-        },
-      }),
-    [preDefaultNodes],
-  );
+  const { copyPasteService, defaults, undoableService } = useContext(EditorStateContext);
 
   const onDragOver: DragEventHandler<HTMLDivElement> = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const onDrop: DragEventHandler<HTMLDivElement> = useHandleCreateTableOnDrop(
-    {
-      reactFlowInstance,
-      reactFlowWrapper,
-    },
-    handleUpdateReactFlowDataNode,
-  );
+  const onDrop: DragEventHandler<HTMLDivElement> = useHandleCreateTableOnDrop({
+    reactFlowWrapper,
+  });
 
-  useAddCreateTableShortcut({ reactFlowInstance }, handleUpdateReactFlowDataNode);
-  const handleSaveSchema = useHandleSaveLocalSchema(schema.id, { reactFlowInstance });
-  const handleEdgeMarker = useHandleEdgeMarker({ reactFlowInstance });
+  useAddCreateTableShortcut();
+  const handleSaveSchema = useHandleSaveLocalSchema(schema.id);
+  const handleEdgeMarker = useHandleEdgeMarker();
 
   useEffect(() => {
     const handleUndoRedoShortcut = (e: KeyboardEvent) => {
@@ -131,14 +70,14 @@ export function Canvas({ schema }: CanvasProps) {
         e.preventDefault();
         e.stopPropagation();
 
-        undo();
+        undoableService.undo();
       }
 
       if (e.ctrlKey && e.key === 'y') {
         e.preventDefault();
         e.stopPropagation();
 
-        redo();
+        undoableService.redo();
       }
     };
 
@@ -149,74 +88,106 @@ export function Canvas({ schema }: CanvasProps) {
     };
   });
 
-  useEffect(() => {
-    reactFlowInstance?.setNodes(reactFlowData.nodes);
-    reactFlowInstance?.setEdges(reactFlowData.edges);
-  }, [reactFlowData]);
+  const createTable = useCreateTable();
+
+  const triggerCreateTable = (e: MouseEvent) => {
+    const position = reactFlowInstance.project({
+      x: e.clientX,
+      y: e.clientY,
+    });
+
+    createTable(emptyTableWithoutId(), position);
+  };
+
+  const triggerPaste = (e: MouseEvent) => {
+    const {
+      context: { clipboard },
+    } = copyPasteService.getSnapshot();
+
+    const position = reactFlowInstance.project({
+      x: e.clientX,
+      y: e.clientY,
+    });
+
+    if (clipboard.status === 'COPIED' && clipboard.type === 'TABLE') {
+      const { id, ...payloadWithoutId } = clipboard.payload;
+
+      createTable(payloadWithoutId, position);
+    } else if (clipboard.status === 'CUT' && clipboard.type === 'TABLE') {
+      createTable(clipboard.payload, position);
+    }
+  };
+
+  const canPaste = copyPasteService.getSnapshot().matches('FILLED_CLIPBOARD');
 
   return (
-    <ReactFlowProvider>
+    <>
       <Markers />
-      <div className="h-screen w-full" ref={reactFlowWrapper}>
-        <ReactFlow
-          id="canvas"
-          defaultNodes={defaultNodes}
-          defaultEdges={defaultEdges}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
-          onInit={setReactFlowInstance}
-          elevateEdgesOnSelect
-          defaultEdgeOptions={{ type: 'floating' }}
-          onNodesDelete={handleUpdateReactFlowDataNode}
-          onEdgesDelete={handleUpdateReactFlowDataEdge}
-          onNodeDragStop={handleUpdateReactFlowDataNode}
-          onNodesChange={handleSaveSchema}
-          onEdgesChange={handleSaveSchema}
-          onConnect={() => {
-            const edges =
-              reactFlowInstance?.getEdges()?.map((edge) => {
-                const id = isUuid(edge.id) ? edge.id : crypto.randomUUID();
-
-                const { markerEnd, markerStart } = handleEdgeMarker(edge);
-
-                return {
-                  ...edge,
-                  id,
-                  markerEnd,
-                  markerStart,
-                };
-              }) ?? [];
-
-            reactFlowInstance?.setEdges(edges);
-          }}
-          onConnectEnd={() => {
-            handleSaveSchema();
-
-            handleUpdateReactFlowDataEdge();
-          }}
-        >
-          <Panel position="top-left">
-            <GeneralPropsPanel schema={schema} />
-          </Panel>
-          <Panel position="top-right">
-            <EditorPropsPanel schema={schema} />
-          </Panel>
-          <Panel position="bottom-center">
-            <ToolbarPanel
-              canUndo={canUndo}
-              canRedo={canRedo}
-              handleUndo={undo}
-              handleRedo={redo}
-              onCreateTable={handleUpdateReactFlowDataNode}
-            />
-          </Panel>
-          <Background className="bg-white" />
-          <Controls />
-          <MiniMap />
-        </ReactFlow>
-      </div>
-    </ReactFlowProvider>
+      <ContextMenu
+        menu={[
+          {
+            label: 'Add table',
+            'data-test': 'pane-context-menu-add-table',
+            onClick: triggerCreateTable,
+          },
+          {
+            label: 'Paste',
+            'data-test': 'pane-context-menu-paste',
+            onClick: triggerPaste,
+            disabled: !canPaste,
+          },
+        ]}
+      >
+        <div className="h-screen w-full" ref={reactFlowWrapper}>
+          <ReactFlow
+            id="canvas"
+            defaultNodes={defaults.nodes}
+            defaultEdges={defaults.edges}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            elevateEdgesOnSelect
+            defaultEdgeOptions={{ type: 'floating' }}
+            onNodesDelete={() => undoableService.updateData(true)}
+            onEdgesDelete={() => undoableService.updateData(true)}
+            onNodeDragStop={() => undoableService.updateData(true)}
+            onNodesChange={handleSaveSchema}
+            onEdgesChange={handleSaveSchema}
+            onConnect={() => {
+              const edges =
+                reactFlowInstance.getEdges().map((edge) => {
+                  const id = isUuid(edge.id) ? edge.id : crypto.randomUUID();
+                  const { markerEnd, markerStart } = handleEdgeMarker(edge);
+                  return {
+                    ...edge,
+                    id,
+                    markerEnd,
+                    markerStart,
+                  };
+                }) ?? [];
+              reactFlowInstance.setEdges(edges);
+            }}
+            onConnectEnd={() => {
+              handleSaveSchema();
+              undoableService.updateData(true);
+            }}
+          >
+            <Panel position="top-left">
+              <GeneralPropsPanel schema={schema} />
+            </Panel>
+            <Panel position="top-right">
+              <EditorPropsPanel schema={schema} />
+            </Panel>
+            <Panel position="bottom-center">
+              <ToolbarPanel />
+            </Panel>
+            <Background className="bg-white" />
+            <Controls />
+            <MiniMap />
+          </ReactFlow>
+        </div>
+      </ContextMenu>
+    </>
   );
 }

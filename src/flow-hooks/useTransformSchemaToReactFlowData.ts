@@ -1,16 +1,10 @@
 import { z } from 'zod';
-import { Edge, ReactFlowInstance } from 'reactflow';
-import { SchemaSchema, TableNodeType, TableTypeWithoutId } from '@/schemas/base';
+import { Edge } from 'reactflow';
+import { SchemaSchema, TableNodeType } from '@/schemas/base';
 import { useHandleEdgeMarker } from './useHandleEdgeMarker';
 
-type UseTransformSchemaToReactFlowDataParams = {
-  reactFlowInstance: ReactFlowInstance<TableTypeWithoutId> | null;
-};
-
-export function useTransformSchemaToReactFlowData({
-  reactFlowInstance,
-}: UseTransformSchemaToReactFlowDataParams) {
-  const handleEdgeMarker = useHandleEdgeMarker({ reactFlowInstance });
+export function useTransformSchemaToReactFlowData() {
+  const handleEdgeMarker = useHandleEdgeMarker();
 
   return SchemaSchema.transform<{
     nodes: TableNodeType[];

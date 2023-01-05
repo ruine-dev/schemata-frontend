@@ -1,8 +1,11 @@
-import { CreateColumnSchema, CreateColumnType, TableTypeWithoutId } from '@/schemas/base';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
+import { CreateColumnSchema, CreateColumnType, TableWithoutIdType } from '@/schemas/base';
+import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 
 export function useCreateColumn() {
-  const reactFlowInstance = useReactFlow<TableTypeWithoutId>();
+  const { undoableService } = useContext(EditorStateContext);
+  const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
   return (columnPayload: CreateColumnType) => {
     const { tableId, ...newColumn } = CreateColumnSchema.parse(columnPayload);
@@ -28,5 +31,9 @@ export function useCreateColumn() {
         return node;
       });
     });
+
+    if (newColumn.name !== '') {
+      undoableService.updateData(true);
+    }
   };
 }
