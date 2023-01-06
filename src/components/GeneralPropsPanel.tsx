@@ -1,4 +1,5 @@
-import { Check, Pencil } from 'phosphor-react';
+import { Check } from 'phosphor-react';
+import { PencilSquareIcon } from '@heroicons/react/20/solid';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,10 +39,10 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
 
   useEffect(() => {
     reset(schema);
-  }, [reset, schema?.name]);
+  }, [reset, schema.name]);
 
   return (
-    <EditorPanelContainer>
+    <EditorPanelContainer className="flex items-center">
       {isRenaming ? (
         <FocusLock>
           <form
@@ -58,11 +59,7 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
           >
             <Textbox
               label="Name"
-              {...register('name', {
-                setValueAs(value: string) {
-                  return value.trim();
-                },
-              })}
+              {...register('name')}
               disabled={isSubmitting}
               autoFocus
               srOnlyLabel
@@ -74,21 +71,19 @@ export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
               severity="primary"
               loading={isSubmitting}
               data-test="submit-schema"
-             
               filled
             />
           </form>
         </FocusLock>
       ) : (
         <>
-          <span data-test="schema-name" className="py-2 px-3 text-slate-800">
-            {schema?.name}
+          <span data-test="schema-name" className="py-2 px-3 text-gray-800">
+            {schema.name}
           </span>
           <IconButton
             label="Change title"
-            icon={Pencil}
+            icon={PencilSquareIcon}
             onClick={handleRename}
-           
             data-test="edit-schema-button"
             filled
             className="ml-2"

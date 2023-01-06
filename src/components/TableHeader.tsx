@@ -185,10 +185,7 @@ export function TableHeader({ table }: TableHeaderProps) {
         onFocus={() => setIsHeaderFocused(true)}
         onBlur={() => setIsHeaderFocused(false)}
         data-test="table-header"
-        className={clsx(
-          'group rounded-t-xl bg-sky-500 px-3 pb-1.5 pt-2 font-medium outline-none ring-sky-500 ring-offset-2',
-          'focus:ring-2',
-        )}
+        className="group rounded font-medium outline-none"
       >
         {isRenaming ? (
           <FocusLock>
@@ -203,67 +200,25 @@ export function TableHeader({ table }: TableHeaderProps) {
               }}
               onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
               autoComplete="off"
-              className="flex items-center justify-between"
+              className="nodrag flex items-center justify-between"
             >
-              <AutoFocusInside>
-                <Textbox
+              <AutoFocusInside className="w-full">
+                <input
                   {...register('name')}
-                  label="Name"
-                  srOnlyLabel
                   disabled={isSubmitting}
                   data-test="table-name-input"
-                  className="nodrag"
+                  className="w-full rounded bg-slate-200 px-2 py-1 outline-none outline-2 outline-sky-400 focus:outline"
                 />
               </AutoFocusInside>
-              <IconButton
-                icon={Check}
-                iconProps={{ weight: 'bold' }}
-                severity="dark"
-                label="Save (ENTER)"
-                type="submit"
-                data-test="submit-table"
-                className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
-              />
+              <button type="submit" className="sr-only">
+                Save
+              </button>
             </form>
           </FocusLock>
         ) : (
           <div className="flex items-center justify-between">
-            <div data-test="table-name" className="flex items-center gap-x-2 text-white">
+            <div data-test="table-name" className="px-2 py-1 text-sky-800">
               {table.name}
-            </div>
-            <div className={clsx('invisible flex items-center gap-x-1', 'group-hover:visible')}>
-              <IconButton
-                icon={Pencil}
-                label={`Rename${isHeaderFocused ? ' (E)' : ''}`}
-                severity="dark"
-                onClick={triggerRename}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    containerRef.current?.focus();
-                  }
-                }}
-                data-test="rename-table-button"
-                className="ml-2 focus:bg-sky-600 enabled:hover:bg-sky-600"
-              />
-              <IconButton
-                icon={Trash}
-                label={`Delete${isHeaderFocused ? ' (DEL)' : ''}`}
-                severity="dark"
-                onClick={triggerDelete}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    containerRef.current?.focus();
-                  }
-                }}
-                data-test="delete-table-button"
-                className="focus:bg-sky-600 enabled:hover:bg-sky-600"
-              />
             </div>
           </div>
         )}

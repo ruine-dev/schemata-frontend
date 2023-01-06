@@ -1,13 +1,5 @@
 import { DragEventHandler, useCallback, useRef, useEffect, useContext, MouseEvent } from 'react';
-import ReactFlow, {
-  Background,
-  Controls,
-  EdgeTypes,
-  MiniMap,
-  NodeTypes,
-  Panel,
-  useReactFlow,
-} from 'reactflow';
+import ReactFlow, { Background, EdgeTypes, NodeTypes, Panel, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { TableNode } from './TableNode';
 import { GeneralPropsPanel } from './GeneralPropsPanel';
@@ -25,6 +17,7 @@ import { emptyTableWithoutId } from '@/utils/reactflow';
 import { ContextMenu } from './ContextMenu';
 import { EditorStateContext } from '@/contexts/EditorStateContext';
 import { useCreateTable } from '@/flow-hooks/useCreateTable';
+import { UtilsPanel } from './UtilsPanel';
 
 const nodeTypes: NodeTypes = { table: TableNode } as unknown as NodeTypes;
 
@@ -179,12 +172,13 @@ export function Canvas({ schema }: CanvasProps) {
             <Panel position="top-right">
               <EditorPropsPanel schema={schema} />
             </Panel>
-            <Panel position="bottom-center">
+            <Panel position="top-center">
               <ToolbarPanel />
             </Panel>
-            <Background className="bg-white" />
-            <Controls />
-            <MiniMap />
+            <Panel position="bottom-left">
+              <UtilsPanel />
+            </Panel>
+            <Background className="bg-white" color="black" />
           </ReactFlow>
         </div>
       </ContextMenu>

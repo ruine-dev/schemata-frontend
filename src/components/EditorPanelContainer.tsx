@@ -1,12 +1,19 @@
+import { clsx } from '@/utils/clsx';
 import { ReactNode } from 'react';
 
 interface EditorPanelContainerProps {
   children: ReactNode;
+  className?: string;
 }
 
-export function EditorPanelContainer({ children }: EditorPanelContainerProps) {
+export function EditorPanelContainer({ children, className }: EditorPanelContainerProps) {
   return (
-    <div className="flex items-center rounded-xl border border-slate-300 bg-white/80 py-1 px-3 shadow backdrop-blur-lg">
+    <div
+      className={clsx(
+        'h-12 rounded-lg border border-slate-200 bg-white/80 py-2.5 px-3 shadow-sm',
+        className,
+      )}
+    >
       {children}
     </div>
   );

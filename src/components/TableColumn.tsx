@@ -152,6 +152,7 @@ export function TableColumn({
       <div
         ref={containerRef}
         tabIndex={0}
+        onClick={(e) => e.stopPropagation()}
         onFocus={() => setIsColumnFocused(true)}
         onBlur={() => setIsColumnFocused(false)}
         onKeyDown={(e) => {
@@ -180,9 +181,9 @@ export function TableColumn({
         }}
         data-test="column"
         className={clsx(
-          'group flex items-center gap-x-2 py-0.5 pl-3 pr-1.5 outline-none ring-sky-500',
+          'group outline-2 outline-sky-500',
           'hover:bg-slate-100',
-          'focus:relative focus:z-10 focus:ring-2',
+          'focus:relative focus:z-10 focus:rounded focus:outline',
           className,
         )}
       >
@@ -255,19 +256,13 @@ export function TableColumn({
                 )}
               />
 
-              <IconButton
-                icon={Check}
-                iconProps={{ weight: 'bold' }}
-                severity="primary"
-                label="Save (ENTER)"
-                type="submit"
-                data-test="submit-column"
-                className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
-              />
+              <button type="submit" className="sr-only">
+                Save
+              </button>
             </form>
           </FocusLock>
         ) : (
-          <>
+          <div className="flex items-center py-3 px-4">
             <span className="h-4 w-4" data-test="column-key">
               {(isPrimaryKey || isForeignKey) && (
                 <>
@@ -286,36 +281,13 @@ export function TableColumn({
                 </>
               )}
             </span>
-            <span className="text-slate-700" data-test="column-name">
+            <span className="ml-2 font-medium text-slate-600" data-test="column-name">
               {column.name}
             </span>
-            <span className="text-slate-500" data-test="column-type">
+            <span className="ml-auto font-medium text-sky-700" data-test="column-type">
               {column.type}
             </span>
-            <div
-              className={clsx('invisible ml-auto flex group-hover:visible', {
-                invisible: hideAction,
-              })}
-            >
-              <IconButton
-                label={`Edit${isColumnFocused ? ' (E)' : ''}`}
-                icon={Pencil}
-                onClick={triggerEdit}
-                disabled={hideAction}
-                data-test="edit-column-button"
-                className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
-              />
-              <IconButton
-                label={`Delete${isColumnFocused ? ' (DEL)' : ''}`}
-                icon={Trash}
-                severity="danger"
-                onClick={triggerDelete}
-                disabled={hideAction}
-                data-test="delete-column-button"
-                className="nodrag group-hover:focus:bg-slate-200 group-hover:active:bg-slate-200 group-hover:enabled:hover:bg-slate-200"
-              />
-            </div>
-          </>
+          </div>
         )}
       </div>
     </ContextMenu>

@@ -5,7 +5,7 @@ describe('duplicating column', () => {
     // Prepare table
     cy.getBySel('create-table-button').click();
 
-    cy.getBySel('submit-table').click();
+    cy.getBySel('table-name-input').type('{enter}');
 
     cy.getBySel('table-header').type('e');
 

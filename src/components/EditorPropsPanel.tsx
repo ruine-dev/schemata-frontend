@@ -1,5 +1,4 @@
 import { toPng } from 'html-to-image';
-import { Export, Info, ShareNetwork } from 'phosphor-react';
 import { toast } from 'react-hot-toast';
 import { useReactFlow } from 'reactflow';
 import { useCopyToClipboard } from 'usehooks-ts';
@@ -10,6 +9,8 @@ import { SchemaType } from '@/schemas/base';
 import { schemaToBase64Url } from '@/utils/schema';
 import { useEffect } from 'react';
 import { InformationDialog } from './InformationDialog';
+import { ArrowDownTrayIcon, InformationCircleIcon, ShareIcon } from '@heroicons/react/20/solid';
+import { Separator } from './Separator';
 
 interface EditorPropsPanelProps {
   schema: SchemaType;
@@ -55,17 +56,18 @@ export function EditorPropsPanel({ schema }: EditorPropsPanelProps) {
   };
 
   return (
-    <EditorPanelContainer>
+    <EditorPanelContainer className="flex items-center gap-x-4">
       <InformationDialog
-        trigger={<IconButton label="Information" icon={Info} filled />}
+        trigger={<IconButton label="Information" icon={InformationCircleIcon} filled />}
       />
+      <Separator orientation="vertical" />
       <IconButton
-        label="Export as image"
-        icon={Export}
-       
+        label="Download as image"
+        icon={ArrowDownTrayIcon}
         onClick={exportToImage}
         filled
       />
+      <Separator orientation="vertical" />
       <ShareLinkButton schema={schema} />
     </EditorPanelContainer>
   );
@@ -111,9 +113,8 @@ function ShareLinkButton({ schema }: ShareLinkButtonProps) {
   return (
     <IconButton
       label="Share link (CTRL + S)"
-      icon={ShareNetwork}
+      icon={ShareIcon}
       onClick={copyLinkToClipboard}
-     
       filled
     />
   );

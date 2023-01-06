@@ -1,26 +1,38 @@
 import { clsx } from '@/utils/clsx';
+import { cva, VariantProps } from 'class-variance-authority';
 import { ButtonHTMLAttributes, forwardRef, ReactNode, Ref } from 'react';
+
+const buttonClass = cva(
+  [
+    'rounded bg-white h-7 px-3.5 text-slate-600 outline-offset-2 outline-sky-400',
+    'enabled:hover:bg-gray-100',
+    'disabled:opacity-50',
+  ],
+  {
+    variants: {
+      variant: {
+        default: [''],
+        outline: ['border-slate-200 shadow-sm'],
+      },
+    },
+  },
+);
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   loading?: boolean;
+  variant?: VariantProps<typeof buttonClass>['variant'];
 }
 
 function ButtonComponent(
-  { children, loading, className, disabled, ...props }: ButtonProps,
+  { children, loading, variant = 'default', className, disabled, ...props }: ButtonProps,
   ref: Ref<HTMLButtonElement>,
 ) {
   return (
     <button
       ref={ref}
       disabled={disabled || loading}
-      className={clsx(
-        'rounded-xl bg-sky-500 px-4 py-1.5 text-white shadow-sm outline-none ring-sky-500 ring-offset-2',
-        'hover:bg-sky-600',
-        'focus:ring-2',
-        'disabled:bg-slate-100 disabled:text-slate-500',
-        className,
-      )}
+      className={clsx(buttonClass({ variant }), className)}
       {...props}
     >
       {children}

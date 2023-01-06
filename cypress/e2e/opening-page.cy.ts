@@ -14,7 +14,7 @@ describe('opening page', () => {
   it('shows empty unnamed schema on opening link without schema params even after creating table before', () => {
     cy.getBySel('create-table-button').click();
 
-    cy.getBySel('submit-table').click();
+    cy.getBySel('table-name-input').type('{enter}');
 
     cy.getBySel('table-node').should('exist');
 

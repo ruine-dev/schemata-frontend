@@ -9,7 +9,7 @@ import { cva, VariantProps } from 'class-variance-authority';
 import { Tooltip } from './Tooltip';
 import { clsx } from '@/utils/clsx';
 
-const iconButtonIconClass = cva(null, {
+const iconButtonIconClass = cva([], {
   variants: {
     size: {
       small: 'w-4 h-4',
@@ -18,7 +18,7 @@ const iconButtonIconClass = cva(null, {
   },
 });
 
-const iconButtonClass = cva(['p-2 rounded-xl outline-none focus:ring-2'], {
+const iconButtonClass = cva(['h-7 w-7 flex items-center justify-center rounded'], {
   variants: {
     filled: {
       true: [
@@ -30,18 +30,18 @@ const iconButtonClass = cva(['p-2 rounded-xl outline-none focus:ring-2'], {
     },
     severity: {
       normal: [
-        'text-slate-500 ring-sky-500',
-        'hover:text-slate-600',
-        'enabled:active:text-slate-600',
-        'focus:text-slate-600',
-        'disabled:text-slate-400',
+        'text-slate-600 ring-sky-500',
+        'hover:text-slate-700',
+        'enabled:active:text-slate-700',
+        'focus:text-slate-700',
+        'disabled:text-opacity-50',
       ],
       dark: [
         'text-white ring-white',
         'hover:text-opacity-90',
         'enabled:active:text-opacity-90',
         'focus:text-opacity-90',
-        'disabled:text-opacity-75',
+        'disabled:text-opacity-50',
       ],
       primary: [
         'text-sky-500 ring-sky-500',

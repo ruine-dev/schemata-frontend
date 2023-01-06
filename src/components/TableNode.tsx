@@ -1,4 +1,3 @@
-import { Plus } from 'phosphor-react';
 import { Handle, Position, useStore } from 'reactflow';
 import { TableColumn } from './TableColumn';
 import { clsx } from '@/utils/clsx';
@@ -8,6 +7,7 @@ import { emptyVarcharColumn } from '@/utils/reactflow';
 import { TableNodeType } from '@/schemas/base';
 import { Tooltip } from './Tooltip';
 import { useState } from 'react';
+import { PlusIcon } from '@heroicons/react/20/solid';
 
 export function TableNode({ id, data: table }: TableNodeType) {
   const createColumn = useCreateColumn();
@@ -21,15 +21,19 @@ export function TableNode({ id, data: table }: TableNodeType) {
   return (
     <div
       id={`table-${id}`}
+      onClick={() => {
+        document.getElementById(`table-header-${id}`)?.focus();
+      }}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       data-test="table-node"
       className={clsx(
-        'group/node min-w-[18rem] rounded-xl border border-slate-300 bg-white font-mono shadow-sm',
+        'group/node min-w-[23.5rem] rounded-xl bg-slate-100 px-3 py-5 shadow-sm ring-1 ring-slate-200 ring-offset-2',
+        'outline-2 outline-offset-2 outline-sky-500 [&:has([id*=table-header-]:focus)]:outline',
       )}
     >
       <TableHeader table={{ id, ...table }} />
-      <ul className="mt-1 pb-1">
+      <ul className="mt-3.5 divide-y divide-gray-200 rounded-t border border-gray-200 bg-white">
         {table.columns.map((column) => (
           <li key={column.id} className="group relative">
             <Handle
@@ -83,16 +87,16 @@ export function TableNode({ id, data: table }: TableNodeType) {
           }}
           data-test="create-column-button"
           className={clsx(
-            'noimage nodrag hidden w-full items-center justify-center rounded-b-xl py-3 px-3 font-sans font-medium text-sky-500 outline-none ring-sky-500',
+            'nodrag hidden w-full rounded-b border-x border-b border-gray-200 bg-white py-3 px-4 text-left text-sm font-semibold text-sky-600 outline-2 outline-sky-500',
             'hover:bg-sky-50 hover:text-sky-600',
             'group-hover/node:flex',
             'group-focus-within/node:flex',
-            'focus:relative focus:z-10 focus:ring-2',
+            'focus:relative focus:z-10 focus:outline',
             'enabled:active:bg-sky-50 enabled:active:text-sky-600',
           )}
         >
-          <span className="-ml-4 flex items-center gap-x-2 text-sm uppercase tracking-wider">
-            <Plus aria-hidden className="h-5 w-5" />
+          <span className="flex items-center gap-x-2 text-sm uppercase tracking-wide">
+            <PlusIcon aria-hidden className="h-5 w-5" />
             Add field
           </span>
         </button>

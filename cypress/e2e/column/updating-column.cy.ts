@@ -5,128 +5,16 @@ describe('updating column', () => {
     // Prepare table
     cy.getBySel('create-table-button').click();
 
-    cy.getBySel('submit-table').click();
+    cy.getBySel('table-name-input').type('{enter}');
 
     // Prepare column
     cy.getBySel('table-node').realHover();
 
     cy.getBySel('create-column-button').click();
 
-    cy.getBySel('submit-column').click();
+    cy.getBySel('column-name-textbox').type('{enter}');
 
     cy.getBySel('column-name').should('have.text', 'untitled');
-  });
-
-  context('can edit column by clicking "Edit" button', () => {
-    beforeEach(() => {
-      cy.getBySel('column').realHover();
-
-      cy.getBySel('edit-column-button').click();
-
-      cy.focused().clear().type('foo');
-    });
-
-    afterEach(() => {
-      cy.getBySel('column-name').should('have.text', 'foo');
-    });
-
-    context('without changing data type', () => {
-      afterEach(() => {
-        cy.getBySel('column-type').should('have.text', 'VARCHAR');
-      });
-
-      context('left primary key unchecked', () => {
-        afterEach(() => {
-          cy.getBySel('column-key').should('not.have.text', 'Primary key');
-        });
-
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
-        });
-
-        it('pressing "Enter" to submit', () => {
-          cy.focused().type('{enter}');
-        });
-
-        it('pressing "Escape" to submit', () => {
-          cy.focused().type('{esc}');
-        });
-      });
-
-      context('checked primary key', () => {
-        beforeEach(() => {
-          cy.getBySel('column-primary-key-checkbox').click();
-        });
-
-        afterEach(() => {
-          cy.getBySel('column-key').should('have.text', 'Primary key');
-        });
-
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
-        });
-
-        it('pressing "Enter" after change focus to name input to submit', () => {
-          cy.getBySel('column-name-textbox').type('{enter}');
-        });
-
-        it('pressing "Escape" to submit', () => {
-          cy.focused().type('{esc}');
-        });
-      });
-    });
-
-    context('with changing data type', () => {
-      beforeEach(() => {
-        cy.getBySel('column-type-combobox').click();
-
-        cy.getBySel('column-type-combobox-INTEGER').click();
-      });
-
-      afterEach(() => {
-        cy.getBySel('column-type').should('have.text', 'INTEGER');
-      });
-
-      context('left primary key unchecked', () => {
-        afterEach(() => {
-          cy.getBySel('column-key').should('not.have.text', 'Primary key');
-        });
-
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
-        });
-
-        it('pressing "Enter" to submit', () => {
-          cy.focused().type('{enter}');
-        });
-
-        it('pressing "Escape" to submit', () => {
-          cy.focused().type('{esc}');
-        });
-      });
-
-      context('checked primary key', () => {
-        beforeEach(() => {
-          cy.getBySel('column-primary-key-checkbox').click();
-        });
-
-        afterEach(() => {
-          cy.getBySel('column-key').should('have.text', 'Primary key');
-        });
-
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
-        });
-
-        it('pressing "Enter" after change focus to name input to submit', () => {
-          cy.getBySel('column-name-textbox').type('{enter}');
-        });
-
-        it('pressing "Escape" to submit', () => {
-          cy.focused().type('{esc}');
-        });
-      });
-    });
   });
 
   context('can edit column by pressing "E"', () => {
@@ -150,10 +38,6 @@ describe('updating column', () => {
           cy.getBySel('column-key').should('not.have.text', 'Primary key');
         });
 
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
-        });
-
         it('pressing "Enter" to submit', () => {
           cy.focused().type('{enter}');
         });
@@ -170,10 +54,6 @@ describe('updating column', () => {
 
         afterEach(() => {
           cy.getBySel('column-key').should('have.text', 'Primary key');
-        });
-
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
         });
 
         it('pressing "Enter" after change focus to name input to submit', () => {
@@ -202,10 +82,6 @@ describe('updating column', () => {
           cy.getBySel('column-key').should('not.have.text', 'Primary key');
         });
 
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
-        });
-
         it('pressing "Enter" to submit', () => {
           cy.focused().type('{enter}');
         });
@@ -222,10 +98,6 @@ describe('updating column', () => {
 
         afterEach(() => {
           cy.getBySel('column-key').should('have.text', 'Primary key');
-        });
-
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
         });
 
         it('pressing "Enter" after change focus to name input to submit', () => {
@@ -262,10 +134,6 @@ describe('updating column', () => {
           cy.getBySel('column-key').should('not.have.text', 'Primary key');
         });
 
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
-        });
-
         it('pressing "Enter" to submit', () => {
           cy.focused().type('{enter}');
         });
@@ -282,10 +150,6 @@ describe('updating column', () => {
 
         afterEach(() => {
           cy.getBySel('column-key').should('have.text', 'Primary key');
-        });
-
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
         });
 
         it('pressing "Enter" after change focus to name input to submit', () => {
@@ -314,10 +178,6 @@ describe('updating column', () => {
           cy.getBySel('column-key').should('not.have.text', 'Primary key');
         });
 
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
-        });
-
         it('pressing "Enter" to submit', () => {
           cy.focused().type('{enter}');
         });
@@ -334,10 +194,6 @@ describe('updating column', () => {
 
         afterEach(() => {
           cy.getBySel('column-key').should('have.text', 'Primary key');
-        });
-
-        it('clicking "Save" button to submit', () => {
-          cy.getBySel('submit-column').click();
         });
 
         it('pressing "Enter" after change focus to name input to submit', () => {

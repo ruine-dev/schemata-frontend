@@ -13,10 +13,6 @@ describe('creating table', () => {
         cy.getBySel('table-name').should('have.text', 'untitled');
       });
 
-      it('clicking "Save" button to submit', () => {
-        cy.getBySel('submit-table').click();
-      });
-
       it('pressing "Enter" to submit', () => {
         cy.focused().type('{enter}');
       });
@@ -33,10 +29,6 @@ describe('creating table', () => {
 
       afterEach(() => {
         cy.getBySel('table-name').should('have.text', 'foo');
-      });
-
-      it('clicking "Save" button to submit', () => {
-        cy.getBySel('submit-table').click();
       });
 
       it('pressing "Enter" to submit', () => {
@@ -65,10 +57,6 @@ describe('creating table', () => {
         cy.getBySel('table-name').should('have.text', 'untitled');
       });
 
-      it('clicking "Save" button to submit', () => {
-        cy.getBySel('submit-table').click();
-      });
-
       it('pressing "Enter" to submit', () => {
         cy.focused().type('{enter}');
       });
@@ -85,10 +73,6 @@ describe('creating table', () => {
 
       afterEach(() => {
         cy.getBySel('table-name').should('have.text', 'foo');
-      });
-
-      it('clicking "Save" button to submit', () => {
-        cy.getBySel('submit-table').click();
       });
 
       it('pressing "Enter" to submit', () => {

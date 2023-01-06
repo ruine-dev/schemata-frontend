@@ -5,7 +5,7 @@ describe('creating column', () => {
     // Prepare table
     cy.getBySel('create-table-button').click();
 
-    cy.getBySel('submit-table').click();
+    cy.getBySel('table-name-input').type('{enter}');
   });
 
   context('can create column by clicking "Add Field" button', () => {
@@ -30,10 +30,6 @@ describe('creating column', () => {
             cy.getBySel('column-key').should('not.have.text', 'Primary key');
           });
 
-          it('clicking "Save" button to submit', () => {
-            cy.getBySel('submit-column').click();
-          });
-
           it('pressing "Enter" to submit', () => {
             cy.focused().type('{enter}');
           });
@@ -50,10 +46,6 @@ describe('creating column', () => {
 
           afterEach(() => {
             cy.getBySel('column-key').should('have.text', 'Primary key');
-          });
-
-          it('clicking "Save" button to submit', () => {
-            cy.getBySel('submit-column').click();
           });
 
           it('pressing "Enter" after change focus to name input to submit', () => {
@@ -82,10 +74,6 @@ describe('creating column', () => {
             cy.getBySel('column-key').should('not.have.text', 'Primary key');
           });
 
-          it('clicking "Save" button to submit', () => {
-            cy.getBySel('submit-column').click();
-          });
-
           it('pressing "Enter" to submit', () => {
             cy.focused().type('{enter}');
           });
@@ -102,10 +90,6 @@ describe('creating column', () => {
 
           afterEach(() => {
             cy.getBySel('column-key').should('have.text', 'Primary key');
-          });
-
-          it('clicking "Save" button to submit', () => {
-            cy.getBySel('submit-column').click();
           });
 
           it('pressing "Enter" after change focus to name input to submit', () => {
@@ -138,10 +122,6 @@ describe('creating column', () => {
             cy.getBySel('column-key').should('not.have.text', 'Primary key');
           });
 
-          it('clicking "Save" button to submit', () => {
-            cy.getBySel('submit-column').click();
-          });
-
           it('pressing "Enter" to submit', () => {
             cy.focused().type('{enter}');
           });
@@ -158,10 +138,6 @@ describe('creating column', () => {
 
           afterEach(() => {
             cy.getBySel('column-key').should('have.text', 'Primary key');
-          });
-
-          it('clicking "Save" button to submit', () => {
-            cy.getBySel('submit-column').click();
           });
 
           it('pressing "Enter" after change focus to name input to submit', () => {
@@ -190,10 +166,6 @@ describe('creating column', () => {
             cy.getBySel('column-key').should('not.have.text', 'Primary key');
           });
 
-          it('clicking "Save" button to submit', () => {
-            cy.getBySel('submit-column').click();
-          });
-
           it('pressing "Enter" to submit', () => {
             cy.focused().type('{enter}');
           });
@@ -210,10 +182,6 @@ describe('creating column', () => {
 
           afterEach(() => {
             cy.getBySel('column-key').should('have.text', 'Primary key');
-          });
-
-          it('clicking "Save" button to submit', () => {
-            cy.getBySel('submit-column').click();
           });
 
           it('pressing "Enter" after change focus to name input to submit', () => {
@@ -252,10 +220,6 @@ describe('creating column', () => {
               cy.getBySel('column-key').should('not.have.text', 'Primary key');
             });
 
-            it('clicking "Save" button to submit', () => {
-              cy.getBySel('submit-column').click();
-            });
-
             it('pressing "Enter" to submit', () => {
               cy.focused().type('{enter}');
             });
@@ -272,10 +236,6 @@ describe('creating column', () => {
 
             afterEach(() => {
               cy.getBySel('column-key').should('have.text', 'Primary key');
-            });
-
-            it('clicking "Save" button to submit', () => {
-              cy.getBySel('submit-column').click();
             });
 
             it('pressing "Enter" after change focus to name input to submit', () => {
@@ -304,10 +264,6 @@ describe('creating column', () => {
               cy.getBySel('column-key').should('not.have.text', 'Primary key');
             });
 
-            it('clicking "Save" button to submit', () => {
-              cy.getBySel('submit-column').click();
-            });
-
             it('pressing "Enter" to submit', () => {
               cy.focused().type('{enter}');
             });
@@ -324,10 +280,6 @@ describe('creating column', () => {
 
             afterEach(() => {
               cy.getBySel('column-key').should('have.text', 'Primary key');
-            });
-
-            it('clicking "Save" button to submit', () => {
-              cy.getBySel('submit-column').click();
             });
 
             it('pressing "Enter" after change focus to name input to submit', () => {
@@ -360,10 +312,6 @@ describe('creating column', () => {
               cy.getBySel('column-key').should('not.have.text', 'Primary key');
             });
 
-            it('clicking "Save" button to submit', () => {
-              cy.getBySel('submit-column').click();
-            });
-
             it('pressing "Enter" to submit', () => {
               cy.focused().type('{enter}');
             });
@@ -380,10 +328,6 @@ describe('creating column', () => {
 
             afterEach(() => {
               cy.getBySel('column-key').should('have.text', 'Primary key');
-            });
-
-            it('clicking "Save" button to submit', () => {
-              cy.getBySel('submit-column').click();
             });
 
             it('pressing "Enter" after change focus to name input to submit', () => {
@@ -412,10 +356,6 @@ describe('creating column', () => {
               cy.getBySel('column-key').should('not.have.text', 'Primary key');
             });
 
-            it('clicking "Save" button to submit', () => {
-              cy.getBySel('submit-column').click();
-            });
-
             it('pressing "Enter" to submit', () => {
               cy.focused().type('{enter}');
             });
@@ -432,10 +372,6 @@ describe('creating column', () => {
 
             afterEach(() => {
               cy.getBySel('column-key').should('have.text', 'Primary key');
-            });
-
-            it('clicking "Save" button to submit', () => {
-              cy.getBySel('submit-column').click();
             });
 
             it('pressing "Enter" after change focus to name input to submit', () => {
