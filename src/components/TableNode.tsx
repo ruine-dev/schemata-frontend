@@ -28,7 +28,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
       onBlur={() => setIsFocused(false)}
       data-test="table-node"
       className={clsx(
-        'group/node min-w-[20rem] rounded-md bg-slate-200 px-3 py-5 shadow-sm ring-1 ring-slate-200 ring-offset-2',
+        'group/node min-w-[20rem] rounded-md bg-slate-200 px-3 pb-4 shadow-sm ring-1 ring-slate-200 ring-offset-2',
         'outline-2 outline-offset-2 outline-sky-500 [&:has([id*=table-header-]:focus)]:outline',
       )}
     >
@@ -103,11 +103,11 @@ export function TableNode({ id, data: table }: TableNodeType) {
           data-test="create-column-button"
           className={clsx(
             'nodrag hidden w-full rounded-b bg-white py-3 px-4 text-left text-sm font-semibold text-sky-600 outline-2 outline-sky-500',
-            'hover:bg-sky-50 hover:text-sky-600',
+            'hover:bg-slate-100',
             'group-hover/node:flex',
             'group-focus-within/node:flex',
             'focus:relative focus:z-10 focus:rounded-t focus:outline',
-            'enabled:active:bg-sky-50 enabled:active:text-sky-600',
+            'enabled:active:bg-slate-100',
             { 'rounded-t': table.columns.length === 0 },
           )}
         >

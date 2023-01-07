@@ -198,7 +198,7 @@ export function TableHeader({ table }: TableHeaderProps) {
         onFocus={() => setIsHeaderFocused(true)}
         onBlur={() => setIsHeaderFocused(false)}
         data-test="table-header"
-        className="group rounded font-medium outline-none"
+        className="group rounded font-medium outline-none pt-4 px-3 -mx-3"
       >
         {isRenaming ? (
           <FocusLock>

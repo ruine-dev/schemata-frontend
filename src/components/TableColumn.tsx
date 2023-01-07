@@ -1,13 +1,10 @@
-import { Check, Key, Pencil, Trash } from 'phosphor-react';
 import { KeyboardEventHandler, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FocusLock, { AutoFocusInside } from 'react-focus-lock';
-import { IconButton } from './IconButton';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
 import { useUpdateColumn } from '@/flow-hooks/useUpdateColumn';
-import { Select } from './Select';
 import { useValidateUniqueColumnName } from '@/flow-hooks/useValidateUniqueColumnName';
 import { useDeleteColumn } from '@/flow-hooks/useDeleteColumn';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
@@ -25,6 +22,12 @@ import { Combobox } from './Combobox';
 import { ContextMenu } from './ContextMenu';
 import { Button } from './Button';
 import { Checkbox } from './Checkbox';
+import {
+  DocumentDuplicateIcon,
+  KeyIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from '@heroicons/react/20/solid';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -137,16 +140,21 @@ export function TableColumn({
           label: 'Edit',
           'data-test': 'column-context-menu-edit',
           onClick: triggerEdit,
+          icon: PencilSquareIcon,
+          kbd: 'E',
         },
         {
           label: 'Duplicate',
           'data-test': 'column-context-menu-duplicate',
           onClick: triggerDuplicate,
+          icon: DocumentDuplicateIcon,
         },
         {
           label: 'Delete',
           'data-test': 'column-context-menu-delete',
           onClick: triggerDelete,
+          icon: TrashIcon,
+          kbd: 'DEL',
         },
       ]}
     >
@@ -254,8 +262,7 @@ export function TableColumn({
             <span className="h-4 w-4" data-test="column-key">
               {(isPrimaryKey || isForeignKey) && (
                 <>
-                  <Key
-                    weight="fill"
+                  <KeyIcon
                     className={clsx('h-4 w-4', {
                       'text-yellow-400': isPrimaryKey,
                       'text-slate-400': isForeignKey && !isPrimaryKey,
