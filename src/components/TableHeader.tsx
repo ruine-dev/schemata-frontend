@@ -1,13 +1,9 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Check, Pencil, Trash } from 'phosphor-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FocusLock, { AutoFocusInside } from 'react-focus-lock';
-import { IconButton } from './IconButton';
 import { useUpdateTable } from '@/flow-hooks/useUpdateTable';
 import { useDeleteTable } from '@/flow-hooks/useDeleteTable';
-import { clsx } from '@/utils/clsx';
-import { Textbox } from './Textbox';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { TableSchema, TableType } from '@/schemas/base';
 import { emptyVarcharColumn } from '@/utils/reactflow';
@@ -16,6 +12,13 @@ import { useCreateTable } from '@/flow-hooks/useCreateTable';
 import { useReactFlow } from 'reactflow';
 import { ContextMenu } from './ContextMenu';
 import { EditorStateContext } from '@/contexts/EditorStateContext';
+import {
+  ClipboardDocumentIcon,
+  PencilSquareIcon,
+  ScissorsIcon,
+  TrashIcon,
+} from '@heroicons/react/20/solid';
+import { AddFieldIcon } from './Icon/AddFieldIcon';
 
 interface TableHeaderProps {
   table: TableType;
@@ -132,26 +135,36 @@ export function TableHeader({ table }: TableHeaderProps) {
           label: 'Rename',
           'data-test': 'table-header-context-menu-rename',
           onClick: triggerRename,
+          icon: PencilSquareIcon,
+          kbd: 'E',
         },
         {
           label: 'Cut',
           'data-test': 'table-header-context-menu-cut',
           onClick: triggerCut,
+          icon: ScissorsIcon,
+          kbd: 'CTRL + X',
         },
         {
           label: 'Copy',
           'data-test': 'table-header-context-menu-copy',
           onClick: triggerCopy,
+          icon: ClipboardDocumentIcon,
+          kbd: 'CTRL + C',
         },
         {
           label: 'Add field',
           'data-test': 'table-header-context-menu-add-field',
           onClick: triggerCreateColumn,
+          icon: AddFieldIcon,
+          kbd: 'SHIFT + ENTER',
         },
         {
           label: 'Delete',
           'data-test': 'table-header-context-menu-delete',
           onClick: triggerDelete,
+          icon: TrashIcon,
+          kbd: 'DEL',
         },
       ]}
     >

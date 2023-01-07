@@ -18,6 +18,8 @@ import { ContextMenu } from './ContextMenu';
 import { EditorStateContext } from '@/contexts/EditorStateContext';
 import { useCreateTable } from '@/flow-hooks/useCreateTable';
 import { UtilsPanel } from './UtilsPanel';
+import { AddTableIcon } from './Icon/AddTableIcon';
+import { ClipboardIcon } from '@heroicons/react/20/solid';
 
 const nodeTypes: NodeTypes = { table: TableNode } as unknown as NodeTypes;
 
@@ -121,13 +123,17 @@ export function Canvas({ schema }: CanvasProps) {
           {
             label: 'Add table',
             'data-test': 'pane-context-menu-add-table',
+            icon: AddTableIcon,
             onClick: triggerCreateTable,
+            kbd: 'T',
           },
           {
             label: 'Paste',
             'data-test': 'pane-context-menu-paste',
+            icon: ClipboardIcon,
             onClick: triggerPaste,
             disabled: !canPaste,
+            kbd: 'CTRL + V',
           },
         ]}
       >

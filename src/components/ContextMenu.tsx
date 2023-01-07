@@ -1,11 +1,14 @@
+import { clsx } from '@/utils/clsx';
 import * as RadixContextMenu from '@radix-ui/react-context-menu';
-import { MouseEvent, ReactNode } from 'react';
+import { ElementType, MouseEvent, ReactNode } from 'react';
 
 interface ContextMenuProps {
   menu: {
     label: string;
+    icon?: ElementType;
     onClick?: (event: MouseEvent) => void;
     disabled?: boolean;
+    kbd?: string;
     'data-test'?: string;
   }[];
   children: ReactNode;
@@ -24,16 +27,24 @@ export function ContextMenu({ menu, children, label, disabled }: ContextMenuProp
         <RadixContextMenu.Content asChild>
           <div
             onKeyDown={(e) => e.stopPropagation()}
-            className="w-52 overflow-hidden rounded-xl border border-slate-300/70 bg-white/70 shadow backdrop-blur-lg"
+            className="min-w-[13rem] overflow-hidden rounded-lg border border-gray-300/50 bg-white/30 shadow-xl backdrop-blur"
           >
             {label && <RadixContextMenu.Label>{label}</RadixContextMenu.Label>}
-            {menu.map((item, index) => (
+            {menu.map(({ icon: Icon, ...item }, index) => (
               <RadixContextMenu.Item key={index} onClick={item.onClick} disabled={disabled} asChild>
                 <div
                   data-test={item['data-test']}
-                  className="w-full cursor-default py-2 px-3 text-left text-slate-700 backdrop-blur-xl hover:bg-slate-100/70"
+                  className="flex w-full cursor-default items-center py-2 px-2.5 text-left text-xs backdrop-blur-xl hover:bg-slate-100/70"
                 >
-                  {item.label}
+                  {!!Icon && <Icon aria-hidden className="h-5 w-5 text-slate-400" />}
+                  <span className={clsx('text-slate-900', { 'ml-2': !!Icon, 'ml-7': !Icon })}>
+                    {item.label}
+                  </span>
+                  {item.kbd && (
+                    <kbd className="ml-auto rounded-md border border-slate-200 bg-slate-50 px-2 py-1 font-sans text-[0.625rem] text-slate-900">
+                      {item.kbd}
+                    </kbd>
+                  )}
                 </div>
               </RadixContextMenu.Item>
             ))}
