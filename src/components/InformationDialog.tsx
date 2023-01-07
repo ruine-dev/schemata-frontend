@@ -13,7 +13,7 @@ export function InformationDialog({ trigger }: InformationDialogProps) {
           <tbody>
             <tr>
               <td className="py-1 pr-8 text-slate-500">Version</td>
-              <td className="py-1 text-slate-800">Alpha 0.10.0</td>
+              <td className="py-1 text-slate-800">Alpha 0.11.0</td>
             </tr>
             <tr>
               <td className="py-1 pr-8 text-slate-500">Last updated</td>
