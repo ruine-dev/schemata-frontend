@@ -67,18 +67,19 @@ function ComboboxComponent<
 
   return (
     <div className={clsx('flex flex-col gap-y-1', className)}>
-      <label htmlFor={elementId} className={clsx('text-slate-700', { 'sr-only': srOnlyLabel })}>
+      <label
+        htmlFor={elementId}
+        className={clsx('text-sm font-medium text-slate-500', { 'sr-only': srOnlyLabel })}
+      >
         {label}
       </label>
       <ReactSelect
         ref={ref}
         components={{ Control, Option }}
         name={name}
-        id={elementId}
+        inputId={elementId}
         menuPortalTarget={document.body}
-        className={clsx('react-select-container', {
-          'mt-2': !srOnlyLabel,
-        })}
+        className={clsx('react-select-container')}
         classNamePrefix="react-select"
         {...props}
       />

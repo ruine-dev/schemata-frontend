@@ -28,12 +28,12 @@ export function TableNode({ id, data: table }: TableNodeType) {
       onBlur={() => setIsFocused(false)}
       data-test="table-node"
       className={clsx(
-        'group/node min-w-[23.5rem] rounded-xl bg-slate-100 px-3 py-5 shadow-sm ring-1 ring-slate-200 ring-offset-2',
+        'group/node min-w-[23.5rem] rounded-xl bg-slate-200 px-3 py-5 shadow-sm ring-1 ring-slate-200 ring-offset-2',
         'outline-2 outline-offset-2 outline-sky-500 [&:has([id*=table-header-]:focus)]:outline',
       )}
     >
       <TableHeader table={{ id, ...table }} />
-      <ul className="mt-3.5 divide-y divide-gray-200 rounded-t border border-gray-200 bg-white">
+      <ul className="mt-3.5 divide-y divide-gray-200 rounded-t bg-white">
         {table.columns.map((column) => (
           <li key={column.id} className="group relative">
             <Handle

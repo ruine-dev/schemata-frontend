@@ -207,7 +207,7 @@ export function TableHeader({ table }: TableHeaderProps) {
                   {...register('name')}
                   disabled={isSubmitting}
                   data-test="table-name-input"
-                  className="w-full rounded bg-slate-200 px-2 py-1 outline-none outline-2 outline-sky-400 focus:outline"
+                  className="w-full rounded bg-slate-300 px-2 py-1 outline-2 outline-sky-400 focus:outline"
                 />
               </AutoFocusInside>
               <button type="submit" className="sr-only">

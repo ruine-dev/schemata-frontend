@@ -4,14 +4,14 @@ import { ButtonHTMLAttributes, forwardRef, ReactNode, Ref } from 'react';
 
 const buttonClass = cva(
   [
-    'rounded bg-white h-7 px-3.5 text-slate-600 outline-offset-2 outline-sky-400',
+    'rounded bg-white h-7 px-3.5 text-slate-600 outline-offset-2 outline-sky-400 border font-medium',
     'enabled:hover:bg-gray-100',
     'disabled:opacity-50',
   ],
   {
     variants: {
       variant: {
-        default: [''],
+        default: ['border-transparent'],
         outline: ['border-slate-200 shadow-sm'],
       },
     },

@@ -10,7 +10,6 @@ import { useUpdateColumn } from '@/flow-hooks/useUpdateColumn';
 import { Select } from './Select';
 import { useValidateUniqueColumnName } from '@/flow-hooks/useValidateUniqueColumnName';
 import { useDeleteColumn } from '@/flow-hooks/useDeleteColumn';
-import { CustomCheckbox } from './CustomCheckbox';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { emptyVarcharColumn, getColumnIdFromHandleId } from '@/utils/reactflow';
 import {
@@ -24,6 +23,8 @@ import { useStore } from 'reactflow';
 import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
 import { Combobox } from './Combobox';
 import { ContextMenu } from './ContextMenu';
+import { Button } from './Button';
+import { Checkbox } from './Checkbox';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -182,8 +183,8 @@ export function TableColumn({
         data-test="column"
         className={clsx(
           'group outline-2 outline-sky-500',
-          'hover:bg-slate-100',
           'focus:relative focus:z-10 focus:rounded focus:outline',
+          { 'hover:bg-slate-100': !isEditing },
           className,
         )}
       >
@@ -194,25 +195,8 @@ export function TableColumn({
               onKeyDown={handleKeyEscape}
               autoComplete="off"
               onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
-              className="nodrag flex items-center gap-x-2"
+              className="nodrag py-3 px-4"
             >
-              <Controller
-                control={control}
-                name="isPrimaryKey"
-                render={({ field: { name, onBlur, onChange, ref, value } }) => (
-                  <CustomCheckbox
-                    ref={ref}
-                    name={name}
-                    checkedElement={<Key weight="fill" className="h-5 w-5 text-yellow-400" />}
-                    uncheckedElement={<Key className="h-5 w-5 text-yellow-600" />}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    checked={value}
-                    data-test="column-primary-key-checkbox"
-                  />
-                )}
-              />
-
               <AutoFocusInside>
                 <Textbox
                   label="Name"
@@ -225,10 +209,8 @@ export function TableColumn({
                       },
                     },
                   })}
-                  srOnlyLabel
                   disabled={isSubmitting}
                   data-test="column-name-textbox"
-                  className="w-32"
                 />
               </AutoFocusInside>
               <Controller
@@ -249,16 +231,22 @@ export function TableColumn({
                     value={ColumnTypeEnum.options
                       .map((type) => ({ label: type, value: type }))
                       .find((option) => option.value === value)}
-                    srOnlyLabel
                     data-test="column-type-combobox"
-                    className="w-56"
+                    className="mt-3"
                   />
                 )}
               />
-
-              <button type="submit" className="sr-only">
-                Save
-              </button>
+              <Checkbox
+                {...register('isPrimaryKey')}
+                label="Primary Key"
+                data-test="column-primary-key-checkbox"
+                className="mt-4"
+              />
+              <div className="mt-5 flex justify-end">
+                <Button type="submit" variant="outline">
+                  Save
+                </Button>
+              </div>
             </form>
           </FocusLock>
         ) : (
