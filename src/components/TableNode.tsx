@@ -28,14 +28,29 @@ export function TableNode({ id, data: table }: TableNodeType) {
       onBlur={() => setIsFocused(false)}
       data-test="table-node"
       className={clsx(
-        'group/node min-w-[23.5rem] rounded-xl bg-slate-200 px-3 py-5 shadow-sm ring-1 ring-slate-200 ring-offset-2',
+        'group/node min-w-[20rem] rounded-md bg-slate-200 px-3 py-5 shadow-sm ring-1 ring-slate-200 ring-offset-2',
         'outline-2 outline-offset-2 outline-sky-500 [&:has([id*=table-header-]:focus)]:outline',
       )}
     >
       <TableHeader table={{ id, ...table }} />
-      <ul className="mt-3.5 divide-y divide-gray-200 rounded-t bg-white">
+      <ul
+        className={clsx(
+          'mt-3.5 divide-y divide-gray-200 rounded-t rounded-b border-b border-transparent',
+          'group-hover/node:border-b-gray-200',
+          'group-focus-within/node:border-b-gray-200',
+        )}
+      >
         {table.columns.map((column) => (
-          <li key={column.id} className="group relative">
+          <li
+            key={column.id}
+            className={clsx(
+              'group relative bg-white',
+              'first:rounded-t',
+              'last:rounded-b',
+              'group-hover/node:rounded-b-none',
+              'group-focus-within/node:rounded-b-none',
+            )}
+          >
             <Handle
               id={`${column.id}-source-right`}
               position={Position.Right}
@@ -87,12 +102,13 @@ export function TableNode({ id, data: table }: TableNodeType) {
           }}
           data-test="create-column-button"
           className={clsx(
-            'nodrag hidden w-full rounded-b border-x border-b border-gray-200 bg-white py-3 px-4 text-left text-sm font-semibold text-sky-600 outline-2 outline-sky-500',
+            'nodrag hidden w-full rounded-b bg-white py-3 px-4 text-left text-sm font-semibold text-sky-600 outline-2 outline-sky-500',
             'hover:bg-sky-50 hover:text-sky-600',
             'group-hover/node:flex',
             'group-focus-within/node:flex',
-            'focus:relative focus:z-10 focus:outline',
+            'focus:relative focus:z-10 focus:rounded-t focus:outline',
             'enabled:active:bg-sky-50 enabled:active:text-sky-600',
+            { 'rounded-t': table.columns.length === 0 },
           )}
         >
           <span className="flex items-center gap-x-2 text-sm uppercase tracking-wide">

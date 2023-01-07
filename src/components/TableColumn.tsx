@@ -182,7 +182,7 @@ export function TableColumn({
         }}
         data-test="column"
         className={clsx(
-          'group outline-2 outline-sky-500',
+          'group py-3 px-4 outline-2 outline-sky-500',
           'focus:relative focus:z-10 focus:rounded focus:outline',
           { 'hover:bg-slate-100': !isEditing },
           className,
@@ -195,7 +195,7 @@ export function TableColumn({
               onKeyDown={handleKeyEscape}
               autoComplete="off"
               onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
-              className="nodrag py-3 px-4"
+              className="nodrag"
             >
               <AutoFocusInside>
                 <Textbox
@@ -250,7 +250,7 @@ export function TableColumn({
             </form>
           </FocusLock>
         ) : (
-          <div className="flex items-center py-3 px-4">
+          <div className="flex items-center">
             <span className="h-4 w-4" data-test="column-key">
               {(isPrimaryKey || isForeignKey) && (
                 <>
@@ -269,7 +269,7 @@ export function TableColumn({
                 </>
               )}
             </span>
-            <span className="ml-2 font-medium text-slate-600" data-test="column-name">
+            <span className="ml-2 mr-4 font-medium text-slate-600" data-test="column-name">
               {column.name}
             </span>
             <span className="ml-auto font-medium text-sky-700" data-test="column-type">
