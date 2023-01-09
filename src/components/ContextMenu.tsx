@@ -27,14 +27,14 @@ export function ContextMenu({ menu, children, label, disabled }: ContextMenuProp
         <RadixContextMenu.Content asChild>
           <div
             onKeyDown={(e) => e.stopPropagation()}
-            className="min-w-[14rem] overflow-hidden rounded-lg border border-gray-300/50 bg-white/30 shadow-xl backdrop-blur"
+            className="min-w-[14rem] overflow-hidden rounded-lg border border-gray-300/50 bg-white/40 shadow-xl backdrop-blur"
           >
             {label && <RadixContextMenu.Label>{label}</RadixContextMenu.Label>}
             {menu.map(({ icon: Icon, ...item }, index) => (
               <RadixContextMenu.Item key={index} onClick={item.onClick} disabled={disabled} asChild>
                 <div
                   data-test={item['data-test']}
-                  className="flex w-full cursor-default items-center py-2 px-2.5 text-left backdrop-blur-xl hover:bg-slate-100/70"
+                  className="flex w-full cursor-default items-center py-2 px-2.5 text-left backdrop-blur hover:bg-gray-100/60"
                 >
                   {!!Icon && <Icon aria-hidden className="h-5 w-5 text-slate-400" />}
                   <span
