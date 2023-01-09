@@ -1,7 +1,7 @@
 export function Markers() {
   return (
     <svg
-      style={{ position: 'absolute', top: 0, left: 0 }}
+      className="react-flow__edges react-flow__container z-[1000]"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

@@ -117,7 +117,6 @@ export function Canvas({ schema }: CanvasProps) {
 
   return (
     <>
-      <Markers />
       <ContextMenu
         menu={[
           {
@@ -172,6 +171,7 @@ export function Canvas({ schema }: CanvasProps) {
               undoableService.updateData(true);
             }}
           >
+            <Markers />
             <Panel position="top-left">
               <GeneralPropsPanel schema={schema} />
             </Panel>

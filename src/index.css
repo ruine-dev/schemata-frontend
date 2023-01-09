@@ -19,7 +19,7 @@
 }
 
 .react-select\_\_control {
-  @apply rounded-md border-slate-200 shadow-sm py-0.5 text-base !important;
+  @apply rounded-md border-slate-200 py-0.5 text-base shadow-sm !important;
 }
 
 .react-select\_\_control.react-select\_\_control--is-focused {
@@ -60,4 +60,8 @@
 
 .react-select\_\_multi-value\_\_remove:hover {
   @apply bg-red-100 text-red-600 !important;
+}
+
+.react-flow__node {
+  z-index: -1 !important;
 }
