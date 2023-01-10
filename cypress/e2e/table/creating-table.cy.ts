@@ -49,7 +49,45 @@ describe('creating table', () => {
         dataTransfer,
       });
 
-      cy.get('#canvas').trigger('drop', { dataTransfer }).trigger('dragend');
+      cy.getBySel('canvas').trigger('drop', { dataTransfer }).trigger('dragend');
+    });
+
+    context('without name', () => {
+      afterEach(() => {
+        cy.getBySel('table-name').should('have.text', 'untitled');
+      });
+
+      it('pressing "Enter" to submit', () => {
+        cy.focused().type('{enter}');
+      });
+
+      it('pressing "Escape" to submit', () => {
+        cy.focused().type('{esc}');
+      });
+    });
+
+    context('with custom name', () => {
+      beforeEach(() => {
+        cy.focused().type('foo');
+      });
+
+      afterEach(() => {
+        cy.getBySel('table-name').should('have.text', 'foo');
+      });
+
+      it('pressing "Enter" to submit', () => {
+        cy.focused().type('{enter}');
+      });
+
+      it('pressing "Escape" to submit', () => {
+        cy.focused().type('{esc}');
+      });
+    });
+  });
+
+  context('can create table by pressing "T"', () => {
+    beforeEach(() => {
+      cy.get('body').type('t');
     });
 
     context('without name', () => {

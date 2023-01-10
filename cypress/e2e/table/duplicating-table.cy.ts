@@ -18,10 +18,8 @@ describe('duplicating table', () => {
     cy.getBySel('table-name').last().should('have.text', 'foo');
   });
 
-  it('can duplicate table by clicking "Duplicate" button in table header\'s context menu', () => {
-    cy.getBySel('table-header').rightclick();
-
-    cy.getBySel('table-header-context-menu-duplicate').click();
+  it('can duplicate table by pressing "Ctrl + D" on table header', () => {
+    cy.getBySel('table-header').type('{ctrl}d');
   });
 });
 
