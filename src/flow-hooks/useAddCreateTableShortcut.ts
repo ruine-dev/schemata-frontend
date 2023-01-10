@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useReactFlow } from 'reactflow';
 import { useCreateTable } from './useCreateTable';
 
-export function useAddCreateTableShortcut() {
+export function useAddCreateTableShortcut(position: { x: number; y: number }) {
   const reactFlowInstance = useReactFlow();
   const createTable = useCreateTable();
 
@@ -19,17 +19,23 @@ export function useAddCreateTableShortcut() {
       }
 
       if (e.key === 't') {
-        const rect = document.body.getBoundingClientRect();
-
         e.preventDefault();
         e.stopPropagation();
 
-        const position = reactFlowInstance?.project({
-          x: rect.width / 2,
-          y: rect.height / 2,
-        });
+        let finalPosition = position;
 
-        createTable(emptyTableWithoutId(), position);
+        if (
+          position.x <= 0 ||
+          position.y <= 0 ||
+          position.x >= window.innerWidth ||
+          position.y >= window.innerHeight - 100
+        ) {
+          const rect = document.body.getBoundingClientRect();
+
+          finalPosition = { x: rect.width / 2, y: rect.height / 2 };
+        }
+
+        createTable(emptyTableWithoutId(), reactFlowInstance.project(finalPosition));
       }
     };
 
@@ -38,5 +44,5 @@ export function useAddCreateTableShortcut() {
     return () => {
       document.body.removeEventListener('keydown', handleCreateTableShortcut);
     };
-  }, [createTable]);
+  }, [createTable, position]);
 }

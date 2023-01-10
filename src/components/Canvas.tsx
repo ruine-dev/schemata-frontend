@@ -1,4 +1,12 @@
-import { DragEventHandler, useCallback, useRef, useEffect, useContext, MouseEvent } from 'react';
+import {
+  DragEventHandler,
+  useCallback,
+  useRef,
+  useEffect,
+  useContext,
+  MouseEvent,
+  useState,
+} from 'react';
 import ReactFlow, { Background, EdgeTypes, NodeTypes, Panel, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { TableNode } from './TableNode';
@@ -46,12 +54,30 @@ export function Canvas({ schema }: CanvasProps) {
     reactFlowWrapper,
   });
 
-  useAddCreateTableShortcut();
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+
+  useAddCreateTableShortcut(cursorPosition);
   const handleSaveSchema = useHandleSaveLocalSchema(schema.id);
   const handleEdgeMarker = useHandleEdgeMarker();
 
+  const triggerPaste = (position: { x: number; y: number }) => {
+    const {
+      context: { clipboard },
+    } = copyPasteService.getSnapshot();
+
+    const finalPosition = reactFlowInstance.project(position);
+
+    if (clipboard.status === 'COPIED' && clipboard.type === 'TABLE') {
+      const { id, ...payloadWithoutId } = clipboard.payload;
+
+      createTable(payloadWithoutId, finalPosition);
+    } else if (clipboard.status === 'CUT' && clipboard.type === 'TABLE') {
+      createTable(clipboard.payload, finalPosition);
+    }
+  };
+
   useEffect(() => {
-    const handleUndoRedoShortcut = (e: KeyboardEvent) => {
+    const registerUndoRedoShortcut = (e: KeyboardEvent) => {
       if (
         !(
           document.activeElement instanceof HTMLDivElement ||
@@ -76,10 +102,20 @@ export function Canvas({ schema }: CanvasProps) {
       }
     };
 
-    document.body.addEventListener('keydown', handleUndoRedoShortcut);
+    const registerPasteShortcut = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 'v') {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerPaste(cursorPosition);
+      }
+    };
+
+    document.body.addEventListener('keydown', registerUndoRedoShortcut);
+    document.body.addEventListener('keydown', registerPasteShortcut);
 
     return () => {
-      document.body.removeEventListener('keydown', handleUndoRedoShortcut);
+      document.body.removeEventListener('keydown', registerUndoRedoShortcut);
+      document.body.removeEventListener('keydown', registerPasteShortcut);
     };
   });
 
@@ -94,100 +130,81 @@ export function Canvas({ schema }: CanvasProps) {
     createTable(emptyTableWithoutId(), position);
   };
 
-  const triggerPaste = (e: MouseEvent) => {
-    const {
-      context: { clipboard },
-    } = copyPasteService.getSnapshot();
-
-    const position = reactFlowInstance.project({
-      x: e.clientX,
-      y: e.clientY,
-    });
-
-    if (clipboard.status === 'COPIED' && clipboard.type === 'TABLE') {
-      const { id, ...payloadWithoutId } = clipboard.payload;
-
-      createTable(payloadWithoutId, position);
-    } else if (clipboard.status === 'CUT' && clipboard.type === 'TABLE') {
-      createTable(clipboard.payload, position);
-    }
-  };
-
   const canPaste = copyPasteService.getSnapshot().matches('FILLED_CLIPBOARD');
 
   return (
-    <>
-      <ContextMenu
-        menu={[
-          {
-            label: 'Add table',
-            'data-test': 'pane-context-menu-add-table',
-            icon: AddTableIcon,
-            onClick: triggerCreateTable,
-            kbd: 'T',
-          },
-          {
-            label: 'Paste',
-            'data-test': 'pane-context-menu-paste',
-            icon: ClipboardIcon,
-            onClick: triggerPaste,
-            disabled: !canPaste,
-            kbd: 'CTRL + V',
-          },
-        ]}
-      >
-        <div className="h-screen w-full" ref={reactFlowWrapper}>
-          <ReactFlow
-            id="canvas"
-            defaultNodes={defaults.nodes}
-            defaultEdges={defaults.edges}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            elevateEdgesOnSelect
-            defaultEdgeOptions={{ type: 'floating' }}
-            onNodesDelete={() => undoableService.updateData(true)}
-            onEdgesDelete={() => undoableService.updateData(true)}
-            onNodeDragStop={() => undoableService.updateData(true)}
-            onNodesChange={handleSaveSchema}
-            onEdgesChange={handleSaveSchema}
-            onConnect={() => {
-              const edges =
-                reactFlowInstance.getEdges().map((edge) => {
-                  const id = isUuid(edge.id) ? edge.id : crypto.randomUUID();
-                  const { markerEnd, markerStart } = handleEdgeMarker(edge);
-                  return {
-                    ...edge,
-                    id,
-                    markerEnd,
-                    markerStart,
-                  };
-                }) ?? [];
-              reactFlowInstance.setEdges(edges);
-            }}
-            onConnectEnd={() => {
-              handleSaveSchema();
-              undoableService.updateData(true);
-            }}
-          >
-            <Markers />
-            <Panel position="top-left">
-              <GeneralPropsPanel schema={schema} />
-            </Panel>
-            <Panel position="top-right">
-              <EditorPropsPanel schema={schema} />
-            </Panel>
-            <Panel position="top-center">
-              <ToolbarPanel />
-            </Panel>
-            <Panel position="bottom-left">
-              <UtilsPanel />
-            </Panel>
-            <Background className="bg-white" color="black" />
-          </ReactFlow>
-        </div>
-      </ContextMenu>
-    </>
+    <ContextMenu
+      menu={[
+        {
+          label: 'Add table',
+          'data-test': 'canvas-context-menu-add-table',
+          icon: AddTableIcon,
+          onClick: triggerCreateTable,
+          kbd: 'T',
+        },
+        {
+          label: 'Paste',
+          'data-test': 'canvas-context-menu-paste',
+          icon: ClipboardIcon,
+          onClick: (e) => triggerPaste({ x: e.clientX, y: e.clientY }),
+          disabled: !canPaste,
+          kbd: 'CTRL + V',
+        },
+      ]}
+    >
+      <div ref={reactFlowWrapper} className="h-screen w-full">
+        <ReactFlow
+          id="canvas"
+          defaultNodes={defaults.nodes}
+          defaultEdges={defaults.edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onDragOver={onDragOver}
+          onDrop={onDrop}
+          elevateEdgesOnSelect
+          defaultEdgeOptions={{ type: 'floating' }}
+          onNodesDelete={() => undoableService.updateData(true)}
+          onEdgesDelete={() => undoableService.updateData(true)}
+          onNodeDragStop={() => undoableService.updateData(true)}
+          onNodesChange={handleSaveSchema}
+          onEdgesChange={handleSaveSchema}
+          onConnect={() => {
+            const edges =
+              reactFlowInstance.getEdges().map((edge) => {
+                const id = isUuid(edge.id) ? edge.id : crypto.randomUUID();
+                const { markerEnd, markerStart } = handleEdgeMarker(edge);
+                return {
+                  ...edge,
+                  id,
+                  markerEnd,
+                  markerStart,
+                };
+              }) ?? [];
+            reactFlowInstance.setEdges(edges);
+          }}
+          onConnectEnd={() => {
+            handleSaveSchema();
+            undoableService.updateData(true);
+          }}
+          onPaneMouseMove={(e) => setCursorPosition({ x: e.clientX, y: e.clientY })}
+          data-test="canvas"
+        >
+          <Markers />
+          <Panel position="top-left">
+            <GeneralPropsPanel schema={schema} />
+          </Panel>
+          <Panel position="top-right">
+            <EditorPropsPanel schema={schema} />
+          </Panel>
+          <Panel position="top-center">
+            <ToolbarPanel />
+          </Panel>
+          <Panel position="bottom-left">
+            <UtilsPanel />
+          </Panel>
+          <Background className="bg-white" color="black" />
+        </ReactFlow>
+      </div>
+    </ContextMenu>
   );
 }

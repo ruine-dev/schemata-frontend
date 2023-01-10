@@ -192,13 +192,21 @@ export function TableHeader({ table }: TableHeaderProps) {
               e.preventDefault();
               e.stopPropagation();
               triggerDuplicate();
+            } else if (e.ctrlKey && e.key === 'c') {
+              e.preventDefault();
+              e.stopPropagation();
+              triggerCopy();
+            } else if (e.ctrlKey && e.key === 'x') {
+              e.preventDefault();
+              e.stopPropagation();
+              triggerCut();
             }
           }
         }}
         onFocus={() => setIsHeaderFocused(true)}
         onBlur={() => setIsHeaderFocused(false)}
         data-test="table-header"
-        className="group rounded font-medium outline-none pt-4 px-3 -mx-3"
+        className="group -mx-3 rounded px-3 pt-4 font-medium outline-none"
       >
         {isRenaming ? (
           <FocusLock>
