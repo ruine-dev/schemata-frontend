@@ -87,9 +87,10 @@ export const BaseColumnSchema = z.object({
   id: z.string().uuid(),
   name: z.string().trim().max(64),
   default: z.string().optional(),
+  index: z.number().int(),
 });
 
-export const BaseCreateColumnSchema = BaseColumnSchema.omit({ id: true }).extend({
+export const BaseCreateColumnSchema = BaseColumnSchema.omit({ id: true, index: true }).extend({
   tableId: z.string().uuid(),
 });
 

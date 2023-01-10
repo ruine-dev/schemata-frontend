@@ -1,10 +1,6 @@
 export function Markers() {
   return (
-    <svg
-      className="react-flow__edges react-flow__container z-[1000]"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker
           id="many"

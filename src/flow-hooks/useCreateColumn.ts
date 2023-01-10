@@ -21,6 +21,7 @@ export function useCreateColumn() {
                 ...node.data.columns,
                 {
                   id: crypto.randomUUID(),
+                  index: node.data.columns.length,
                   ...newColumn,
                 },
               ],

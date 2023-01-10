@@ -8,13 +8,12 @@ import { TableNodeType } from '@/schemas/base';
 import { Tooltip } from './Tooltip';
 import { useState } from 'react';
 import { PlusIcon } from '@heroicons/react/20/solid';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TableColumnList } from './TableColumnList';
 
 export function TableNode({ id, data: table }: TableNodeType) {
   const createColumn = useCreateColumn();
-  const connectionNodeId = useStore((state) => state.connectionNodeId);
-  const connectionHandleId = useStore((state) => state.connectionHandleId);
-
-  const isTarget = connectionNodeId && connectionNodeId !== id;
 
   const [isFocused, setIsFocused] = useState(false);
 
@@ -33,63 +32,9 @@ export function TableNode({ id, data: table }: TableNodeType) {
       )}
     >
       <TableHeader table={{ id, ...table }} />
-      <ul
-        className={clsx(
-          'mt-3.5 divide-y divide-gray-200 rounded-t rounded-b border-b border-transparent',
-          'group-hover/node:border-b-gray-200',
-          'group-focus-within/node:border-b-gray-200',
-        )}
-      >
-        {table.columns.map((column) => (
-          <li
-            key={column.id}
-            className={clsx(
-              'group relative bg-white',
-              'first:rounded-t',
-              'last:rounded-b',
-              'group-hover/node:rounded-b-none',
-              'group-focus-within/node:rounded-b-none',
-            )}
-          >
-            <Handle
-              id={`${column.id}-source-right`}
-              position={Position.Right}
-              type="source"
-              className={clsx('peer absolute -right-[0.3125rem] z-10 h-2.5 w-2.5 bg-sky-500', {
-                'opacity-0': connectionHandleId !== `${table.name}-${column.name}-source-right`,
-                'group-hover:opacity-100': !connectionNodeId || !isTarget,
-              })}
-            />
-            <Handle
-              id={`${column.id}-source-left`}
-              position={Position.Left}
-              type="source"
-              className={clsx('peer absolute -left-[0.3125rem] z-10 h-2.5 w-2.5 bg-sky-500', {
-                'opacity-0': connectionHandleId !== `${table.name}-${column.name}-source-left`,
-                'group-hover:opacity-100': !connectionNodeId || !isTarget,
-              })}
-            />
-            <Handle
-              id={`${column.id}-target`}
-              position={Position.Right}
-              type="target"
-              className={clsx(
-                'peer invisible absolute top-0 left-0 h-full w-full translate-y-0 rounded-none border-0 opacity-0',
-                {
-                  'visible z-20': isTarget,
-                },
-              )}
-            />
-            <TableColumn
-              column={column}
-              tableIndexes={table.indexes}
-              tableId={id}
-              hideAction={!!connectionNodeId}
-              className="peer-hover:bg-slate-100"
-            />
-          </li>
-        ))}
-      </ul>
+      <DndProvider backend={HTML5Backend}>
+        <TableColumnList table={{ id, ...table }} />
+      </DndProvider>
       <Tooltip text="(SHIFT + ENTER)" allowOpen={isFocused}>
         <button
           onClick={() => createColumn({ ...emptyVarcharColumn(), tableId: id })}
