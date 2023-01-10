@@ -68,9 +68,8 @@ export function emptyTableNode(overrides?: Partial<TableNodeType>): TableNodeTyp
   };
 }
 
-export function emptyVarcharColumn(): VarcharColumnType {
+export function emptyCreateVarcharColumn(): Omit<VarcharColumnType, 'id' | 'index'> {
   return {
-    id: crypto.randomUUID(),
     name: '',
     type: 'VARCHAR',
     attributes: [],

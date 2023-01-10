@@ -3,7 +3,7 @@ import { TableColumn } from './TableColumn';
 import { clsx } from '@/utils/clsx';
 import { TableHeader } from './TableHeader';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
-import { emptyVarcharColumn } from '@/utils/reactflow';
+import { emptyCreateVarcharColumn } from '@/utils/reactflow';
 import { TableNodeType } from '@/schemas/base';
 import { Tooltip } from './Tooltip';
 import { useState } from 'react';
@@ -37,7 +37,7 @@ export function TableNode({ id, data: table }: TableNodeType) {
       </DndProvider>
       <Tooltip text="(SHIFT + ENTER)" allowOpen={isFocused}>
         <button
-          onClick={() => createColumn({ ...emptyVarcharColumn(), tableId: id })}
+          onClick={() => createColumn({ ...emptyCreateVarcharColumn(), tableId: id })}
           onKeyDown={(e) => {
             if (e.key === 'Escape') {
               e.preventDefault();

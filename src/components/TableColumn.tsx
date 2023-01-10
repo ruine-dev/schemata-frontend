@@ -9,7 +9,7 @@ import { useUpdateColumn } from '@/flow-hooks/useUpdateColumn';
 import { useValidateUniqueColumnName } from '@/flow-hooks/useValidateUniqueColumnName';
 import { useDeleteColumn } from '@/flow-hooks/useDeleteColumn';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
-import { emptyVarcharColumn, getColumnIdFromHandleId } from '@/utils/reactflow';
+import { emptyCreateVarcharColumn, getColumnIdFromHandleId } from '@/utils/reactflow';
 import {
   ColumnType,
   ColumnTypeEnum,
@@ -221,7 +221,7 @@ function TableColumnComponent(
               e.preventDefault();
               e.stopPropagation();
 
-              createColumn({ ...emptyVarcharColumn(), tableId });
+              createColumn({ ...emptyCreateVarcharColumn(), tableId });
             } else if (e.key === 'Escape') {
               e.preventDefault();
               e.stopPropagation();
