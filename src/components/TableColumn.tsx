@@ -1,5 +1,13 @@
-import { forwardRef, KeyboardEventHandler, Ref, useEffect, useRef, useState } from 'react';
-import { useDrop, useDrag } from 'react-dnd';
+import {
+  CSSProperties,
+  forwardRef,
+  HTMLAttributes,
+  KeyboardEventHandler,
+  Ref,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FocusLock, { AutoFocusInside } from 'react-focus-lock';
@@ -30,17 +38,27 @@ import {
   TrashIcon,
 } from '@heroicons/react/20/solid';
 import { DotsSixVertical } from 'phosphor-react';
-import { useReorderColumn } from '@/flow-hooks/useReorderColumn';
 
 type TableColumnFinalProps = {
   column: ColumnType;
   tableIndexes: IndexType[];
   tableId: string;
   className?: string;
+  style?: CSSProperties;
+  dragHandleProps?: HTMLAttributes<HTMLDivElement>;
+  isDragging?: boolean;
 };
 
 function TableColumnComponent(
-  { column, tableIndexes, tableId, className }: TableColumnFinalProps,
+  {
+    column,
+    tableIndexes,
+    tableId,
+    className,
+    style,
+    dragHandleProps,
+    isDragging,
+  }: TableColumnFinalProps,
   dragHandleRef: Ref<HTMLDivElement>,
 ) {
   const [isColumnFocused, setIsColumnFocused] = useState(false);
@@ -131,49 +149,6 @@ function TableColumnComponent(
     createColumn({ ...column, tableId });
   };
 
-  const reorderColumn = useReorderColumn();
-
-  const [, drop] = useDrop<ColumnType>(
-    () => ({
-      accept: 'COLUMN',
-      hover(draggedColumn) {
-        if (!containerRef.current) {
-          return;
-        }
-
-        const dragIndex = draggedColumn.index;
-        const hoverIndex = column.index;
-
-        // Don't replace items with themselves
-        if (draggedColumn.id === column.id) {
-          return;
-        }
-
-        reorderColumn({ dragIndex, hoverIndex, tableId });
-
-        column.index = dragIndex;
-        draggedColumn.index = hoverIndex;
-      },
-    }),
-    [reorderColumn, column],
-  );
-
-  const [{ isDragging }, drag] = useDrag(
-    () => ({
-      // "type" is required. It is used by the "accept" specification of drop targets.
-      type: 'COLUMN',
-      item: column,
-      // The collect function utilizes a "monitor" instance (see the Overview for what this is)
-      // to pull important pieces of state from the DnD system.
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    }),
-    [column],
-  );
-
-  drag(drop(containerRef));
-
   return (
     <ContextMenu
       disabled={isEditing}
@@ -230,11 +205,12 @@ function TableColumnComponent(
             }
           }
         }}
+        style={style}
         data-test="column"
         className={clsx(
-          'group py-3 px-4 outline-2 outline-sky-500',
+          'group bg-white py-3 px-4 outline-2 outline-sky-500',
           'focus:relative focus:z-10 focus:rounded focus:outline',
-          { 'hover:bg-slate-100': !isEditing },
+          { 'hover:bg-slate-100': !isEditing, 'relative z-10': isDragging },
           className,
         )}
       >
@@ -326,7 +302,8 @@ function TableColumnComponent(
             </span>
             <div
               ref={dragHandleRef}
-              className={clsx('ml-3 noimage', {
+              {...dragHandleProps}
+              className={clsx('noimage ml-3', {
                 'cursor-grab': !isDragging,
                 'cursor-grabbing': isDragging,
               })}

@@ -1,7 +1,8 @@
 import { TableType } from '@/schemas/base';
+import { useDroppable } from '@dnd-kit/core';
 import clsx from 'clsx';
-import { Handle, Position, useStore } from 'reactflow';
-import { TableColumn } from './TableColumn';
+import { useStore } from 'reactflow';
+import { TableColumnListItem } from './TableColumnListItem';
 
 type TableColumnListProps = {
   table: TableType;
@@ -12,69 +13,28 @@ export function TableColumnList({ table }: TableColumnListProps) {
 
   const isTarget = !!(connectionNodeId && connectionNodeId !== table.id);
 
+  const { setNodeRef } = useDroppable({
+    id: 'droppable',
+  });
+
   return (
     <ul
+      ref={setNodeRef}
       className={clsx(
-        'mt-3.5 divide-y divide-gray-200 rounded-t rounded-b border-b border-transparent',
+        'mt-3.5 divide-y divide-gray-200 rounded-t rounded-b border-b border-transparent bg-white',
         'group-hover/node:border-b-gray-200',
         'group-focus-within/node:border-b-gray-200',
       )}
     >
-      {table.columns
-        .sort((a, b) => a.index - b.index)
-        .map((column) => (
-          <li
-            key={column.id}
-            className={clsx(
-              'nodrag group relative bg-white',
-              'first:rounded-t',
-              'last:rounded-b',
-              'group-hover/node:rounded-b-none',
-              'group-focus-within/node:rounded-b-none',
-            )}
-          >
-            <Handle
-              id={`${column.id}-source-right`}
-              position={Position.Right}
-              type="source"
-              className={clsx(
-                'peer absolute -right-[0.3125rem] z-20 h-2.5 w-2.5 border-2 border-sky-400 bg-white opacity-0',
-                {
-                  'group-hover:opacity-100': !connectionNodeId || !isTarget,
-                },
-              )}
-            />
-            <Handle
-              id={`${column.id}-source-left`}
-              position={Position.Left}
-              type="source"
-              className={clsx(
-                'peer absolute -left-[0.3125rem] z-20 h-2.5 w-2.5 border-2 border-sky-400 bg-white opacity-0',
-                {
-                  'group-hover:opacity-100': !connectionNodeId || !isTarget,
-                },
-              )}
-            />
-            <Handle
-              id={`${column.id}-target`}
-              position={Position.Right}
-              type="target"
-              className={clsx(
-                'peer absolute top-0 left-0 h-full w-full translate-y-0 rounded-none border-0 opacity-0',
-                {
-                  invisible: !isTarget,
-                  'visible z-20': isTarget,
-                },
-              )}
-            />
-            <TableColumn
-              column={column}
-              tableIndexes={table.indexes}
-              tableId={table.id}
-              className="peer-hover:bg-slate-100"
-            />
-          </li>
-        ))}
+      {table.columns.map((column) => (
+        <TableColumnListItem
+          key={column.id}
+          column={column}
+          table={table}
+          connectionNodeId={connectionNodeId}
+          isTarget={isTarget}
+        />
+      ))}
     </ul>
   );
 }

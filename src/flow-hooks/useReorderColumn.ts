@@ -2,10 +2,11 @@ import { EditorStateContext } from '@/contexts/EditorStateContext';
 import { ColumnType, TableType, TableWithoutIdType } from '@/schemas/base';
 import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
+import { arrayMove } from '@dnd-kit/sortable';
 
 type ReorderColumnType = {
-  dragIndex: ColumnType['index'];
-  hoverIndex: ColumnType['index'];
+  movedColumnId: ColumnType['id'];
+  hoveredColumnId: ColumnType['id'];
   tableId: TableType['id'];
 };
 
@@ -14,7 +15,7 @@ export function useReorderColumn() {
   const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
   return (reorderPayload: ReorderColumnType) => {
-    const { dragIndex, hoverIndex, tableId } = reorderPayload;
+    const { movedColumnId, hoveredColumnId, tableId } = reorderPayload;
 
     reactFlowInstance.setNodes((currentNodes) => {
       return currentNodes.map((node) => {
@@ -22,21 +23,20 @@ export function useReorderColumn() {
           return node;
         }
 
+        const movedColumnIndex = node.data.columns.findIndex(
+          (column) => column.id === movedColumnId,
+        );
+        const hoveredColumnIndex = node.data.columns.findIndex(
+          (column) => column.id === hoveredColumnId,
+        );
+
+        const finalColumns = arrayMove(node.data.columns, movedColumnIndex, hoveredColumnIndex);
+
         return {
           ...node,
           data: {
             ...node.data,
-            columns: node.data.columns.map((column) => {
-              if (column.index === dragIndex) {
-                return { ...column, index: hoverIndex };
-              }
-
-              if (column.index === hoverIndex) {
-                return { ...column, index: dragIndex };
-              }
-
-              return column;
-            }),
+            columns: finalColumns,
           },
         };
       });

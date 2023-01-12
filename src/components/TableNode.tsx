@@ -1,5 +1,3 @@
-import { Handle, Position, useStore } from 'reactflow';
-import { TableColumn } from './TableColumn';
 import { clsx } from '@/utils/clsx';
 import { TableHeader } from './TableHeader';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
@@ -8,14 +6,18 @@ import { TableNodeType } from '@/schemas/base';
 import { Tooltip } from './Tooltip';
 import { useState } from 'react';
 import { PlusIcon } from '@heroicons/react/20/solid';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TableColumnList } from './TableColumnList';
+import { DndContext } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { useReorderColumn } from '@/flow-hooks/useReorderColumn';
 
 export function TableNode({ id, data: table }: TableNodeType) {
   const createColumn = useCreateColumn();
 
   const [isFocused, setIsFocused] = useState(false);
+
+  const reorderColumn = useReorderColumn();
+  const [activeId, setActiveId] = useState<string | number | null>(null);
 
   return (
     <div
@@ -32,9 +34,25 @@ export function TableNode({ id, data: table }: TableNodeType) {
       )}
     >
       <TableHeader table={{ id, ...table }} />
-      <DndProvider backend={HTML5Backend}>
-        <TableColumnList table={{ id, ...table }} />
-      </DndProvider>
+
+      <DndContext
+        onDragStart={({ active }) => setActiveId(active.id)}
+        onDragEnd={({ active, over }) => {
+          setActiveId(null);
+          if (over && active.id !== over.id) {
+            reorderColumn({
+              movedColumnId: active.id as string,
+              hoveredColumnId: over.id as string,
+              tableId: id,
+            });
+          }
+        }}
+      >
+        <SortableContext items={table.columns} strategy={verticalListSortingStrategy}>
+          <TableColumnList table={{ id, ...table }} />
+        </SortableContext>
+      </DndContext>
+
       <Tooltip text="(SHIFT + ENTER)" allowOpen={isFocused}>
         <button
           onClick={() => createColumn({ ...emptyCreateVarcharColumn(), tableId: id })}
