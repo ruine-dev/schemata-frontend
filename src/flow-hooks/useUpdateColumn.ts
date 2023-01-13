@@ -1,14 +1,24 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import { TableWithoutIdType, UpdateColumnType } from '@/schemas/base';
+import { IndexType, TableWithoutIdType, UpdateColumnType } from '@/schemas/base';
+import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import { useContext } from 'react';
-import { useReactFlow } from 'reactflow';
+import { Node, useReactFlow } from 'reactflow';
+import { useHandleEdgeMarker } from './useHandleEdgeMarker';
 
 export function useUpdateColumn() {
   const { undoableService } = useContext(EditorStateContext);
   const reactFlowInstance = useReactFlow<TableWithoutIdType>();
+  const handleEdgeMarker = useHandleEdgeMarker();
 
   return (columnPayload: UpdateColumnType) => {
     const { tableId, name, isPrimaryKey, isUniqueIndex, ...newColumn } = columnPayload;
+
+    let changedUniqueIndexData:
+      | undefined
+      | {
+          indexes: IndexType[];
+          nodeId: Node['id'];
+        };
 
     reactFlowInstance.setNodes((currentNodes) => {
       return currentNodes.map((node) => {
@@ -30,7 +40,7 @@ export function useUpdateColumn() {
             return {
               ...index,
               columns: isPrimaryKey
-                ? index.columns.concat(newColumn.id)
+                ? Array.from(new Set(index.columns.concat(newColumn.id)))
                 : index.columns.filter((columnId) => columnId !== newColumn.id),
             };
           });
@@ -49,10 +59,11 @@ export function useUpdateColumn() {
             if (index.type !== 'UNIQUE_INDEX') {
               return index;
             }
+
             return {
               ...index,
               columns: isUniqueIndex
-                ? index.columns.concat(newColumn.id)
+                ? Array.from(new Set(index.columns.concat(newColumn.id)))
                 : index.columns.filter((columnId) => columnId !== newColumn.id),
             };
           });
@@ -62,6 +73,16 @@ export function useUpdateColumn() {
             type: 'UNIQUE_INDEX',
             columns: [newColumn.id],
           });
+        }
+
+        if (
+          newIndexes.find((index) => index.type === 'UNIQUE_INDEX')?.columns.length !==
+          node.data.indexes.find((index) => index.type === 'UNIQUE_INDEX')?.columns.length
+        ) {
+          changedUniqueIndexData = {
+            indexes: newIndexes,
+            nodeId: node.id,
+          };
         }
 
         return {
@@ -82,6 +103,29 @@ export function useUpdateColumn() {
         };
       });
     });
+
+    if (changedUniqueIndexData) {
+      reactFlowInstance.setEdges((edges) => {
+        return edges.map((edge) => {
+          const { markerEnd, markerStart } = handleEdgeMarker(
+            edge,
+            edge.source === changedUniqueIndexData?.nodeId
+              ? changedUniqueIndexData.indexes
+              : undefined,
+          );
+
+          return {
+            ...edge,
+            markerEnd,
+            markerStart,
+            data: {
+              sourceColumnId: getColumnIdFromHandleId(edge.sourceHandle as string),
+              targetColumnId: getColumnIdFromHandleId(edge.targetHandle as string),
+            },
+          };
+        });
+      });
+    }
 
     undoableService.updateData(true);
   };
