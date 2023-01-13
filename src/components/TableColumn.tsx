@@ -278,6 +278,13 @@ function TableColumnComponent(
                 data-test="column-unique-index-checkbox"
                 className="mt-4"
               />
+              <Checkbox
+                {...register('attributes')}
+                label="Nullable"
+                value="NULLABLE"
+                data-test="column-nullable-checkbox"
+                className="mt-4"
+              />
               <div className="mt-5 flex justify-end">
                 <Button type="submit" variant="outline">
                   Save
