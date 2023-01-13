@@ -36,7 +36,7 @@ export function useReorderColumn() {
           ...node,
           data: {
             ...node.data,
-            columns: finalColumns,
+            columns: finalColumns.map((column, index) => ({ ...column, index })),
           },
         };
       });
