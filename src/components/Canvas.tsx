@@ -14,14 +14,14 @@ import { GeneralPropsPanel } from './GeneralPropsPanel';
 import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
 import { SimpleFloatingEdge } from './ReactFlow/SimpleFloatingEdge';
-import { SchemaType } from '@/schemas/base';
+import { EdgeType, SchemaType, TableWithoutIdType } from '@/schemas/base';
 import { useAddCreateTableShortcut } from '@/flow-hooks/useAddCreateTableShortcut';
 import { useHandleSaveLocalSchema } from '@/flow-hooks/useHandleSaveLocalSchema';
 import { isUuid } from '@/utils/zod';
 import { useHandleEdgeMarker } from '@/flow-hooks/useHandleEdgeMarker';
 import { Markers } from './Markers';
 import { useHandleCreateTableOnDrop } from '@/flow-hooks/useHandleCreateTableOnDrop';
-import { emptyTableWithoutId } from '@/utils/reactflow';
+import { emptyTableWithoutId, getColumnIdFromHandleId } from '@/utils/reactflow';
 import { ContextMenu } from './ContextMenu';
 import { EditorStateContext } from '@/contexts/EditorStateContext';
 import { useCreateTable } from '@/flow-hooks/useCreateTable';
@@ -40,7 +40,7 @@ type CanvasProps = {
 };
 
 export function Canvas({ schema }: CanvasProps) {
-  const reactFlowInstance = useReactFlow();
+  const reactFlowInstance = useReactFlow<TableWithoutIdType, EdgeType>();
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 
   const { copyPasteService, defaults, undoableService } = useContext(EditorStateContext);
@@ -171,13 +171,21 @@ export function Canvas({ schema }: CanvasProps) {
           onConnect={() => {
             const edges =
               reactFlowInstance.getEdges().map((edge) => {
-                const id = isUuid(edge.id) ? edge.id : crypto.randomUUID();
+                if (isUuid(edge.id)) {
+                  return edge;
+                }
+
                 const { markerEnd, markerStart } = handleEdgeMarker(edge);
+
                 return {
                   ...edge,
-                  id,
+                  id: crypto.randomUUID(),
                   markerEnd,
                   markerStart,
+                  data: {
+                    sourceColumnId: getColumnIdFromHandleId(edge.sourceHandle as string),
+                    targetColumnId: getColumnIdFromHandleId(edge.targetHandle as string),
+                  },
                 };
               }) ?? [];
             reactFlowInstance.setEdges(edges);

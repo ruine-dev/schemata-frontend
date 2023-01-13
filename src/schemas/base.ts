@@ -689,3 +689,5 @@ export const SchemaSchema = z.object({
 });
 
 export type SchemaType = z.infer<typeof SchemaSchema>;
+
+export type EdgeType = { sourceColumnId: ColumnType['id']; targetColumnId: ColumnType['id'] };

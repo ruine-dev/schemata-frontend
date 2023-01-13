@@ -1,19 +1,16 @@
-import { TableWithoutIdType } from '@/schemas/base.js';
+import { ColumnType, EdgeType, TableWithoutIdType } from '@/schemas/base.js';
+import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import { X } from 'phosphor-react';
 import { CSSProperties, useCallback } from 'react';
-import { useStore, Position, getSmoothStepPath, useReactFlow } from 'reactflow';
+import { useStore, Position, getSmoothStepPath, useReactFlow, Edge } from 'reactflow';
 import { Tooltip } from '../Tooltip';
 
 import { getEdgeParams } from './utils.js';
 
-type SimpleFLoatingEdgeProps = {
-  id: string;
-  source: string;
-  target: string;
-  markerStart?: string;
-  markerEnd?: string;
-  style?: CSSProperties;
-};
+type SimpleFloatingEdgeProps = Pick<
+  Edge<EdgeType>,
+  'id' | 'source' | 'target' | 'markerStart' | 'markerEnd' | 'style' | 'data'
+>;
 
 const foreignObjectSize = 30;
 
@@ -24,13 +21,19 @@ export function SimpleFloatingEdge({
   markerStart,
   markerEnd,
   style,
-}: SimpleFLoatingEdgeProps) {
+  data,
+}: SimpleFloatingEdgeProps) {
   const reactFlowInstance = useReactFlow<TableWithoutIdType>();
   const sourceNode = useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
   const targetNode = useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
   const relatedEdge = useStore(
     useCallback(
-      (store) => store.edges.find((edge) => edge.source === source && edge.target === target),
+      (store) =>
+        store.edges.find(
+          (edge) =>
+            getColumnIdFromHandleId(edge.sourceHandle as string) === data?.sourceColumnId &&
+            getColumnIdFromHandleId(edge.targetHandle as string) === data?.targetColumnId,
+        ),
       [source, target],
     ),
   );
@@ -68,10 +71,10 @@ export function SimpleFloatingEdge({
           }
         }}
         d={edgePath}
-        markerStart={markerStart}
-        markerEnd={markerEnd}
+        markerStart={markerStart as string}
+        markerEnd={markerEnd as string}
         style={style}
-        className="peer fill-none stroke-slate-400 stroke-[1.5] outline-none focus:stroke-sky-500"
+        className="fill-none stroke-slate-400 stroke-[1.5] outline-none focus:stroke-sky-500"
       />
       <path
         d={edgePath}
@@ -88,7 +91,7 @@ export function SimpleFloatingEdge({
         x={labelX - foreignObjectSize / 2}
         y={labelY - foreignObjectSize / 2}
         requiredExtensions="http://www.w3.org/1999/xhtml"
-        className="hidden items-center justify-center focus-within:flex hover:flex peer-hover:flex peer-focus:flex"
+        className="invisible flex items-center justify-center focus-within:visible hover:visible peer-hover:visible peer-focus:visible"
       >
         <Tooltip text="Delete relation">
           <button

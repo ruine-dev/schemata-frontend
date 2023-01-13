@@ -1,17 +1,17 @@
-import { TableWithoutIdType } from '@/schemas/base';
-import { getColumnIdFromHandleId, getHandlePositionFromHandleId } from '@/utils/reactflow';
-import { Edge, ReactFlowInstance, useReactFlow } from 'reactflow';
+import { EdgeType, TableWithoutIdType } from '@/schemas/base';
+import { getColumnIdFromHandleId } from '@/utils/reactflow';
+import { Edge, useReactFlow } from 'reactflow';
 
 export function useHandleEdgeMarker() {
-  const reactFlowInstance = useReactFlow<TableWithoutIdType>();
+  const reactFlowInstance = useReactFlow<TableWithoutIdType, EdgeType>();
 
   return (edge: Edge) => {
-    const targetColumnId = edge.targetHandle ? getColumnIdFromHandleId(edge.targetHandle) : '';
+    const sourceColumnId = edge.sourceHandle ? getColumnIdFromHandleId(edge.sourceHandle) : '';
 
-    const targetNode = reactFlowInstance?.getNode(edge.target);
+    const sourceNode = reactFlowInstance.getNode(edge.source);
 
-    const isOneToOne = !!targetNode?.data.indexes.find(
-      (index) => index.type === 'UNIQUE_INDEX' && index.columns.includes(targetColumnId),
+    const isOneToOne = !!sourceNode?.data.indexes.find(
+      (index) => index.type === 'UNIQUE_INDEX' && index.columns.includes(sourceColumnId),
     );
 
     return {
