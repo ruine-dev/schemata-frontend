@@ -24,15 +24,15 @@ export function useUpdateColumn() {
 
         if (hasExistingPrimaryKey) {
           newIndexes = node.data.indexes.map((index) => {
-            if (index.type === 'PRIMARY_KEY') {
-              return {
-                ...index,
-                columns: isPrimaryKey
-                  ? index.columns.concat(newColumn.id)
-                  : index.columns.filter((columnId) => columnId !== newColumn.id),
-              };
+            if (index.type !== 'PRIMARY_KEY') {
+              return index;
             }
-            return index;
+            return {
+              ...index,
+              columns: isPrimaryKey
+                ? index.columns.concat(newColumn.id)
+                : index.columns.filter((columnId) => columnId !== newColumn.id),
+            };
           });
         } else if (isPrimaryKey) {
           newIndexes = newIndexes.concat({
@@ -42,21 +42,19 @@ export function useUpdateColumn() {
           });
         }
 
-        const hasExistingUniqueIndex = !!node.data.indexes.find(
-          (index) => index.type === 'UNIQUE_INDEX',
-        );
+        const hasExistingUniqueIndex = !!newIndexes.find((index) => index.type === 'UNIQUE_INDEX');
 
         if (hasExistingUniqueIndex) {
-          newIndexes = node.data.indexes.map((index) => {
-            if (index.type === 'UNIQUE_INDEX') {
-              return {
-                ...index,
-                columns: isUniqueIndex
-                  ? index.columns.concat(newColumn.id)
-                  : index.columns.filter((columnId) => columnId !== newColumn.id),
-              };
+          newIndexes = newIndexes.map((index) => {
+            if (index.type !== 'UNIQUE_INDEX') {
+              return index;
             }
-            return index;
+            return {
+              ...index,
+              columns: isUniqueIndex
+                ? index.columns.concat(newColumn.id)
+                : index.columns.filter((columnId) => columnId !== newColumn.id),
+            };
           });
         } else if (isUniqueIndex) {
           newIndexes = newIndexes.concat({
