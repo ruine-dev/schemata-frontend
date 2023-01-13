@@ -19,7 +19,7 @@
 }
 
 .react-select\_\_control {
-  @apply rounded-md border-slate-200 py-0.5 text-base shadow-sm !important;
+  @apply rounded-md border-slate-300 py-0.5 text-base shadow-sm !important;
 }
 
 .react-select\_\_control.react-select\_\_control--is-focused {

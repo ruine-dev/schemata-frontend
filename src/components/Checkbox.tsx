@@ -26,7 +26,7 @@ function CheckboxComponent(
         type="checkbox"
         name={name}
         id={elementId}
-        className="form-checkbox h-5 w-5 rounded border-gray-200 text-sky-500 focus:outline focus:outline-2 focus:outline-sky-500 focus:ring-0 focus:ring-offset-0"
+        className="form-checkbox h-5 w-5 rounded border-gray-300 text-sky-500 focus:outline focus:outline-2 focus:outline-sky-500 focus:ring-0 focus:ring-offset-0"
         {...props}
       />
     </div>

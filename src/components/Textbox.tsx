@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority';
 import { forwardRef, InputHTMLAttributes, Ref } from 'react';
 
 const textboxClass = cva([
-  'form-input w-full rounded-md border-slate-200 shadow-sm h-10 px-3',
+  'form-input w-full rounded-md border-slate-300 shadow-sm h-10 px-3',
   'focus:border-sky-400 focus:ring-sky-400',
   'disabled:cursor-not-allowed disabled:bg-slate-100',
 ]);

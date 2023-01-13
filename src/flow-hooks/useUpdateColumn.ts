@@ -8,7 +8,7 @@ export function useUpdateColumn() {
   const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
   return (columnPayload: UpdateColumnType) => {
-    const { tableId, name, isPrimaryKey, ...newColumn } = columnPayload;
+    const { tableId, name, isPrimaryKey, isUniqueIndex, ...newColumn } = columnPayload;
 
     reactFlowInstance.setNodes((currentNodes) => {
       return currentNodes.map((node) => {
@@ -38,6 +38,30 @@ export function useUpdateColumn() {
           newIndexes = newIndexes.concat({
             id: crypto.randomUUID(),
             type: 'PRIMARY_KEY',
+            columns: [newColumn.id],
+          });
+        }
+
+        const hasExistingUniqueIndex = !!node.data.indexes.find(
+          (index) => index.type === 'UNIQUE_INDEX',
+        );
+
+        if (hasExistingUniqueIndex) {
+          newIndexes = node.data.indexes.map((index) => {
+            if (index.type === 'UNIQUE_INDEX') {
+              return {
+                ...index,
+                columns: isUniqueIndex
+                  ? index.columns.concat(newColumn.id)
+                  : index.columns.filter((columnId) => columnId !== newColumn.id),
+              };
+            }
+            return index;
+          });
+        } else if (isUniqueIndex) {
+          newIndexes = newIndexes.concat({
+            id: crypto.randomUUID(),
+            type: 'UNIQUE_INDEX',
             columns: [newColumn.id],
           });
         }

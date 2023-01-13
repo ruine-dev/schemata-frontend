@@ -75,6 +75,10 @@ function TableColumnComponent(
     (index) => index.columns.includes(column.id) && index.type === 'PRIMARY_KEY',
   );
 
+  const isUniqueIndex = !!tableIndexes.find(
+    (index) => index.columns.includes(column.id) && index.type === 'UNIQUE_INDEX',
+  );
+
   const edges = useStore((state) => state.edges);
 
   const isForeignKey = !!edges.find(
@@ -89,7 +93,7 @@ function TableColumnComponent(
     control,
   } = useForm<UpdateColumnType>({
     resolver: zodResolver(UpdateColumnSchema),
-    defaultValues: { ...column, isPrimaryKey, tableId },
+    defaultValues: { ...column, isPrimaryKey, isUniqueIndex, tableId },
   });
 
   const onSubmit = handleSubmit((data) => {
@@ -109,7 +113,7 @@ function TableColumnComponent(
   }, []);
 
   useEffect(() => {
-    reset({ ...column, isPrimaryKey, tableId });
+    reset({ ...column, isPrimaryKey, isUniqueIndex, tableId });
   }, [reset, column, tableId]);
 
   const handleKeyEscape: KeyboardEventHandler<HTMLElement> = (e) => {
@@ -266,6 +270,12 @@ function TableColumnComponent(
                 {...register('isPrimaryKey')}
                 label="Primary Key"
                 data-test="column-primary-key-checkbox"
+                className="mt-4"
+              />
+              <Checkbox
+                {...register('isUniqueIndex')}
+                label="Unique"
+                data-test="column-unique-index-checkbox"
                 className="mt-4"
               />
               <div className="mt-5 flex justify-end">

@@ -96,6 +96,7 @@ export const BaseCreateColumnSchema = BaseColumnSchema.omit({ id: true, index: t
 
 export const BaseUpdateColumnSchema = BaseColumnSchema.extend({
   isPrimaryKey: z.boolean(),
+  isUniqueIndex: z.boolean(),
   tableId: z.string().uuid(),
 });
 
