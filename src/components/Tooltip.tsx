@@ -1,3 +1,4 @@
+import { clsx } from '@/utils/clsx';
 import * as RadixTooltip from '@radix-ui/react-tooltip';
 import { ReactNode } from 'react';
 
@@ -16,7 +17,12 @@ export function Tooltip({ text, children, allowOpen }: TooltipProps) {
       <RadixTooltip.Root delayDuration={0} disableHoverableContent open={isAllowOpen}>
         <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
         <RadixTooltip.Portal>
-          <RadixTooltip.Content className="rounded border border-gray-700 bg-gray-900 py-2.5 px-3 text-xs text-white shadow-sm">
+          <RadixTooltip.Content
+            className={clsx(
+              'rounded border border-gray-700 bg-gray-900 py-2.5 px-3 text-xs text-white shadow-sm duration-500',
+              'rdx-state-delayed-open:animate-in rdx-state-delayed-open:zoom-in-95',
+            )}
+          >
             {text}
           </RadixTooltip.Content>
         </RadixTooltip.Portal>

@@ -15,5 +15,6 @@ module.exports = {
       strategy: 'class',
     }),
     require('tailwindcss-radix')({ variantPrefix: 'rdx' }),
+    require('tailwindcss-animate'),
   ],
 };
