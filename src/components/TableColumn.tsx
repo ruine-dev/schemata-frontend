@@ -169,6 +169,7 @@ function TableColumnComponent(
           'data-test': 'column-context-menu-duplicate',
           onClick: triggerDuplicate,
           icon: DocumentDuplicateIcon,
+          kbd: 'Ctrl + D',
         },
         {
           label: 'Delete',
@@ -201,6 +202,10 @@ function TableColumnComponent(
               e.stopPropagation();
 
               createColumn({ ...emptyCreateVarcharColumn(), tableId });
+            } else if (e.ctrlKey && e.key === 'd') {
+              e.preventDefault();
+              e.stopPropagation();
+              triggerDuplicate();
             } else if (e.key === 'Escape') {
               e.preventDefault();
               e.stopPropagation();

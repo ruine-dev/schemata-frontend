@@ -91,6 +91,7 @@ export const BaseColumnSchema = z.object({
 });
 
 export const BaseCreateColumnSchema = BaseColumnSchema.omit({ id: true, index: true }).extend({
+  index: z.number().int().optional(),
   tableId: z.string().uuid(),
 });
 

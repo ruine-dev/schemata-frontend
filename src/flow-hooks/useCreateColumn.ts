@@ -1,5 +1,10 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import { CreateColumnSchema, CreateColumnType, TableWithoutIdType } from '@/schemas/base';
+import {
+  ColumnType,
+  CreateColumnSchema,
+  CreateColumnType,
+  TableWithoutIdType,
+} from '@/schemas/base';
 import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 
@@ -12,24 +17,26 @@ export function useCreateColumn() {
 
     reactFlowInstance.setNodes((currentNodes) => {
       return currentNodes.map((node) => {
-        if (node.id === tableId) {
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              columns: [
-                ...node.data.columns,
-                {
-                  id: crypto.randomUUID(),
-                  index: node.data.columns.length,
-                  ...newColumn,
-                },
-              ],
-            },
-          };
+        if (node.id !== tableId) {
+          return node;
         }
 
-        return node;
+        let newColumns = node.data.columns
+          .concat({
+            id: crypto.randomUUID(),
+            ...newColumn,
+            index: newColumn.index ?? node.data.columns.length,
+          })
+          .sort((a, b) => a.index - b.index)
+          .map((column, index) => ({ ...column, index }));
+
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            columns: newColumns,
+          },
+        };
       });
     });
 
