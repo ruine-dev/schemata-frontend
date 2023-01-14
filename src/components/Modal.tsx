@@ -21,7 +21,11 @@ const ModalOvelay = forwardRef(
 const ModalContent = forwardRef(
   ({ children, className, ...props }: HTMLAttributes<HTMLDivElement>, ref: Ref<HTMLDivElement>) => {
     return (
-      <div ref={ref} className={clsx('rounded-xl bg-white py-4 px-5', className)} {...props}>
+      <div
+        ref={ref}
+        className={clsx('rounded-lg bg-white py-4 px-5 shadow-2xl', className)}
+        {...props}
+      >
         {children}
       </div>
     );
@@ -31,7 +35,7 @@ const ModalContent = forwardRef(
 const ModalTitle = forwardRef(
   ({ children, className, ...props }: HTMLAttributes<HTMLDivElement>, ref: Ref<HTMLDivElement>) => {
     return (
-      <div ref={ref} className={clsx('text-lg font-semibold text-slate-800', className)} {...props}>
+      <div ref={ref} className={clsx('text-gray-600', className)} {...props}>
         {children}
       </div>
     );

@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Modal } from './Modal';
 import { IconButton } from './IconButton';
-import { X } from 'phosphor-react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface BaseDialogProps {
   trigger: ReactNode;
@@ -54,7 +54,7 @@ export function BaseDialog({
                   </Dialog.Title>
                   {!noCloseButton && (
                     <Dialog.Close asChild>
-                      <IconButton icon={X} label="Close" />
+                      <IconButton icon={XMarkIcon} label="Close" />
                     </Dialog.Close>
                   )}
                 </div>
