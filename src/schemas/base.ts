@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Node } from 'reactflow';
+import { Edge, Node } from 'reactflow';
 import { uniqueArrayElement } from '@/utils/zod';
 // import { TableNodeType } from './reactflow';
 
@@ -658,6 +658,8 @@ export const TableWithOptionalIdSchema = TableSchema.extend({ id: z.string().uui
 export type TableWithOptionalIdType = z.infer<typeof TableWithOptionalIdSchema>;
 
 export type TableNodeType = Node<TableWithoutIdType>;
+
+export type RelationEdgeType = Edge<EdgeType>;
 
 export const GroupSchema = z.object({
   id: z.string().uuid(),

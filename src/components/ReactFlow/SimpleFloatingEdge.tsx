@@ -1,14 +1,14 @@
-import { ColumnType, EdgeType, TableWithoutIdType } from '@/schemas/base.js';
+import { RelationEdgeType, TableWithoutIdType } from '@/schemas/base.js';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import { X } from 'phosphor-react';
-import { CSSProperties, useCallback } from 'react';
-import { useStore, Position, getSmoothStepPath, useReactFlow, Edge } from 'reactflow';
+import { useCallback } from 'react';
+import { useStore, Position, getSmoothStepPath, useReactFlow } from 'reactflow';
 import { Tooltip } from '../Tooltip';
 
 import { getEdgeParams } from './utils.js';
 
 type SimpleFloatingEdgeProps = Pick<
-  Edge<EdgeType>,
+  RelationEdgeType,
   'id' | 'source' | 'target' | 'markerStart' | 'markerEnd' | 'style' | 'data'
 >;
 

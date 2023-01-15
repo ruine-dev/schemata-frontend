@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { Edge } from 'reactflow';
-import { EdgeType, SchemaSchema, TableNodeType } from '@/schemas/base';
+import { RelationEdgeType, SchemaSchema, TableNodeType } from '@/schemas/base';
 import { useHandleEdgeMarker } from './useHandleEdgeMarker';
 
 export function useTransformSchemaToReactFlowData() {
@@ -8,7 +7,7 @@ export function useTransformSchemaToReactFlowData() {
 
   return SchemaSchema.transform<{
     nodes: TableNodeType[];
-    edges: Edge[];
+    edges: RelationEdgeType[];
   }>((schema, ctx) => {
     const positionsMap = new Map(
       schema.positions.map((position) => [position.itemId, { x: position.x, y: position.y }]),
@@ -40,7 +39,7 @@ export function useTransformSchemaToReactFlowData() {
       };
     });
 
-    const edges: Edge<EdgeType>[] =
+    const edges: RelationEdgeType[] =
       schema.relations?.map((relation) => {
         const edge = {
           id: relation.id,
