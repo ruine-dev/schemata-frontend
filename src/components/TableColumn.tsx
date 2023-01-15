@@ -186,6 +186,11 @@ function TableColumnComponent(
         onClick={(e) => e.stopPropagation()}
         onFocus={() => setIsColumnFocused(true)}
         onBlur={() => setIsColumnFocused(false)}
+        onDoubleClick={() => {
+          if (!isEditing) {
+            triggerEdit();
+          }
+        }}
         onKeyDown={(e) => {
           if (!isEditing && e.target === e.currentTarget) {
             if (e.key === 'e') {
