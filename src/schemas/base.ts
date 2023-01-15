@@ -75,8 +75,11 @@ export const IndexSchema = z.object({
 
 export type IndexType = z.infer<typeof IndexSchema>;
 
+export const RelationActionEnum = z.enum(['CASCADE', 'RESTRICT', 'SET_NULL', 'NO_ACTION']);
+
 export const RelationSchema = z.object({
   id: z.string().uuid(),
+  name: z.string(),
   source: z.object({
     columnId: z.string().uuid(),
     tableId: z.string().uuid(),
@@ -85,13 +88,15 @@ export const RelationSchema = z.object({
     columnId: z.string().uuid(),
     tableId: z.string().uuid(),
   }),
+  actions: z.object({
+    onDelete: RelationActionEnum,
+    onUpdate: RelationActionEnum,
+  }),
 });
 
 export type RelationType = z.infer<typeof RelationSchema>;
 
-export const CreateRelationSchema = RelationSchema.omit({ id: true }).extend({
-  tableId: z.string().uuid(),
-});
+export const CreateRelationSchema = RelationSchema.omit({ id: true });
 
 export type CreateRelationType = z.infer<typeof CreateRelationSchema>;
 

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useMemo } from 'react';
+import { createContext, ReactNode, useMemo, useState } from 'react';
 import { useInterpret } from '@xstate/react';
 import { copyPasteMachine } from '@/machines/copy-paste-machine';
 import { InterpreterFrom } from 'xstate';
@@ -6,6 +6,7 @@ import { SchemaType, TableNodeType } from '@/schemas/base';
 import { Edge, useReactFlow } from 'reactflow';
 import useUndoable from 'use-undoable';
 import { useTransformSchemaToReactFlowData } from '@/flow-hooks/useTransformSchemaToReactFlowData';
+import { CreateRelationDialogProps } from '@/components/CreateRelationDialog';
 
 type ReactFlowDataType = { nodes: TableNodeType[]; edges: Edge[] };
 
@@ -20,6 +21,9 @@ export const EditorStateContext = createContext({
     redo: () => void;
     canUndo: boolean;
     canRedo: boolean;
+  },
+  createRelationDialogStore: {} as CreateRelationDialogProps & {
+    setSource: (source: CreateRelationDialogProps['source']) => void;
   },
 });
 
@@ -91,6 +95,14 @@ export function EditorStateProvider({ schema, children }: EditorStateProviderPro
     reactFlowInstance.setEdges(future.edges);
   };
 
+  const [createRelationDialogState, setCreateRelationDialogState] = useState<{
+    isOpen: boolean;
+    source: CreateRelationDialogProps['source'];
+  }>({
+    isOpen: false,
+    source: null,
+  });
+
   return (
     <EditorStateContext.Provider
       value={{
@@ -104,6 +116,16 @@ export function EditorStateProvider({ schema, children }: EditorStateProviderPro
           redo: handleRedo,
           canUndo,
           canRedo,
+        },
+        createRelationDialogStore: {
+          source: createRelationDialogState.source,
+          setSource(source: CreateRelationDialogProps['source']) {
+            setCreateRelationDialogState((currentState) => ({ ...currentState, source }));
+          },
+          open: createRelationDialogState.isOpen,
+          onOpenChange(isOpen) {
+            setCreateRelationDialogState((currentState) => ({ ...currentState, isOpen }));
+          },
         },
       }}
     >

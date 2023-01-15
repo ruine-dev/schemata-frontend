@@ -5,9 +5,9 @@ import { IconButton } from './IconButton';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 type BaseDialogProps = {
-  trigger: ReactNode;
   title: string;
   children: ReactNode;
+  trigger?: ReactNode;
   noCloseButton?: boolean;
   onClose?: () => void;
   open?: boolean;
@@ -16,9 +16,9 @@ type BaseDialogProps = {
 };
 
 export function BaseDialog({
-  trigger,
   title,
   children,
+  trigger,
   noCloseButton,
   onClose,
   open,
@@ -35,7 +35,7 @@ export function BaseDialog({
         onOpenChange?.(isOpen);
       }}
     >
-      <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
+      {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
       <Dialog.Portal>
         <Dialog.Overlay asChild>
           <Modal.Overlay>

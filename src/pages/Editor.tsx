@@ -1,4 +1,5 @@
 import { Canvas } from '@/components/Canvas';
+import { CreateRelationDialog } from '@/components/CreateRelationDialog';
 import { EditorStateProvider } from '@/contexts/EditorStateContext';
 import { useLocalSchemaQuery } from '@/queries/useSchemaQuery';
 import { emptySchemaFactory } from '@/utils/schema';
@@ -34,6 +35,7 @@ export function Editor() {
       <ReactFlowProvider>
         <EditorStateProvider schema={schema}>
           <Canvas schema={schema} />
+          <CreateRelationDialog />
         </EditorStateProvider>
       </ReactFlowProvider>
     );

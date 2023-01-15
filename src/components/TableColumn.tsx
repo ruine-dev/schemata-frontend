@@ -4,6 +4,7 @@ import {
   HTMLAttributes,
   KeyboardEventHandler,
   Ref,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -40,9 +41,10 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/20/solid';
-import { DotsSixVertical } from 'phosphor-react';
 import { Tooltip } from './Tooltip';
 import { CreatableCombobox } from './CreatableCombobox';
+import { DotsSixVertical, FlowArrow } from 'phosphor-react';
+import { EditorStateContext } from '@/contexts/EditorStateContext';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -159,6 +161,13 @@ function TableColumnComponent(
     createColumn({ ...column, tableId });
   };
 
+  const { createRelationDialogStore } = useContext(EditorStateContext);
+
+  const triggerAddRelation = () => {
+    createRelationDialogStore.setSource({ columnId: column.id, tableId });
+    createRelationDialogStore.onOpenChange(true);
+  };
+
   return (
     <ContextMenu
       disabled={isEditing}
@@ -176,6 +185,12 @@ function TableColumnComponent(
           onClick: triggerDuplicate,
           icon: DocumentDuplicateIcon,
           kbd: 'Ctrl + D',
+        },
+        {
+          label: 'Add relation',
+          'data-test': 'column-context-menu-add-relation',
+          onClick: triggerAddRelation,
+          icon: FlowArrow,
         },
         {
           label: 'Delete',
