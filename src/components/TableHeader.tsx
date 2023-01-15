@@ -172,6 +172,11 @@ export function TableHeader({ table }: TableHeaderProps) {
         ref={containerRef}
         id={`table-header-${table.id}`}
         tabIndex={0}
+        onDoubleClick={() => {
+          if (!isRenaming) {
+            triggerRename();
+          }
+        }}
         onKeyDown={(e) => {
           if (!isRenaming && e.target === e.currentTarget) {
             if (e.key === 'e') {
