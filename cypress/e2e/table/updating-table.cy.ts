@@ -47,6 +47,22 @@ describe('updating table', () => {
       cy.focused().type('{esc}');
     });
   });
+
+  context('can rename table by double clicking table header', () => {
+    beforeEach(() => {
+      cy.getBySel('table-header').dblclick();
+
+      cy.focused().clear().type('foo');
+    });
+
+    it('pressing "Enter" to submit', () => {
+      cy.focused().type('{enter}');
+    });
+
+    it('pressing "Escape" to submit', () => {
+      cy.focused().type('{esc}');
+    });
+  });
 });
 
 export {};
