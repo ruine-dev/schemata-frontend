@@ -38,6 +38,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/20/solid';
 import { DotsSixVertical } from 'phosphor-react';
+import { Tooltip } from './Tooltip';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -306,23 +307,36 @@ function TableColumnComponent(
           <div className="flex items-center">
             <span className="h-4 w-4" data-test="column-key">
               {(isPrimaryKey || isForeignKey) && (
-                <>
-                  <KeyIcon
-                    className={clsx('h-4 w-4', {
-                      'text-yellow-400': isPrimaryKey,
-                      'text-slate-400': isForeignKey && !isPrimaryKey,
-                    })}
-                    aria-hidden
-                  />
-                  <div className="sr-only">
-                    {isPrimaryKey && 'Primary key'}
-                    {isForeignKey && (isPrimaryKey ? 'and Foreign key' : 'Foreign key')}
-                  </div>
-                </>
+                <Tooltip
+                  text={`${isPrimaryKey ? 'Primary key' : ''}${
+                    isForeignKey ? (isPrimaryKey ? ' and Foreign key' : 'Foreign key') : ''
+                  }`}
+                >
+                  <span>
+                    <KeyIcon
+                      className={clsx('h-4 w-4', {
+                        'text-yellow-400': isPrimaryKey,
+                        'text-slate-400': isForeignKey && !isPrimaryKey,
+                      })}
+                      aria-hidden
+                    />
+                    <div className="sr-only">
+                      {isPrimaryKey && 'Primary key'}
+                      {isForeignKey && (isPrimaryKey ? 'and Foreign key' : 'Foreign key')}
+                    </div>
+                  </span>
+                </Tooltip>
               )}
             </span>
             <span className="ml-2 mr-4 font-medium text-slate-600" data-test="column-name">
               {column.name}
+              {column.attributes.includes('NULLABLE') ? (
+                ''
+              ) : (
+                <Tooltip text="Not Null">
+                  <span className="text-red-500">*</span>
+                </Tooltip>
+              )}
             </span>
             <span className="ml-auto font-medium text-sky-700" data-test="column-type">
               {column.type}
