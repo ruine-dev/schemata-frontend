@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Edge } from 'reactflow';
-import { SchemaSchema, TableNodeType } from '@/schemas/base';
+import { EdgeType, SchemaSchema, TableNodeType } from '@/schemas/base';
 import { useHandleEdgeMarker } from './useHandleEdgeMarker';
 
 export function useTransformSchemaToReactFlowData() {
@@ -40,7 +40,7 @@ export function useTransformSchemaToReactFlowData() {
       };
     });
 
-    const edges: Edge[] =
+    const edges: Edge<EdgeType>[] =
       schema.relations?.map((relation) => {
         const edge = {
           id: relation.id,
@@ -48,6 +48,10 @@ export function useTransformSchemaToReactFlowData() {
           sourceHandle: `${relation.source.columnId}-source-right`,
           target: relation.target.tableId,
           targetHandle: `${relation.target.columnId}-target`,
+          data: {
+            sourceColumnId: relation.source.columnId,
+            targetColumnId: relation.target.columnId,
+          },
         };
 
         const { markerEnd, markerStart } = handleEdgeMarker(edge);
