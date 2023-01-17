@@ -14,11 +14,11 @@ import { Button } from './Button';
 import { Select } from './Select';
 import { Textbox } from './Textbox';
 
-interface UpdateTableColumnDialogProps {
+type UpdateTableColumnDialogProps = {
   tableId: TableType['id'];
   column: ColumnType;
   trigger: ReactNode;
-}
+};
 
 export function UpdateTableColumnDialog({
   tableId,

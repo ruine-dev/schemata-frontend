@@ -8,11 +8,11 @@ const textboxClass = cva([
   'disabled:cursor-not-allowed disabled:bg-slate-100',
 ]);
 
-interface TextboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'size'> {
+type TextboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'size'> & {
   name: string;
   label: string;
   srOnlyLabel?: boolean;
-}
+};
 
 function TextboxComponent(
   { name, label, srOnlyLabel, id, className, ...props }: TextboxProps,

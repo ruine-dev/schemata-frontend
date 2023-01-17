@@ -1,10 +1,10 @@
 import { clsx } from '@/utils/clsx';
 import { ReactNode } from 'react';
 
-interface EditorPanelContainerProps {
+type EditorPanelContainerProps = {
   children: ReactNode;
   className?: string;
-}
+};
 
 export function EditorPanelContainer({ children, className }: EditorPanelContainerProps) {
   return (

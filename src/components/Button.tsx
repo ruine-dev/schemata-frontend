@@ -18,11 +18,11 @@ const buttonClass = cva(
   },
 );
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   loading?: boolean;
   variant?: VariantProps<typeof buttonClass>['variant'];
-}
+};
 
 function ButtonComponent(
   { children, loading, variant = 'default', className, disabled, ...props }: ButtonProps,

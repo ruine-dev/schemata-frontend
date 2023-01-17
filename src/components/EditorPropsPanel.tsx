@@ -12,9 +12,9 @@ import { InformationDialog } from './InformationDialog';
 import { ArrowDownTrayIcon, InformationCircleIcon, ShareIcon } from '@heroicons/react/20/solid';
 import { Separator } from './Separator';
 
-interface EditorPropsPanelProps {
+type EditorPropsPanelProps = {
   schema: SchemaType;
-}
+};
 
 function downloadImage(dataUrl: string) {
   const a = document.createElement('a');
@@ -73,9 +73,9 @@ export function EditorPropsPanel({ schema }: EditorPropsPanelProps) {
   );
 }
 
-interface ShareLinkButtonProps {
+type ShareLinkButtonProps = {
   schema: SchemaType;
-}
+};
 
 function ShareLinkButton({ schema }: ShareLinkButtonProps) {
   const [, copy] = useCopyToClipboard();

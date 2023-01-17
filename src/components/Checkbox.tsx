@@ -1,11 +1,11 @@
 import { clsx } from '@/utils/clsx';
 import { forwardRef, InputHTMLAttributes, Ref } from 'react';
 
-interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'type'> {
+type CheckboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'type'> & {
   name: string;
   label: string;
   srOnlyLabel?: boolean;
-}
+};
 
 function CheckboxComponent(
   { name, label, srOnlyLabel, id, className, ...props }: CheckboxProps,

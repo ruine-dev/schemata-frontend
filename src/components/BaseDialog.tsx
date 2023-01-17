@@ -4,7 +4,7 @@ import { Modal } from './Modal';
 import { IconButton } from './IconButton';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
-interface BaseDialogProps {
+type BaseDialogProps = {
   trigger: ReactNode;
   title: string;
   children: ReactNode;
@@ -13,7 +13,7 @@ interface BaseDialogProps {
   open?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   closeOnInteractOutside?: boolean;
-}
+};
 
 export function BaseDialog({
   trigger,

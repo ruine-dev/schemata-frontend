@@ -10,9 +10,9 @@ import { SchemaSchema, SchemaType } from '@/schemas/base';
 import { Textbox } from './Textbox';
 import FocusLock from 'react-focus-lock';
 
-interface GeneralPropsPanelProps {
+type GeneralPropsPanelProps = {
   schema: SchemaType;
-}
+};
 
 export function GeneralPropsPanel({ schema }: GeneralPropsPanelProps) {
   const [isRenaming, setIsRenaming] = useState(false);

@@ -18,7 +18,7 @@ const selectClass = cva(
   },
 );
 
-interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'name' | 'size'> {
+type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, 'name' | 'size'> & {
   name: string;
   label: string;
   options: {
@@ -28,7 +28,7 @@ interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'nam
   placeholder?: string;
   srOnlyLabel?: boolean;
   size?: VariantProps<typeof selectClass>['size'];
-}
+};
 
 function SelectComponent(
   {

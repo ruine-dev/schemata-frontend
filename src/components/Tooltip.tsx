@@ -2,11 +2,11 @@ import { clsx } from '@/utils/clsx';
 import * as RadixTooltip from '@radix-ui/react-tooltip';
 import { ReactNode } from 'react';
 
-interface TooltipProps {
+type TooltipProps = {
   text: string;
   children: ReactNode;
   allowOpen?: boolean;
-}
+};
 
 export function Tooltip({ text, children, allowOpen }: TooltipProps) {
   const isAllowOpen =

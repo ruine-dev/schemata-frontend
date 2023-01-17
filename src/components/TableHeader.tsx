@@ -20,9 +20,9 @@ import {
 } from '@heroicons/react/20/solid';
 import { AddFieldIcon } from './Icon/AddFieldIcon';
 
-interface TableHeaderProps {
+type TableHeaderProps = {
   table: TableType;
-}
+};
 
 export function TableHeader({ table }: TableHeaderProps) {
   const { copyPasteService, undoableService } = useContext(EditorStateContext);

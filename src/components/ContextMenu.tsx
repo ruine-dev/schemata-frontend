@@ -2,7 +2,7 @@ import { clsx } from '@/utils/clsx';
 import * as RadixContextMenu from '@radix-ui/react-context-menu';
 import { ElementType, MouseEvent, ReactNode } from 'react';
 
-interface ContextMenuProps {
+type ContextMenuProps = {
   menu: {
     label: string;
     icon?: ElementType;
@@ -14,7 +14,7 @@ interface ContextMenuProps {
   children: ReactNode;
   label?: string;
   disabled?: boolean;
-}
+};
 
 export function ContextMenu({ menu, children, label, disabled }: ContextMenuProps) {
   return (
