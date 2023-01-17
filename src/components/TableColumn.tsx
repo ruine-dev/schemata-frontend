@@ -11,6 +11,7 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FocusLock, { AutoFocusInside } from 'react-focus-lock';
+import CreatableSelect from 'react-select/creatable';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
 import { useUpdateColumn } from '@/flow-hooks/useUpdateColumn';
@@ -87,11 +88,12 @@ function TableColumnComponent(
   );
 
   const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting },
     control,
+    formState: { isSubmitting },
+    handleSubmit,
+    register,
+    reset,
+    watch,
   } = useForm<UpdateColumnType>({
     resolver: zodResolver(UpdateColumnSchema),
     defaultValues: { ...column, isPrimaryKey, isUniqueIndex, tableId },
@@ -277,6 +279,34 @@ function TableColumnComponent(
                   />
                 )}
               />
+              {(watch('type') === 'ENUM' || watch('type') === 'SET') && (
+                <Controller
+                  control={control}
+                  name="values"
+                  render={({ field: { name, onBlur, onChange, value } }) => (
+                    <div className={clsx('mt-4 flex flex-col gap-y-1')}>
+                      <label
+                        htmlFor="values"
+                        className={clsx('text-sm font-medium text-slate-500')}
+                      >
+                        Values
+                      </label>
+                      <CreatableSelect
+                        isMulti
+                        name={name}
+                        onBlur={onBlur}
+                        onChange={(values) => {
+                          onChange(values.map((val) => (val as { value: string }).value));
+                        }}
+                        value={(value ?? []).map((val) => ({ label: val, value: val }))}
+                        inputId="values"
+                        className={clsx('react-select-container w-[16.5rem]')}
+                        classNamePrefix="react-select"
+                      />
+                    </div>
+                  )}
+                />
+              )}
               <Checkbox
                 {...register('isPrimaryKey')}
                 label="Primary Key"
@@ -328,13 +358,15 @@ function TableColumnComponent(
                 </Tooltip>
               )}
             </span>
-            <span className="ml-2 mr-4 font-medium text-slate-600" data-test="column-name">
-              {column.name}
+            <span className="ml-2 mr-4 font-medium text-slate-600">
+              <span data-test="column-name">{column.name}</span>
               {column.attributes.includes('NULLABLE') ? (
-                ''
+                <span className="sr-only"> Nullable</span>
               ) : (
                 <Tooltip text="Not Null">
-                  <span className="text-red-500">*</span>
+                  <span aria-hidden className="text-red-500">
+                    *
+                  </span>
                 </Tooltip>
               )}
             </span>
