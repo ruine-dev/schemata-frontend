@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  button,
+  [role='button'] {
+    cursor: default;
+  }
+}
+
 .react-select-container {
   @apply text-sm !important;
 }
