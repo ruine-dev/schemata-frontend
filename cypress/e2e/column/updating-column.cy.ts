@@ -1,3 +1,5 @@
+import { ColumnTypeEnum, ColumnTypeWithValuesEnum } from '@/schemas/base';
+
 describe('updating column', () => {
   beforeEach(() => {
     cy.visit('/');
@@ -66,46 +68,52 @@ describe('updating column', () => {
       });
     });
 
-    context('with changing data type', () => {
-      beforeEach(() => {
-        cy.getBySel('column-type-combobox').click();
-
-        cy.getBySel('column-type-combobox-INTEGER').click();
-      });
-
-      afterEach(() => {
-        cy.getBySel('column-type').should('have.text', 'INTEGER');
-      });
-
-      context('left primary key unchecked', () => {
-        afterEach(() => {
-          cy.getBySel('column-key').should('not.have.text', 'Primary key');
-        });
-
-        it('pressing "Enter" to submit', () => {
-          cy.focused().type('{enter}');
-        });
-
-        it('pressing "Escape" to submit', () => {
-          cy.focused().type('{esc}');
-        });
-      });
-
-      context('checked primary key', () => {
+    ColumnTypeEnum.options.forEach((type) => {
+      context(`with changing data type to ${type}`, () => {
         beforeEach(() => {
-          cy.getBySel('column-primary-key-checkbox').click();
+          cy.getBySel('column-type-combobox').click();
+
+          cy.getBySel(`column-type-combobox-${type}`).click();
+
+          if (ColumnTypeWithValuesEnum.safeParse(type).success) {
+            cy.getBySel(`column-values-combobox-input`).type('baz{enter}');
+          }
         });
 
         afterEach(() => {
-          cy.getBySel('column-key').should('have.text', 'Primary key');
+          cy.getBySel('column-type').should('have.text', type);
         });
 
-        it('pressing "Enter" after change focus to name input to submit', () => {
-          cy.getBySel('column-name-textbox').type('{enter}');
+        context('left primary key unchecked', () => {
+          afterEach(() => {
+            cy.getBySel('column-key').should('not.have.text', 'Primary key');
+          });
+
+          it('pressing "Enter" to submit', () => {
+            cy.focused().type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
         });
 
-        it('pressing "Escape" to submit', () => {
-          cy.focused().type('{esc}');
+        context('checked primary key', () => {
+          beforeEach(() => {
+            cy.getBySel('column-primary-key-checkbox').click();
+          });
+
+          afterEach(() => {
+            cy.getBySel('column-key').should('have.text', 'Primary key');
+          });
+
+          it('pressing "Enter" after change focus to name input to submit', () => {
+            cy.getBySel('column-name-textbox').type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
         });
       });
     });
@@ -162,46 +170,52 @@ describe('updating column', () => {
       });
     });
 
-    context('with changing data type', () => {
-      beforeEach(() => {
-        cy.getBySel('column-type-combobox').click();
-
-        cy.getBySel('column-type-combobox-INTEGER').click();
-      });
-
-      afterEach(() => {
-        cy.getBySel('column-type').should('have.text', 'INTEGER');
-      });
-
-      context('left primary key unchecked', () => {
-        afterEach(() => {
-          cy.getBySel('column-key').should('not.have.text', 'Primary key');
-        });
-
-        it('pressing "Enter" to submit', () => {
-          cy.focused().type('{enter}');
-        });
-
-        it('pressing "Escape" to submit', () => {
-          cy.focused().type('{esc}');
-        });
-      });
-
-      context('checked primary key', () => {
+    ColumnTypeEnum.options.forEach((type) => {
+      context(`with changing data type to ${type}`, () => {
         beforeEach(() => {
-          cy.getBySel('column-primary-key-checkbox').click();
+          cy.getBySel('column-type-combobox').click();
+
+          cy.getBySel(`column-type-combobox-${type}`).click();
+
+          if (ColumnTypeWithValuesEnum.safeParse(type).success) {
+            cy.getBySel(`column-values-combobox-input`).type('baz{enter}');
+          }
         });
 
         afterEach(() => {
-          cy.getBySel('column-key').should('have.text', 'Primary key');
+          cy.getBySel('column-type').should('have.text', type);
         });
 
-        it('pressing "Enter" after change focus to name input to submit', () => {
-          cy.getBySel('column-name-textbox').type('{enter}');
+        context('left primary key unchecked', () => {
+          afterEach(() => {
+            cy.getBySel('column-key').should('not.have.text', 'Primary key');
+          });
+
+          it('pressing "Enter" to submit', () => {
+            cy.focused().type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
         });
 
-        it('pressing "Escape" to submit', () => {
-          cy.focused().type('{esc}');
+        context('checked primary key', () => {
+          beforeEach(() => {
+            cy.getBySel('column-primary-key-checkbox').click();
+          });
+
+          afterEach(() => {
+            cy.getBySel('column-key').should('have.text', 'Primary key');
+          });
+
+          it('pressing "Enter" after change focus to name input to submit', () => {
+            cy.getBySel('column-name-textbox').type('{enter}');
+          });
+
+          it('pressing "Escape" to submit', () => {
+            cy.focused().type('{esc}');
+          });
         });
       });
     });

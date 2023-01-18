@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "format": "prettier --write src",
     "cy:run": "cypress run --config video=false",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "cy:parallel": "cypress-parallel -s cy:run -t 3 -d 'cypress/**/*.cy.ts' -a '\"--config video=false\"'"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.0.7",
@@ -58,6 +59,7 @@
     "@vitejs/plugin-react": "^3.0.0",
     "autoprefixer": "^10.4.13",
     "cypress": "^12.3.0",
+    "cypress-parallel": "^0.12.0",
     "cypress-real-events": "^1.7.6",
     "postcss": "^8.4.20",
     "prettier": "^2.8.1",
