@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { Edge, Node } from 'reactflow';
 import { uniqueArrayElement } from '@/utils/zod';
-// import { TableNodeType } from './reactflow';
 
 export const ColumnTypeEnum = z.enum([
   // String
@@ -29,7 +28,6 @@ export const ColumnTypeEnum = z.enum([
   'BIGINT',
   'FLOAT',
   'DOUBLE',
-  'DOUBLE PRECISION',
   'DECIMAL',
   // Date and time
   'DATETIME',
@@ -47,6 +45,26 @@ export const ColumnTypeEnum = z.enum([
   'MULTIPOLYGON',
   'GEOMETRYCOLLECTION',
   'JSON',
+]);
+
+export const ColumnTypeWithValuesEnum = z.enum(['ENUM', 'SET']);
+
+export const ColumnTypeWithLengthEnum = z.enum([
+  'CHAR',
+  'VARCHAR',
+  'BINARY',
+  'TINYBLOB',
+  'TINYTEXT',
+  'BLOB',
+  'TEXT',
+  'MEDIUMBLOB',
+  'MEDIUMTEXT',
+  'LONGBLOB',
+  'LONGTEXT',
+  'TINYINT',
+  'MEDIUMINT',
+  'INTEGER',
+  'BIGINT',
 ]);
 
 export const IndexSchema = z.object({
@@ -103,7 +121,7 @@ export const BaseUpdateColumnSchema = BaseColumnSchema.extend({
 
 export const BaseCharColumnSchema = z.object({
   type: z.literal('CHAR'),
-  length: z.number().int().min(1).max(255).default(255).optional(),
+  length: z.number().int().min(1).max(255).catch(255).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -115,7 +133,7 @@ export const UpdateCharColumnSchema = BaseUpdateColumnSchema.merge(BaseCharColum
 
 export const BaseVarcharColumnSchema = z.object({
   type: z.literal('VARCHAR'),
-  length: z.number().int().min(1).max(65535).default(255).optional(),
+  length: z.number().int().min(1).max(65535).catch(255).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -129,7 +147,7 @@ export const UpdateVarcharColumnSchema = BaseUpdateColumnSchema.merge(BaseVarcha
 
 export const BaseBinaryColumnSchema = z.object({
   type: z.enum(['BINARY', 'VARBINARY']),
-  length: z.number().int().min(1).optional(),
+  length: z.number().int().min(1).max(255).catch(255).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -141,7 +159,7 @@ export const UpdateBinaryColumnSchema = BaseUpdateColumnSchema.merge(BaseBinaryC
 
 export const BaseTinyBlobColumnSchema = z.object({
   type: z.enum(['TINYBLOB', 'TINYTEXT']),
-  length: z.number().int().min(1).max(256).optional(),
+  length: z.number().int().min(1).max(255).catch(255).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -153,7 +171,7 @@ export const UpdateTinyBlobColumnSchema = BaseUpdateColumnSchema.merge(BaseTinyB
 
 export const BaseBlobColumnSchema = z.object({
   type: z.enum(['BLOB', 'TEXT']),
-  length: z.number().int().min(1).max(65536).optional(),
+  length: z.number().int().min(1).max(65536).catch(65536).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -165,7 +183,7 @@ export const UpdateBlobColumnSchema = BaseUpdateColumnSchema.merge(BaseBlobColum
 
 export const BaseMediumBlobColumnSchema = z.object({
   type: z.enum(['MEDIUMBLOB', 'MEDIUMTEXT']),
-  length: z.number().int().min(1).max(16777216).optional(),
+  length: z.number().int().min(1).max(16777216).catch(16777216).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -181,7 +199,7 @@ export const UpdateMediumBlobColumnSchema = BaseUpdateColumnSchema.merge(
 
 export const BaseLongBlobColumnSchema = z.object({
   type: z.enum(['LONGBLOB', 'LONGTEXT']),
-  length: z.number().int().min(1).max(4294967296).optional(),
+  length: z.number().int().min(1).max(4294967296).catch(4294967296).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -239,7 +257,7 @@ export const UpdateBooleanColumnSchema = BaseUpdateColumnSchema.merge(BaseBoolea
 
 export const BaseTinyIntColumnSchema = z.object({
   type: z.literal('TINYINT'),
-  length: z.number().int().min(1).max(4).optional(),
+  length: z.number().int().min(1).max(4).catch(4).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -251,6 +269,7 @@ export const UpdateTinyIntColumnSchema = BaseUpdateColumnSchema.merge(BaseTinyIn
 
 export const BaseSmallIntColumnSchema = z.object({
   type: z.literal('SMALLINT'),
+  length: z.number().int().min(1).max(5).catch(5).optional(),
   attributes: uniqueArrayElement(z.union([BaseColumnAttributeEnum, SignabilityAttribute]).array()),
 });
 
@@ -262,7 +281,7 @@ export const UpdateSmallIntColumnSchema = BaseUpdateColumnSchema.merge(BaseSmall
 
 export const BaseMediumIntColumnSchema = z.object({
   type: z.literal('MEDIUMINT'),
-  length: z.number().int().min(1).max(9).optional(),
+  length: z.number().int().min(1).max(9).catch(9).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -274,7 +293,7 @@ export const UpdateMediumIntColumnSchema = BaseUpdateColumnSchema.merge(BaseMedi
 
 export const BaseIntegerColumnSchema = z.object({
   type: z.literal('INTEGER'),
-  length: z.number().int().min(1).max(11).optional(),
+  length: z.number().int().min(1).max(11).catch(11).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -286,7 +305,7 @@ export const UpdateIntegerColumnSchema = BaseUpdateColumnSchema.merge(BaseIntege
 
 export const BaseBigIntColumnSchema = z.object({
   type: z.literal('BIGINT'),
-  length: z.number().int().min(1).max(20).optional(),
+  length: z.number().int().min(1).max(20).catch(20).optional(),
   attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
 });
 
@@ -317,21 +336,6 @@ export const DoubleColumnSchema = BaseColumnSchema.merge(BaseDoubleColumnSchema)
 export const CreateDoubleColumnSchema = BaseCreateColumnSchema.merge(BaseDoubleColumnSchema);
 
 export const UpdateDoubleColumnSchema = BaseUpdateColumnSchema.merge(BaseDoubleColumnSchema);
-
-export const BaseDoublePresitionColumnSchema = z.object({
-  type: z.literal('DOUBLE PRESITION'),
-  attributes: uniqueArrayElement(BaseColumnAttributeEnum.array()),
-});
-
-export const DoublePresitionColumnSchema = BaseColumnSchema.merge(BaseDoublePresitionColumnSchema);
-
-export const CreateDoublePresitionColumnSchema = BaseCreateColumnSchema.merge(
-  BaseDoublePresitionColumnSchema,
-);
-
-export const UpdateDoublePresitionColumnSchema = BaseUpdateColumnSchema.merge(
-  BaseDoublePresitionColumnSchema,
-);
 
 export const BaseDecimalColumnSchema = z.object({
   type: z.literal('DECIMAL'),
@@ -531,6 +535,7 @@ export const ColumnSchema = z.discriminatedUnion('type', [
   EnumColumnSchema,
   SetColumnSchema,
   BitColumnSchema,
+  BooleanColumnSchema,
   TinyIntColumnSchema,
   SmallIntColumnSchema,
   MediumIntColumnSchema,
@@ -538,7 +543,6 @@ export const ColumnSchema = z.discriminatedUnion('type', [
   BigIntColumnSchema,
   FloatColumnSchema,
   DoubleColumnSchema,
-  DoublePresitionColumnSchema,
   DecimalColumnSchema,
   DateTimeColumnSchema,
   DateColumnSchema,
@@ -569,6 +573,7 @@ export const CreateColumnSchema = z.discriminatedUnion('type', [
   CreateEnumColumnSchema,
   CreateSetColumnSchema,
   CreateBitColumnSchema,
+  CreateBooleanColumnSchema,
   CreateTinyIntColumnSchema,
   CreateSmallIntColumnSchema,
   CreateMediumIntColumnSchema,
@@ -576,7 +581,6 @@ export const CreateColumnSchema = z.discriminatedUnion('type', [
   CreateBigIntColumnSchema,
   CreateFloatColumnSchema,
   CreateDoubleColumnSchema,
-  CreateDoublePresitionColumnSchema,
   CreateDecimalColumnSchema,
   CreateDateTimeColumnSchema,
   CreateDateColumnSchema,
@@ -607,6 +611,7 @@ export const UpdateColumnSchema = z.discriminatedUnion('type', [
   UpdateEnumColumnSchema,
   UpdateSetColumnSchema,
   UpdateBitColumnSchema,
+  UpdateBooleanColumnSchema,
   UpdateTinyIntColumnSchema,
   UpdateSmallIntColumnSchema,
   UpdateMediumIntColumnSchema,
@@ -614,7 +619,6 @@ export const UpdateColumnSchema = z.discriminatedUnion('type', [
   UpdateBigIntColumnSchema,
   UpdateFloatColumnSchema,
   UpdateDoubleColumnSchema,
-  UpdateDoublePresitionColumnSchema,
   UpdateDecimalColumnSchema,
   UpdateDateTimeColumnSchema,
   UpdateDateColumnSchema,

@@ -22,6 +22,8 @@ import { emptyCreateVarcharColumn, getColumnIdFromHandleId } from '@/utils/react
 import {
   ColumnType,
   ColumnTypeEnum,
+  ColumnTypeWithLengthEnum,
+  ColumnTypeWithValuesEnum,
   IndexType,
   UpdateColumnSchema,
   UpdateColumnType,
@@ -40,6 +42,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { DotsSixVertical } from 'phosphor-react';
 import { Tooltip } from './Tooltip';
+import { CreatableCombobox } from './CreatableCombobox';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -89,7 +92,7 @@ function TableColumnComponent(
 
   const {
     control,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     handleSubmit,
     register,
     reset,
@@ -199,6 +202,7 @@ function TableColumnComponent(
             if (e.key === 'e') {
               e.preventDefault();
               e.stopPropagation();
+
               triggerEdit();
             } else if (e.key === 'Delete') {
               e.preventDefault();
@@ -213,6 +217,7 @@ function TableColumnComponent(
             } else if (e.ctrlKey && e.key === 'd') {
               e.preventDefault();
               e.stopPropagation();
+
               triggerDuplicate();
             } else if (e.key === 'Escape') {
               e.preventDefault();
@@ -253,6 +258,7 @@ function TableColumnComponent(
                     },
                   })}
                   disabled={isSubmitting}
+                  invalid={!!errors.name}
                   data-test="column-name-textbox"
                 />
               </AutoFocusInside>
@@ -279,31 +285,34 @@ function TableColumnComponent(
                   />
                 )}
               />
-              {(watch('type') === 'ENUM' || watch('type') === 'SET') && (
+              {ColumnTypeWithLengthEnum.safeParse(watch('type')).success && (
+                <Textbox
+                  label="Length"
+                  {...register('length', { valueAsNumber: true })}
+                  disabled={isSubmitting}
+                  data-test="column-length-textbox"
+                  className="mt-4"
+                />
+              )}
+              {ColumnTypeWithValuesEnum.safeParse(watch('type')).success && (
                 <Controller
                   control={control}
                   name="values"
                   render={({ field: { name, onBlur, onChange, value } }) => (
-                    <div className={clsx('mt-4 flex flex-col gap-y-1')}>
-                      <label
-                        htmlFor="values"
-                        className={clsx('text-sm font-medium text-slate-500')}
-                      >
-                        Values
-                      </label>
-                      <CreatableSelect
-                        isMulti
-                        name={name}
-                        onBlur={onBlur}
-                        onChange={(values) => {
+                    <CreatableCombobox
+                      isMulti
+                      label="Values"
+                      name={name}
+                      onBlur={onBlur}
+                      onChange={(values) => {
+                        if (Array.isArray(values)) {
                           onChange(values.map((val) => (val as { value: string }).value));
-                        }}
-                        value={(value ?? []).map((val) => ({ label: val, value: val }))}
-                        inputId="values"
-                        className={clsx('react-select-container w-[16.5rem]')}
-                        classNamePrefix="react-select"
-                      />
-                    </div>
+                        }
+                      }}
+                      value={(value ?? []).map((val) => ({ label: val, value: val }))}
+                      data-test="column-values-combobox"
+                      className="mt-4"
+                    />
                   )}
                 />
               )}
