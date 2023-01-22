@@ -48,8 +48,10 @@ export function useTransformSchemaToReactFlowData() {
           target: relation.target.tableId,
           targetHandle: `${relation.target.columnId}-target`,
           data: {
+            name: relation.name,
             sourceColumnId: relation.source.columnId,
             targetColumnId: relation.target.columnId,
+            actions: relation.actions,
           },
         };
 

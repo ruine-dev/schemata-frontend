@@ -57,7 +57,6 @@ export function Canvas({ schema }: CanvasProps) {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
   useAddCreateTableShortcut(cursorPosition);
-  const handleSaveSchema = useHandleSaveLocalSchema(schema.id);
   const handleEdgeMarker = useHandleEdgeMarker();
 
   const triggerPaste = (position: { x: number; y: number }) => {
@@ -166,8 +165,6 @@ export function Canvas({ schema }: CanvasProps) {
           onNodesDelete={() => undoableService.updateData(true)}
           onEdgesDelete={() => undoableService.updateData(true)}
           onNodeDragStop={() => undoableService.updateData(true)}
-          onNodesChange={handleSaveSchema}
-          onEdgesChange={handleSaveSchema}
           onConnect={() => {
             const edges =
               reactFlowInstance.getEdges().map((edge) => {
@@ -177,21 +174,37 @@ export function Canvas({ schema }: CanvasProps) {
 
                 const { markerEnd, markerStart } = handleEdgeMarker(edge);
 
+                const sourceTable = reactFlowInstance
+                  .getNodes()
+                  .find((node) => node.id === edge.source)?.data;
+
+                const targetTable = reactFlowInstance
+                  .getNodes()
+                  .find((node) => node.id === edge.target)?.data;
+
+                const sourceColumnId = getColumnIdFromHandleId(edge.sourceHandle as string);
+
+                const sourceColumn = sourceTable?.columns.find(
+                  (column) => column.id === sourceColumnId,
+                );
+
                 return {
                   ...edge,
                   id: crypto.randomUUID(),
                   markerEnd,
                   markerStart,
                   data: {
-                    sourceColumnId: getColumnIdFromHandleId(edge.sourceHandle as string),
+                    name: `fk_${sourceTable?.name}_${targetTable?.name}_${sourceColumn?.name}`,
+                    sourceColumnId,
                     targetColumnId: getColumnIdFromHandleId(edge.targetHandle as string),
+                    actions: { onUpdate: 'RESTRICT' as const, onDelete: 'RESTRICT' as const },
                   },
                 };
               }) ?? [];
+
             reactFlowInstance.setEdges(edges);
           }}
           onConnectEnd={() => {
-            handleSaveSchema();
             undoableService.updateData(true);
           }}
           onPaneMouseMove={(e) => setCursorPosition({ x: e.clientX, y: e.clientY })}

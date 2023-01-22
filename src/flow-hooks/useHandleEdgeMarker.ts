@@ -1,6 +1,6 @@
 import { EdgeType, IndexType, TableWithoutIdType } from '@/schemas/base';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
-import { Edge, Node, useReactFlow } from 'reactflow';
+import { Edge, useReactFlow } from 'reactflow';
 
 export function useHandleEdgeMarker() {
   const reactFlowInstance = useReactFlow<TableWithoutIdType, EdgeType>();

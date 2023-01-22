@@ -1,5 +1,6 @@
 import {
   PositionType,
+  RelationEdgeType,
   RelationType,
   TableNodeType,
   TableType,
@@ -25,13 +26,19 @@ export function nodeToPosition(node: TableNodeType): PositionType {
   };
 }
 
-export function edgeToRelation(edge: Edge): RelationType {
+export function edgeToRelation(edge: RelationEdgeType): RelationType {
   if (!edge.sourceHandle || !edge.targetHandle) {
     throw Error(`Handle id for edge ${edge.id} is empty`);
   }
 
+  if (!edge.data) {
+    throw Error(`Data of edge ${edge.id} is empty`);
+  }
+
   return {
     id: edge.id,
+    name: edge.data.name,
+    actions: edge.data.actions,
     source: {
       columnId: edge.sourceHandle.split('-').slice(0, -2).join('-'),
       tableId: edge.source,

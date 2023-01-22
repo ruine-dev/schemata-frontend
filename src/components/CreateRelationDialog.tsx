@@ -8,7 +8,7 @@ import {
 } from '@/schemas/base';
 import * as Accordion from '@radix-ui/react-accordion';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { BaseDialog } from './BaseDialog';
 import { Checkbox } from './Checkbox';
@@ -16,49 +16,103 @@ import { Combobox } from './Combobox';
 import { FieldSet } from './FieldSet';
 import { Textbox } from './Textbox';
 import { Button } from './Button';
+import { useLocalSchemaQuery } from '@/queries/useSchemaQuery';
+import { useCreateRelation } from '@/flow-hooks/useCreateRelation';
 
 export type CreateRelationDialogProps = {
   source: {
     columnId: ColumnType['id'];
     tableId: TableType['id'];
   } | null;
-  open: boolean;
-  onOpenChange: (isOpen: boolean) => void;
+  setSource: (source: CreateRelationDialogProps['source']) => void;
 };
 
 export function CreateRelationDialog() {
   const {
-    createRelationDialogStore: { source, open, onOpenChange },
+    createRelationDialogStore: { source, setSource },
   } = useContext(EditorStateContext);
 
-  const { control, register, handleSubmit } = useForm<CreateRelationType>({
+  const { data: schema } = useLocalSchemaQuery();
+
+  const {
+    control,
+    formState: { isSubmitting },
+    handleSubmit,
+    register,
+    reset,
+    resetField,
+    setValue,
+    watch,
+  } = useForm<CreateRelationType>({
     resolver: zodResolver(CreateRelationSchema),
     defaultValues: {
       source: {
         columnId: source?.columnId,
         tableId: source?.tableId,
       },
+      actions: { onDelete: 'RESTRICT', onUpdate: 'RESTRICT' },
     },
   });
 
-  const onSubmit = handleSubmit((data) => {});
+  const sourceTable = schema?.tables.find((table) => table.id === source?.tableId);
+  const targetTable = schema?.tables.find((table) => table.id === watch('target.tableId'));
+
+  const sourceColumn = sourceTable?.columns.find((column) => column.id === source?.columnId);
 
   const [isAdvancedSettingsEnabled, setIsAdvancedSettingsEnabled] = useState(false);
 
+  const createRelation = useCreateRelation();
+
+  const onSubmit = handleSubmit((data) => {
+    createRelation(data);
+
+    setSource(null);
+  });
+
+  useEffect(() => {
+    if (source) {
+      setValue('source.columnId', source?.columnId);
+      setValue('source.tableId', source?.tableId);
+    }
+  }, [source]);
+
   return (
-    <BaseDialog title="Add Relation" open={open} onOpenChange={onOpenChange}>
+    <BaseDialog
+      title="Add Relation"
+      open={source !== null}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          setSource(null);
+          reset();
+          setIsAdvancedSettingsEnabled(false);
+        }
+      }}
+    >
       <div className="pt-4 pb-2">
         <form onSubmit={onSubmit} className="flex flex-col gap-y-4">
           <div className="flex gap-x-4">
             <FieldSet label="Source" className="w-64">
               <div className="flex flex-col gap-y-2">
-                <Textbox label="Table" name="source-table-name" value="users" readOnly />
-                <Textbox
-                  label="Column"
-                  name="source-column-name"
-                  value="organization_id"
-                  readOnly
-                />
+                {source !== null && (
+                  <>
+                    <Textbox
+                      label="Table"
+                      name="source-table-name"
+                      value={sourceTable?.name}
+                      readOnly
+                      disabled={isSubmitting}
+                      data-test="relation-source-table-name"
+                    />
+                    <Textbox
+                      label="Column"
+                      name="source-column-name"
+                      value={sourceColumn?.name}
+                      readOnly
+                      disabled={isSubmitting}
+                      data-test="relation-source-column-name"
+                    />
+                  </>
+                )}
               </div>
             </FieldSet>
             <FieldSet label="Target" className="w-64">
@@ -66,37 +120,72 @@ export function CreateRelationDialog() {
                 <Controller
                   control={control}
                   name="target.tableId"
+                  shouldUnregister
                   render={({ field: { name, onBlur, onChange, value, ref } }) => (
                     <Combobox
                       ref={ref}
                       label="Table"
                       name={name}
-                      options={[]}
+                      menuPortalTarget={document.body}
+                      styles={{ menuPortal: (base) => ({ ...base, pointerEvents: 'auto' }) }}
+                      options={
+                        schema?.tables.map((table) => ({
+                          label: table.name,
+                          value: table.id,
+                        })) ?? []
+                      }
                       onBlur={onBlur}
                       onChange={(option) => {
                         if (option && 'value' in option) {
                           onChange(option.value);
+
+                          resetField('name');
+                          resetField('target.columnId');
                         }
                       }}
+                      value={
+                        schema?.tables
+                          .map((table) => ({ label: table.name, value: table.id }))
+                          .find((option) => option.value === value) ?? null
+                      }
+                      isDisabled={isSubmitting}
                       data-test="relation-target-table-combobox"
                     />
                   )}
                 />
+
                 <Controller
                   control={control}
                   name="target.columnId"
+                  shouldUnregister
                   render={({ field: { name, onBlur, onChange, value, ref } }) => (
                     <Combobox
                       ref={ref}
                       label="Column"
                       name={name}
-                      options={[]}
+                      menuPortalTarget={document.body}
+                      styles={{ menuPortal: (base) => ({ ...base, pointerEvents: 'auto' }) }}
+                      options={
+                        targetTable?.columns
+                          .filter((column) => column.id !== source?.columnId)
+                          .map((column) => ({ label: column.name, value: column.id })) ?? []
+                      }
                       onBlur={onBlur}
                       onChange={(option) => {
                         if (option && 'value' in option) {
                           onChange(option.value);
+                          setValue(
+                            'name',
+                            `fk_${sourceTable?.name}_${targetTable?.name}_${sourceColumn?.name}`,
+                          );
                         }
                       }}
+                      value={
+                        targetTable?.columns
+                          .map((column) => ({ label: column.name, value: column.id }))
+                          .find((option) => option.value === value) ?? null
+                      }
+                      isDisabled={watch('target.tableId') === undefined || isSubmitting}
                       data-test="relation-target-column-combobox"
                     />
                   )}
@@ -142,6 +231,9 @@ export function CreateRelationDialog() {
                               onChange(option.value);
                             }
                           }}
+                          value={RelationActionEnum.options
+                            .map((action) => ({ label: action, value: action }))
+                            .find((option) => option.value === value)}
                           data-test="relation-action-on-update-combobox"
                           className="w-1/2"
                         />
@@ -165,6 +257,9 @@ export function CreateRelationDialog() {
                               onChange(option.value);
                             }
                           }}
+                          value={RelationActionEnum.options
+                            .map((action) => ({ label: action, value: action }))
+                            .find((option) => option.value === value)}
                           data-test="relation-action-on-delete-combobox"
                           className="w-1/2"
                         />
@@ -176,10 +271,10 @@ export function CreateRelationDialog() {
             </Accordion.Item>
           </Accordion.Root>
           <div className="flex justify-end gap-x-2">
-            <Button type="button" onClick={() => onOpenChange(false)} className="text-red-500">
+            <Button type="button" onClick={() => setSource(null)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" variant="outline">
+            <Button type="submit" variant="primary" loading={isSubmitting}>
               Save
             </Button>
           </div>

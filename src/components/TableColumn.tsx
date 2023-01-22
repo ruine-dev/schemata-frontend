@@ -12,7 +12,6 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FocusLock, { AutoFocusInside } from 'react-focus-lock';
-import CreatableSelect from 'react-select/creatable';
 import { clsx } from '@/utils/clsx';
 import { Textbox } from './Textbox';
 import { useUpdateColumn } from '@/flow-hooks/useUpdateColumn';
@@ -165,7 +164,6 @@ function TableColumnComponent(
 
   const triggerAddRelation = () => {
     createRelationDialogStore.setSource({ columnId: column.id, tableId });
-    createRelationDialogStore.onOpenChange(true);
   };
 
   return (

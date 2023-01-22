@@ -7,6 +7,7 @@ import { Edge, useReactFlow } from 'reactflow';
 import useUndoable from 'use-undoable';
 import { useTransformSchemaToReactFlowData } from '@/flow-hooks/useTransformSchemaToReactFlowData';
 import { CreateRelationDialogProps } from '@/components/CreateRelationDialog';
+import { useHandleSaveLocalSchema } from '@/flow-hooks/useHandleSaveLocalSchema';
 
 type ReactFlowDataType = { nodes: TableNodeType[]; edges: Edge[] };
 
@@ -22,9 +23,7 @@ export const EditorStateContext = createContext({
     canUndo: boolean;
     canRedo: boolean;
   },
-  createRelationDialogStore: {} as CreateRelationDialogProps & {
-    setSource: (source: CreateRelationDialogProps['source']) => void;
-  },
+  createRelationDialogStore: {} as CreateRelationDialogProps,
 });
 
 type EditorStateProviderProps = {
@@ -49,6 +48,7 @@ export function EditorStateProvider({ schema, children }: EditorStateProviderPro
   });
 
   const reactFlowInstance = useReactFlow();
+  const handleSaveSchema = useHandleSaveLocalSchema(schema.id);
 
   const updateData = (forcePass?: boolean) => {
     const nodes = reactFlowInstance.getNodes();
@@ -75,6 +75,8 @@ export function EditorStateProvider({ schema, children }: EditorStateProviderPro
 
       return { edges, nodes };
     });
+
+    handleSaveSchema();
   };
 
   const handleUndo = () => {
@@ -96,10 +98,8 @@ export function EditorStateProvider({ schema, children }: EditorStateProviderPro
   };
 
   const [createRelationDialogState, setCreateRelationDialogState] = useState<{
-    isOpen: boolean;
     source: CreateRelationDialogProps['source'];
   }>({
-    isOpen: false,
     source: null,
   });
 
@@ -121,10 +121,6 @@ export function EditorStateProvider({ schema, children }: EditorStateProviderPro
           source: createRelationDialogState.source,
           setSource(source: CreateRelationDialogProps['source']) {
             setCreateRelationDialogState((currentState) => ({ ...currentState, source }));
-          },
-          open: createRelationDialogState.isOpen,
-          onOpenChange(isOpen) {
-            setCreateRelationDialogState((currentState) => ({ ...currentState, isOpen }));
           },
         },
       }}

@@ -34,6 +34,7 @@
     "clsx": "^1.2.1",
     "html-to-image": "^1.11.3",
     "localforage": "^1.10.0",
+    "localforage-startswith": "^1.4.0",
     "phosphor-react": "^1.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

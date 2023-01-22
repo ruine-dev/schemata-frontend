@@ -79,7 +79,8 @@ export const RelationActionEnum = z.enum(['CASCADE', 'RESTRICT', 'SET_NULL', 'NO
 
 export const RelationSchema = z.object({
   id: z.string().uuid(),
-  name: z.string(),
+  // catch for backward compat
+  name: z.string().catch('fk'),
   source: z.object({
     columnId: z.string().uuid(),
     tableId: z.string().uuid(),
@@ -88,15 +89,23 @@ export const RelationSchema = z.object({
     columnId: z.string().uuid(),
     tableId: z.string().uuid(),
   }),
-  actions: z.object({
-    onDelete: RelationActionEnum,
-    onUpdate: RelationActionEnum,
-  }),
+  // catch for backward compat
+  actions: z
+    .object({
+      onDelete: RelationActionEnum,
+      onUpdate: RelationActionEnum,
+    })
+    .catch({
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
+    }),
 });
 
 export type RelationType = z.infer<typeof RelationSchema>;
 
-export const CreateRelationSchema = RelationSchema.omit({ id: true });
+export const CreateRelationSchema = RelationSchema.omit({
+  id: true,
+});
 
 export type CreateRelationType = z.infer<typeof CreateRelationSchema>;
 
@@ -702,4 +711,9 @@ export const SchemaSchema = z.object({
 
 export type SchemaType = z.infer<typeof SchemaSchema>;
 
-export type EdgeType = { sourceColumnId: ColumnType['id']; targetColumnId: ColumnType['id'] };
+export type EdgeType = {
+  name: RelationType['name'];
+  sourceColumnId: ColumnType['id'];
+  targetColumnId: ColumnType['id'];
+  actions: RelationType['actions'];
+};

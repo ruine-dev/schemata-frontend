@@ -35,6 +35,7 @@ export function useSaveLocalSchema(id: SchemaType['id']) {
     {
       onSuccess({ id }) {
         queryClient.invalidateQueries(localSchemaQuery(id));
+        queryClient.invalidateQueries(localSchemaQuery());
       },
     },
   );
