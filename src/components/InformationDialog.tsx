@@ -11,7 +11,7 @@ export function InformationDialog({ trigger }: InformationDialogProps) {
     <BaseDialog title="Information" trigger={trigger} closeOnInteractOutside>
       <div className="max-w-[24rem] pt-4 pb-2">
         <dl className="flex flex-col gap-y-4">
-          <DescListItem label="Version" value="Alpha 0.21.0" />
+          <DescListItem label="Version" value="Alpha 0.22.0" />
           <DescListItem label="Last updated" value="23 January 2023" />
           <DescListItem
             label="Created by"
