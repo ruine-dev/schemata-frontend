@@ -22,10 +22,11 @@ type TextboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'size'>
   label: string;
   srOnlyLabel?: boolean;
   invalid?: boolean;
+  helperText?: string;
 };
 
 function TextboxComponent(
-  { name, label, srOnlyLabel, invalid, id, className, ...props }: TextboxProps,
+  { name, label, srOnlyLabel, invalid, helperText, id, className, ...props }: TextboxProps,
   ref: Ref<HTMLInputElement>,
 ) {
   const elementId = id ?? name;
@@ -46,6 +47,11 @@ function TextboxComponent(
         className={textboxClass({ validationState: invalid ? 'invalid' : 'undetermined' })}
         {...props}
       />
+      {helperText && (
+        <p className={clsx(['mt-1 text-xs', invalid ? 'text-red-500' : 'text-slate-400'])}>
+          {helperText}
+        </p>
+      )}
     </div>
   );
 }

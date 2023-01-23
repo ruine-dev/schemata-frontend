@@ -93,15 +93,22 @@ function TableColumnComponent(
 
   const {
     control,
-    formState: { isSubmitting, errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
     register,
     reset,
     watch,
   } = useForm<UpdateColumnType>({
-    resolver: zodResolver(UpdateColumnSchema),
+    resolver: zodResolver(
+      UpdateColumnSchema.refine(({ id, name }) => validateUniqueColumnName({ id, name, tableId }), {
+        message: 'Column name is already used',
+        path: ['name'],
+      }),
+    ),
     defaultValues: { ...column, isPrimaryKey, isUniqueIndex, tableId },
   });
+
+  console.log(errors);
 
   const onSubmit = handleSubmit((data) => {
     updateColumn(data);
@@ -261,17 +268,10 @@ function TableColumnComponent(
               <AutoFocusInside>
                 <Textbox
                   label="Name"
-                  {...register('name', {
-                    validate: {
-                      unique: (value) => {
-                        return (
-                          validateUniqueColumnName({ name: value, tableId }) || 'should be unique'
-                        );
-                      },
-                    },
-                  })}
+                  {...register('name')}
                   disabled={isSubmitting}
                   invalid={!!errors.name}
+                  helperText={errors.name?.message}
                   data-test="column-name-textbox"
                 />
               </AutoFocusInside>

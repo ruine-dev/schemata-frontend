@@ -19,6 +19,8 @@ import {
   TrashIcon,
 } from '@heroicons/react/20/solid';
 import { AddFieldIcon } from './Icon/AddFieldIcon';
+import { useValidateUniqueTableName } from '@/flow-hooks/useValidateUniqueTableName';
+import { clsx } from '@/utils/clsx';
 
 type TableHeaderProps = {
   table: TableType;
@@ -32,17 +34,23 @@ export function TableHeader({ table }: TableHeaderProps) {
   const updateTable = useUpdateTable();
   const deleteTable = useDeleteTable();
   const createColumn = useCreateColumn();
+  const validateUniqueTableName = useValidateUniqueTableName();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const {
-    register,
+    formState: { errors, isSubmitting },
     handleSubmit,
+    register,
     reset,
-    formState: { isSubmitting },
     setFocus,
   } = useForm<TableType>({
-    resolver: zodResolver(TableSchema),
+    resolver: zodResolver(
+      TableSchema.refine(({ id, name }) => validateUniqueTableName({ id, name }), {
+        message: 'Table name is already used',
+        path: ['name'],
+      }),
+    ),
     defaultValues: table,
   });
 
@@ -233,7 +241,11 @@ export function TableHeader({ table }: TableHeaderProps) {
                   {...register('name')}
                   disabled={isSubmitting}
                   data-test="table-name-input"
-                  className="w-full rounded bg-slate-300 px-2 py-1 outline-2 outline-sky-400 focus:outline"
+                  className={clsx([
+                    'w-full rounded bg-slate-300 px-2 py-1 outline-2',
+                    'focus:outline',
+                    !!errors.name ? 'outline-red-400' : 'outline-sky-400',
+                  ])}
                 />
               </AutoFocusInside>
               <button type="submit" className="sr-only">

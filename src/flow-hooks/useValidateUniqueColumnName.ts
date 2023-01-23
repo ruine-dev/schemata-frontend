@@ -2,17 +2,20 @@ import { BaseColumnSchema, TableWithoutIdType } from '@/schemas/base';
 import { useReactFlow } from 'reactflow';
 import { z } from 'zod';
 
-export const ValidateUniqueColumnNameSchema = BaseColumnSchema.pick({ name: true }).extend({
+export const ValidateUniqueColumnNameSchema = BaseColumnSchema.pick({
+  id: true,
+  name: true,
+}).extend({
   tableId: z.string().uuid(),
 });
 
-export type ValidateUniqueTableColumnNameType = z.infer<typeof ValidateUniqueColumnNameSchema>;
+export type ValidateUniqueColumnNameType = z.infer<typeof ValidateUniqueColumnNameSchema>;
 
 export function useValidateUniqueColumnName() {
   const reactFlowInstance = useReactFlow<TableWithoutIdType>();
 
-  return (columnPayload: ValidateUniqueTableColumnNameType) => {
-    const { tableId, name } = columnPayload;
+  return (columnPayload: ValidateUniqueColumnNameType) => {
+    const { id, name, tableId } = columnPayload;
 
     const node = reactFlowInstance.getNode(tableId);
 
@@ -21,7 +24,7 @@ export function useValidateUniqueColumnName() {
     }
 
     const duplicate = node.data.columns.find(
-      (column) => column.name.toLowerCase() === name.toLowerCase(),
+      (column) => column.id !== id && column.name.toLowerCase() === name.toLowerCase(),
     );
 
     return !duplicate;
