@@ -382,18 +382,16 @@ function TableColumnComponent(
             </span>
             <span className="ml-2 mr-4 font-medium text-slate-600">
               <span data-test="column-name">{column.name}</span>
-              {column.attributes.includes('NULLABLE') ? (
-                <span className="sr-only"> Nullable</span>
-              ) : (
-                <Tooltip text="Not Null">
-                  <span aria-hidden className="text-red-500">
-                    *
-                  </span>
-                </Tooltip>
-              )}
             </span>
-            <span className="ml-auto font-medium text-sky-700" data-test="column-type">
-              {column.type}
+            <span className="ml-auto font-medium text-sky-700">
+              <span data-test="column-type">{column.type}</span>
+              {column.attributes.includes('NULLABLE') ? (
+                <Tooltip text="Nullable">
+                  <span aria-hidden>?</span>
+                </Tooltip>
+              ) : (
+                <span className="sr-only"> Not Null</span>
+              )}
             </span>
             <div
               ref={dragHandleRef}
