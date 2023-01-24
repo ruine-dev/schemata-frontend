@@ -18,7 +18,7 @@ export function useAddCreateTableShortcut(position: { x: number; y: number }) {
         return;
       }
 
-      if (e.key === 't') {
+      if (e.target === e.currentTarget && e.key === 't') {
         e.preventDefault();
         e.stopPropagation();
 

@@ -108,8 +108,6 @@ function TableColumnComponent(
     defaultValues: { ...column, isPrimaryKey, isUniqueIndex, tableId },
   });
 
-  console.log(errors);
-
   const onSubmit = handleSubmit((data) => {
     updateColumn(data);
     setIsEditing(false);

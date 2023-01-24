@@ -86,14 +86,14 @@ export function Canvas({ schema }: CanvasProps) {
         return;
       }
 
-      if (e.ctrlKey && e.key === 'z') {
+      if (e.target === e.currentTarget && e.ctrlKey && e.key === 'z') {
         e.preventDefault();
         e.stopPropagation();
 
         undoableService.undo();
       }
 
-      if (e.ctrlKey && e.key === 'y') {
+      if (e.target === e.currentTarget && e.ctrlKey && e.key === 'y') {
         e.preventDefault();
         e.stopPropagation();
 
@@ -102,7 +102,7 @@ export function Canvas({ schema }: CanvasProps) {
     };
 
     const registerPasteShortcut = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === 'v') {
+      if (e.target === e.currentTarget && e.ctrlKey && e.key === 'v') {
         e.preventDefault();
         e.stopPropagation();
         triggerPaste(cursorPosition);
