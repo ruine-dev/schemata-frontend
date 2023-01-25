@@ -36,7 +36,7 @@ export function EditorStateProvider({ schema, children }: EditorStateProviderPro
 
   const transformSchemaToReactFlowData = useTransformSchemaToReactFlowData();
 
-  const defaults = useMemo(() => transformSchemaToReactFlowData.parse(schema), [schema]);
+  const defaults = useMemo(() => transformSchemaToReactFlowData.parse(schema), []);
 
   const [
     reactFlowData,

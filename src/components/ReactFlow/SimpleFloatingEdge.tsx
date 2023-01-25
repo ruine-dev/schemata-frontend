@@ -1,18 +1,23 @@
+import { useReverseRelation } from '@/flow-hooks/useReverseRelation';
 import { RelationEdgeType, TableWithoutIdType } from '@/schemas/base.js';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
-import { X } from 'phosphor-react';
+import {
+  ArrowsRightLeftIcon,
+  Bars3Icon,
+  PencilSquareIcon,
+  TrashIcon,
+} from '@heroicons/react/20/solid';
 import { useCallback } from 'react';
 import { useStore, Position, getSmoothStepPath, useReactFlow } from 'reactflow';
-import { Tooltip } from '../Tooltip';
-
-import { getEdgeParams } from './utils.js';
+import { DropdownMenu } from '../DropdownMenu';
+import { getEdgeParams } from './utils';
 
 type SimpleFloatingEdgeProps = Pick<
   RelationEdgeType,
   'id' | 'source' | 'target' | 'markerStart' | 'markerEnd' | 'style' | 'data'
 >;
 
-const foreignObjectSize = 30;
+const foreignObjectSize = 40;
 
 export function SimpleFloatingEdge({
   id,
@@ -58,6 +63,8 @@ export function SimpleFloatingEdge({
     borderRadius: 16,
   });
 
+  const reverseRelation = useReverseRelation();
+
   return (
     <>
       <path
@@ -93,15 +100,33 @@ export function SimpleFloatingEdge({
         requiredExtensions="http://www.w3.org/1999/xhtml"
         className="invisible flex items-center justify-center focus-within:visible hover:visible peer-hover:visible peer-focus:visible"
       >
-        <Tooltip text="Delete relation">
-          <button
-            onClick={() => reactFlowInstance.deleteElements({ edges: [relatedEdge] })}
-            className="rounded-full border border-white bg-slate-100 p-1.5 text-slate-500 hover:bg-slate-200 hover:text-slate-600"
-          >
-            <X weight="bold" className="h-4 w-4" />
-            <span className="sr-only">Delete relation</span>
-          </button>
-        </Tooltip>
+        <DropdownMenu
+          trigger={
+            <button className="rounded-full border border-white bg-slate-100 p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-600">
+              <Bars3Icon className="h-5 w-5" />
+            </button>
+          }
+          items={[
+            // {
+            //   icon: PencilSquareIcon,
+            //   label: 'Edit',
+            // },
+            {
+              icon: ArrowsRightLeftIcon,
+              label: 'Reverse',
+              onClick() {
+                reverseRelation(id);
+              },
+            },
+            {
+              icon: TrashIcon,
+              label: 'Delete',
+              onClick() {
+                reactFlowInstance.deleteElements({ edges: [relatedEdge] });
+              },
+            },
+          ]}
+        />
       </foreignObject>
     </>
   );
