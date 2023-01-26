@@ -128,7 +128,11 @@ function TableColumnComponent(
     reset({ ...column, isPrimaryKey, isUniqueIndex, tableId });
   }, [reset, column, tableId]);
 
-  const handleKeyEscape: KeyboardEventHandler<HTMLElement> = (e) => {
+  const handleFormKeyDown: KeyboardEventHandler<HTMLElement> = (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.stopPropagation();
+    }
+
     if (e.key === 'Escape') {
       e.preventDefault();
       e.stopPropagation();
@@ -216,32 +220,46 @@ function TableColumnComponent(
           }
         }}
         onKeyDown={(e) => {
-          if (!isEditing && e.target === e.currentTarget) {
-            if (e.key === 'e') {
-              e.preventDefault();
-              e.stopPropagation();
+          if (e.target === e.currentTarget) {
+            if (!isEditing) {
+              if (e.key === 'e') {
+                e.preventDefault();
+                e.stopPropagation();
 
-              triggerEdit();
-            } else if (e.key === 'Delete') {
-              e.preventDefault();
-              e.stopPropagation();
+                triggerEdit();
+              }
 
-              triggerDelete();
-            } else if (e.shiftKey && e.key === 'Enter') {
-              e.preventDefault();
-              e.stopPropagation();
+              if (e.key === 'Delete') {
+                e.preventDefault();
+                e.stopPropagation();
 
-              createColumn({ ...emptyCreateVarcharColumn(), tableId });
-            } else if (e.ctrlKey && e.key === 'd') {
-              e.preventDefault();
-              e.stopPropagation();
+                triggerDelete();
+              }
 
-              triggerDuplicate();
-            } else if (e.key === 'Escape') {
-              e.preventDefault();
-              e.stopPropagation();
+              if (e.shiftKey && e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
 
-              document.getElementById(`table-header-${tableId}`)?.focus();
+                createColumn({ ...emptyCreateVarcharColumn(), tableId });
+              }
+
+              if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                triggerDuplicate();
+              }
+
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                document.getElementById(`table-header-${tableId}`)?.focus();
+              }
+            }
+
+            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+              e.stopPropagation();
             }
           }
         }}
@@ -258,7 +276,7 @@ function TableColumnComponent(
           <FocusLock>
             <form
               onSubmit={onSubmit}
-              onKeyDown={handleKeyEscape}
+              onKeyDown={handleFormKeyDown}
               autoComplete="off"
               onBlur={(e) => handleFocusLockChildrenBlur(e, onSubmit)}
               className="nodrag"
