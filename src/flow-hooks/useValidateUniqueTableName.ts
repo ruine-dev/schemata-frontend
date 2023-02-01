@@ -1,4 +1,4 @@
-import { TableSchema, TableWithoutIdType } from '@/schemas/base';
+import { TableSchema, TableWithoutIdType } from '@/schemas/table';
 import { useReactFlow } from 'reactflow';
 import { z } from 'zod';
 

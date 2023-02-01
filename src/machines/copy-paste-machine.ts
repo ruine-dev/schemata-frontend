@@ -1,6 +1,7 @@
 import { assign, createMachine } from 'xstate';
-import { ColumnType, TableType } from '@/schemas/base';
 import { ReactFlowInstance } from 'reactflow';
+import { ColumnType } from '@/schemas/column';
+import { TableType } from '@/schemas/table';
 
 type ClipboardPayloadType =
   | { type: 'COLUMN'; payload: ColumnType }

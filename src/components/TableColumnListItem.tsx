@@ -1,9 +1,10 @@
-import { ColumnType, TableType } from '@/schemas/base';
 import { clsx } from '@/utils/clsx';
 import { Handle, Position } from 'reactflow';
 import { TableColumn } from './TableColumn';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { ColumnType } from '@/schemas/column';
+import { TableType } from '@/schemas/table';
 
 type TableColumnListItemProps = {
   column: ColumnType;

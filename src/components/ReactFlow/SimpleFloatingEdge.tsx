@@ -1,5 +1,6 @@
 import { useReverseRelation } from '@/flow-hooks/useReverseRelation';
-import { RelationEdgeType, TableWithoutIdType } from '@/schemas/base.js';
+import { RelationEdgeType } from '@/schemas/base';
+import { TableWithoutIdType } from '@/schemas/table';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import {
   ArrowsRightLeftIcon,

@@ -1,13 +1,6 @@
-import {
-  PositionType,
-  RelationEdgeType,
-  RelationType,
-  TableNodeType,
-  TableType,
-  TableWithoutIdType,
-  VarcharColumnType,
-} from '@/schemas/base';
-import { Edge } from 'reactflow';
+import { PositionType, RelationEdgeType, RelationType } from '@/schemas/base';
+import { TableNodeType, TableType, TableWithoutIdType } from '@/schemas/table';
+import { VarcharColumnType } from '@/schemas/varchar';
 
 export function nodeToTable(node: TableNodeType): TableType {
   return {

@@ -19,15 +19,7 @@ import { useValidateUniqueColumnName } from '@/flow-hooks/useValidateUniqueColum
 import { useDeleteColumn } from '@/flow-hooks/useDeleteColumn';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { emptyCreateVarcharColumn, getColumnIdFromHandleId } from '@/utils/reactflow';
-import {
-  ColumnType,
-  ColumnTypeEnum,
-  ColumnTypeWithLengthEnum,
-  ColumnTypeWithValuesEnum,
-  IndexType,
-  UpdateColumnSchema,
-  UpdateColumnType,
-} from '@/schemas/base';
+import { IndexType } from '@/schemas/base';
 import { useStore } from 'reactflow';
 import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
 import { Combobox } from './Combobox';
@@ -44,6 +36,13 @@ import { Tooltip } from './Tooltip';
 import { CreatableCombobox } from './CreatableCombobox';
 import { DotsSixVertical, FlowArrow } from 'phosphor-react';
 import { EditorStateContext } from '@/contexts/EditorStateContext';
+import {
+  ColumnType,
+  ColumnTypeEnum,
+  ColumnTypeWithLengthEnum,
+  ColumnTypeWithValuesEnum,
+} from '@/schemas/column';
+import { UpdateColumnType, UpdateColumnSchema } from '@/schemas/update-column';
 
 type TableColumnFinalProps = {
   column: ColumnType;
@@ -129,7 +128,7 @@ function TableColumnComponent(
   }, [reset, column, tableId]);
 
   const handleFormKeyDown: KeyboardEventHandler<HTMLElement> = (e) => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    if (e.key.includes('Arrow')) {
       e.stopPropagation();
     }
 
@@ -258,7 +257,7 @@ function TableColumnComponent(
               }
             }
 
-            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            if (e.key.includes('Arrow')) {
               e.stopPropagation();
             }
           }
@@ -412,7 +411,12 @@ function TableColumnComponent(
             <div
               ref={dragHandleRef}
               {...dragHandleProps}
-              className={clsx('noimage ml-3', {
+              onKeyDown={(e) => {
+                if (e.key.includes('Arrow')) {
+                  e.stopPropagation();
+                }
+              }}
+              className={clsx('noimage ml-3 rounded outline-2 outline-sky-500', {
                 'cursor-grab': !isDragging,
                 'cursor-grabbing': isDragging,
               })}

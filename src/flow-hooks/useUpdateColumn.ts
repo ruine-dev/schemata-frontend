@@ -1,5 +1,7 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import { IndexType, TableWithoutIdType, UpdateColumnType } from '@/schemas/base';
+import { IndexType } from '@/schemas/base';
+import { TableWithoutIdType } from '@/schemas/table';
+import { UpdateColumnType } from '@/schemas/update-column';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import { useContext } from 'react';
 import { Node, useReactFlow } from 'reactflow';

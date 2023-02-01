@@ -1,8 +1,9 @@
 import { useReactFlow } from 'reactflow';
-import { CreateRelationType, EdgeType, RelationEdgeType, TableWithoutIdType } from '@/schemas/base';
+import { CreateRelationType, EdgeType, RelationEdgeType } from '@/schemas/base';
 import { useContext } from 'react';
 import { EditorStateContext } from '@/contexts/EditorStateContext';
 import { useHandleEdgeMarker } from './useHandleEdgeMarker';
+import { TableWithoutIdType } from '@/schemas/table';
 
 export function useCreateRelation() {
   const { undoableService } = useContext(EditorStateContext);

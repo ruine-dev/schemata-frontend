@@ -1,4 +1,4 @@
-import { ColumnTypeEnum, ColumnTypeWithValuesEnum } from '@/schemas/base';
+import { ColumnTypeEnum, ColumnTypeWithValuesEnum } from '@/schemas/column';
 
 describe('updating column', () => {
   beforeEach(() => {

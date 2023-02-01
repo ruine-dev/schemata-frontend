@@ -5,7 +5,7 @@ import FocusLock, { AutoFocusInside } from 'react-focus-lock';
 import { useUpdateTable } from '@/flow-hooks/useUpdateTable';
 import { useDeleteTable } from '@/flow-hooks/useDeleteTable';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
-import { TableSchema, TableType } from '@/schemas/base';
+import { TableSchema, TableType } from '@/schemas/table';
 import { emptyCreateVarcharColumn } from '@/utils/reactflow';
 import { handleFocusLockChildrenBlur } from '@/utils/focus-lock';
 import { useCreateTable } from '@/flow-hooks/useCreateTable';

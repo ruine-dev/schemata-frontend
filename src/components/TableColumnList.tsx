@@ -1,4 +1,4 @@
-import { TableType } from '@/schemas/base';
+import { TableType } from '@/schemas/table';
 import { useDroppable } from '@dnd-kit/core';
 import clsx from 'clsx';
 import { useStore } from 'reactflow';

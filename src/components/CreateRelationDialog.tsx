@@ -1,11 +1,5 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import {
-  ColumnType,
-  CreateRelationSchema,
-  CreateRelationType,
-  RelationActionEnum,
-  TableType,
-} from '@/schemas/base';
+import { CreateRelationSchema, CreateRelationType, RelationActionEnum } from '@/schemas/base';
 import * as Accordion from '@radix-ui/react-accordion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useContext, useEffect, useState } from 'react';
@@ -18,6 +12,8 @@ import { Textbox } from './Textbox';
 import { Button } from './Button';
 import { useLocalSchemaQuery } from '@/queries/useSchemaQuery';
 import { useCreateRelation } from '@/flow-hooks/useCreateRelation';
+import { ColumnType } from '@/schemas/column';
+import { TableType } from '@/schemas/table';
 
 export type CreateRelationDialogProps = {
   source: {

@@ -2,7 +2,7 @@ import { clsx } from '@/utils/clsx';
 import { TableHeader } from './TableHeader';
 import { useCreateColumn } from '@/flow-hooks/useCreateColumn';
 import { emptyCreateVarcharColumn } from '@/utils/reactflow';
-import { TableNodeType } from '@/schemas/base';
+import { TableNodeType } from '@/schemas/table';
 import { Tooltip } from './Tooltip';
 import { useState } from 'react';
 import { PlusIcon } from '@heroicons/react/20/solid';
@@ -61,6 +61,9 @@ export function TableNode({ id, data: table }: TableNodeType) {
               e.preventDefault();
               e.stopPropagation();
               document.getElementById(`table-header-${id}`)?.focus();
+            }
+            if (e.key.includes('Arrow')) {
+              e.stopPropagation();
             }
           }}
           data-test="create-column-button"

@@ -1,11 +1,7 @@
 import { useUpdateColumn } from '@/flow-hooks/useUpdateColumn';
-import {
-  ColumnType,
-  ColumnTypeEnum,
-  TableType,
-  UpdateColumnSchema,
-  UpdateColumnType,
-} from '@/schemas/base';
+import { ColumnType, ColumnTypeEnum } from '@/schemas/column';
+import { TableType } from '@/schemas/table';
+import { UpdateColumnType, UpdateColumnSchema } from '@/schemas/update-column';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';

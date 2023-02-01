@@ -1,7 +1,5 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import { localSchemaQuery } from '@/queries/useSchemaQuery';
-import { TableType, TableWithoutIdType } from '@/schemas/base';
-import { useQueryClient } from '@tanstack/react-query';
+import { TableType, TableWithoutIdType } from '@/schemas/table';
 import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 

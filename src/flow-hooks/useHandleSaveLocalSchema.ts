@@ -1,5 +1,6 @@
 import { useSaveLocalSchema } from '@/mutations/useSaveLocalSchema';
-import { PositionType, RelationType, SchemaType, TableType } from '@/schemas/base';
+import { PositionType, RelationType, SchemaType } from '@/schemas/base';
+import { TableType } from '@/schemas/table';
 import { nodeToTable, nodeToPosition, edgeToRelation } from '@/utils/reactflow';
 import { useReactFlow } from 'reactflow';
 

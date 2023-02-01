@@ -1,5 +1,5 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import { TableType, TableWithoutIdType } from '@/schemas/base';
+import { TableType, TableWithoutIdType } from '@/schemas/table';
 import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 

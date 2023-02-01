@@ -1,8 +1,9 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import { ColumnType, TableType, TableWithoutIdType } from '@/schemas/base';
 import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 import { arrayMove } from '@dnd-kit/sortable';
+import { ColumnType } from '@/schemas/column';
+import { TableType, TableWithoutIdType } from '@/schemas/table';
 
 type ReorderColumnType = {
   movedColumnId: ColumnType['id'];

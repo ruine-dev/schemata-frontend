@@ -1,10 +1,6 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import {
-  ColumnType,
-  CreateColumnSchema,
-  CreateColumnType,
-  TableWithoutIdType,
-} from '@/schemas/base';
+import { CreateColumnType, CreateColumnSchema } from '@/schemas/create-column';
+import { TableWithoutIdType } from '@/schemas/table';
 import { useContext } from 'react';
 import { useReactFlow } from 'reactflow';
 
