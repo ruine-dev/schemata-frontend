@@ -8,6 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write src",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
     "cy:run": "cypress run --config video=false",
     "cy:open": "cypress open",
     "cy:parallel": "cypress-parallel -s cy:run -t 3 -d 'cypress/**/*.cy.ts' -a '\"--config video=false\"'"
@@ -54,8 +56,12 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
+    "@anatine/zod-mock": "^3.8.3",
+    "@faker-js/faker": "^7.6.0",
     "@tailwindcss/forms": "^0.5.3",
     "@testing-library/cypress": "^9.0.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "@types/uuid": "^9.0.0",
@@ -64,6 +70,7 @@
     "cypress": "^12.3.0",
     "cypress-parallel": "^0.12.0",
     "cypress-real-events": "^1.7.6",
+    "happy-dom": "^8.2.2",
     "postcss": "^8.4.20",
     "prettier": "^2.8.1",
     "prettier-config-airbnb": "^1.0.0",
@@ -71,6 +78,7 @@
     "tailwindcss": "^3.2.4",
     "tailwindcss-animate": "^1.0.5",
     "typescript": "^4.9.3",
-    "vite": "^4.0.0"
+    "vite": "^4.0.0",
+    "vitest": "^0.28.3"
   }
 }
