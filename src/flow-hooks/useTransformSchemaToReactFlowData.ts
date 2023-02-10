@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { RelationEdgeType, SchemaSchema } from '@/schemas/base';
 import { useHandleEdgeMarker } from './useHandleEdgeMarker';
 import { TableNodeType } from '@/schemas/table';
+import { RelationEdgeType } from '@/schemas/relation';
+import { SchemaSchema } from '@/schemas/schema';
 
 export function useTransformSchemaToReactFlowData() {
   const handleEdgeMarker = useHandleEdgeMarker();

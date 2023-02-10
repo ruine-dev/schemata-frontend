@@ -5,7 +5,7 @@ import { useCopyToClipboard } from 'usehooks-ts';
 import { useRouter } from '@tanstack/react-router';
 import { EditorPanelContainer } from './EditorPanelContainer';
 import { IconButton } from './IconButton';
-import { SchemaType } from '@/schemas/base';
+import { SchemaType } from '@/schemas/schema';
 import { schemaToBase64Url } from '@/utils/schema';
 import { useEffect } from 'react';
 import { InformationDialog } from './InformationDialog';

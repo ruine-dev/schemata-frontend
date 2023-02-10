@@ -1,4 +1,5 @@
-import { EdgeType, IndexType } from '@/schemas/base';
+import { IndexType } from '@/schemas/base';
+import { EdgeType } from '@/schemas/relation';
 import { TableWithoutIdType } from '@/schemas/table';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import { Edge, useReactFlow } from 'reactflow';

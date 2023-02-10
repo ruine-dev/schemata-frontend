@@ -1,5 +1,5 @@
 import { EditorStateContext } from '@/contexts/EditorStateContext';
-import { CreateRelationSchema, CreateRelationType, RelationActionEnum } from '@/schemas/base';
+import { CreateRelationSchema, CreateRelationType, RelationActionEnum } from '@/schemas/relation';
 import * as Accordion from '@radix-ui/react-accordion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useContext, useEffect, useState } from 'react';

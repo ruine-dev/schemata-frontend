@@ -1,4 +1,5 @@
-import { PositionType, RelationEdgeType, RelationType } from '@/schemas/base';
+import { PositionType } from '@/schemas/position';
+import { RelationEdgeType, RelationType } from '@/schemas/relation';
 import { TableNodeType, TableType, TableWithoutIdType } from '@/schemas/table';
 import { VarcharColumnType } from '@/schemas/varchar';
 

@@ -14,7 +14,6 @@ import { GeneralPropsPanel } from './GeneralPropsPanel';
 import { EditorPropsPanel } from './EditorPropsPanel';
 import { ToolbarPanel } from './ToolbarPanel';
 import { SimpleFloatingEdge } from './ReactFlow/SimpleFloatingEdge';
-import { EdgeType, SchemaType } from '@/schemas/base';
 import { useAddCreateTableShortcut } from '@/flow-hooks/useAddCreateTableShortcut';
 import { useHandleSaveLocalSchema } from '@/flow-hooks/useHandleSaveLocalSchema';
 import { isUuid } from '@/utils/zod';
@@ -29,6 +28,8 @@ import { UtilsPanel } from './UtilsPanel';
 import { AddTableIcon } from './Icon/AddTableIcon';
 import { ClipboardIcon } from '@heroicons/react/20/solid';
 import { TableWithoutIdType } from '@/schemas/table';
+import { SchemaType } from '@/schemas/schema';
+import { EdgeType } from '@/schemas/relation';
 
 const nodeTypes: NodeTypes = { table: TableNode } as unknown as NodeTypes;
 

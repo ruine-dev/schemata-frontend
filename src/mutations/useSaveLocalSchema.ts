@@ -1,5 +1,5 @@
 import { localSchemaQuery } from '@/queries/useSchemaQuery';
-import { SchemaType } from '@/schemas/base';
+import { SchemaType } from '@/schemas/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import localforage from 'localforage';
 

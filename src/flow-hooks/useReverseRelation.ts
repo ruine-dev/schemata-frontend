@@ -1,8 +1,8 @@
 import { useReactFlow } from 'reactflow';
-import { EdgeType, RelationType } from '@/schemas/base';
 import { useContext } from 'react';
 import { EditorStateContext } from '@/contexts/EditorStateContext';
 import { TableWithoutIdType } from '@/schemas/table';
+import { EdgeType, RelationType } from '@/schemas/relation';
 
 export function useReverseRelation() {
   const { undoableService } = useContext(EditorStateContext);

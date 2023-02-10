@@ -1,5 +1,5 @@
 import { useReverseRelation } from '@/flow-hooks/useReverseRelation';
-import { RelationEdgeType } from '@/schemas/base';
+import { RelationEdgeType } from '@/schemas/relation';
 import { TableWithoutIdType } from '@/schemas/table';
 import { getColumnIdFromHandleId } from '@/utils/reactflow';
 import {

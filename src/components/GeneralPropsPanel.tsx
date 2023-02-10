@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { IconButton } from './IconButton';
 import { useSaveLocalSchema } from '@/mutations/useSaveLocalSchema';
 import { EditorPanelContainer } from './EditorPanelContainer';
-import { SchemaSchema, SchemaType } from '@/schemas/base';
+import { SchemaSchema, SchemaType } from '@/schemas/schema';
 import { Textbox } from './Textbox';
 import FocusLock from 'react-focus-lock';
 

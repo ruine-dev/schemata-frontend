@@ -1,5 +1,5 @@
 import { encode, decode } from 'universal-base64url';
-import { SchemaSchema, SchemaType } from '@/schemas/base';
+import { SchemaSchema, SchemaType } from '@/schemas/schema';
 
 export function emptySchemaFactory(): SchemaType {
   return {

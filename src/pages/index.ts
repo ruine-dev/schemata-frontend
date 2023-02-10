@@ -1,4 +1,4 @@
-import { SchemaType } from '@/schemas/base';
+import { SchemaType } from '@/schemas/schema';
 import { base64UrlToSchema } from '@/utils/schema';
 import { QueryClient } from '@tanstack/react-query';
 import { createRouteConfig, createReactRouter } from '@tanstack/react-router';

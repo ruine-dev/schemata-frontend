@@ -2,7 +2,7 @@ import { createContext, ReactNode, useMemo, useState } from 'react';
 import { useInterpret } from '@xstate/react';
 import { copyPasteMachine } from '@/machines/copy-paste-machine';
 import { InterpreterFrom } from 'xstate';
-import { SchemaType } from '@/schemas/base';
+import { SchemaType } from '@/schemas/schema';
 import { Edge, useReactFlow } from 'reactflow';
 import useUndoable from 'use-undoable';
 import { useTransformSchemaToReactFlowData } from '@/flow-hooks/useTransformSchemaToReactFlowData';
